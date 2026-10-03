@@ -24,7 +24,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Any
 
 from src.agriculture.mars_dust_catalyst import DustCatalystStation
-from src.agriculture.mars_refinery import MarsRefinery
+from src.agriculture.mars_refinery import MarsRefinery, REACTIONS
 from src.agriculture.mars_station_body import StationBody
 from src.agriculture.sabatier_reactor import SabatierReactor
 from src.agriculture.mealworm_protein import MealwormFarm
@@ -54,6 +54,144 @@ SOLS_PER_SYNOD = 780
 
 
 @dataclass
+class ExcavatorFleet:
+    """Frota de escavadoras — órgão de colheita E banco de reparo da estação.
+
+    Dupla natureza (voto da estação, auditoria v17 2026-10-03):
+
+    - Produz regolito: capacidade = Σ(saúde × capacidade unitária);
+    - É reserva de reparo: unidade esgotada DENTRO da estação é
+      canibalizada → chassi vira ``spare_parts_kg`` (peças que viram
+      horas-labor de reparo) + fração metálica ao estoque de Fe.
+      O chassi só se perde de verdade em MISSÃO EXTERNA (incidente
+      latente) — o único write-off real;
+    - Era III+: a estação fabrica unidades novas do próprio Fe — a
+      frota cresce da própria colheita (lógica Máquina-Árvore);
+    - Energia: escavação+haul debita do mesmo ``power_margin × 24``
+      que o órgão de superfície — energia é o veto real da expansão.
+
+    O regolito minerado também carrega perclorato (0,6% m/m APXS):
+    alimenta o estoque de ``perchlorate_kg`` e destrava a cadeia de
+    desintoxicação em massa (antes limitada à deposição atmosférica).
+    """
+    capacity_kg_sol_per_unit: float = 85.0   # era I/II: rovers pequenos (4×85=340 baseline v17)
+    capacity_era_iii_kg: float = 120.0       # era III: haulers médios fabricados localmente
+    capacity_era_iv_kg: float = 170.0        # era IV: haulers industriais autônomos
+    energy_kwh_per_kg: float = 0.02          # ~20 kWh/t escavação+haul [ENG]
+    chassis_kg: float = 400.0                # massa recuperável por unidade
+    cannibalize_frac: float = 0.7            # 70% do chassi vira peça útil
+    chassis_fe_frac: float = 0.18            # casco metálico residual → fe_metal_kg
+    build_cost_fe_kg: float = 350.0          # fabricar 1 unidade do próprio Fe
+    max_units: int = 10                      # teto ~850 kg/sol na Era IV
+    wear_per_kt: float = 0.015               # ~1 ano marciano de vida útil por unidade
+    retire_health: float = 0.25              # abaixo disso a unidade é canibalizada
+    mission_loss_prob: float = 0.10          # P(unidade perdida fora | incidente latente)
+    parts_to_labor_h: float = 0.004          # 1 kg de peça ≈ 0.004 h-labor de reparo
+    parts_labor_draw_kg: float = 30.0        # excedente p/ labor por sol — o banco
+                                           # fica reservado p/ refurb/rebuild da frota
+    refurb_parts_kg: float = 25.0            # peças p/ recondicionar 1 unidade (+0.2 saúde)
+    refurb_health_gain: float = 0.2
+    refurb_below: float = 0.9                # só recondiciona quem já desgastou
+    rebuild_parts_kg: float = 350.0          # peças p/ remontar um chassi inteiro
+    rebuilt_health: float = 0.6              # chassi remontado volta com saúde parcial
+    unit_health: List[float] = field(default_factory=lambda: [1.0] * 4)
+    spare_parts_kg: float = 0.0
+    units_built: int = 0
+    units_rebuilt: int = 0
+    units_refurbished: int = 0
+    units_cannibalized: int = 0
+    units_lost_mission: int = 0
+
+    @staticmethod
+    def target_units(era: str) -> int:
+        """Tamanho nominal da frota por era (capacidade de suporte da estação)."""
+        return {"I_ancoragem": 4, "II_primeira_pele": 4,
+                "III_tronco": 7, "IV_copa": 10}.get(era, 4)
+
+    def unit_capacity_kg(self, era: str) -> float:
+        """Capacidade por unidade cresce com a era — haulers cada vez
+        maiores fabricados da própria produção de Fe da estação."""
+        return {"III_tronco": self.capacity_era_iii_kg,
+                "IV_copa": self.capacity_era_iv_kg}.get(
+                    era, self.capacity_kg_sol_per_unit)
+
+    def step_sol(self, era: str, energy_budget_kwh: float,
+                 fe_stock_kg: float, latent: float,
+                 rng: random.Random) -> Dict[str, float]:
+        out = {"mined_kg": 0.0, "energy_kwh": 0.0, "built": 0,
+               "rebuilt": 0, "refurbished": 0,
+               "fe_spent_kg": 0.0, "cannibalized": 0, "lost": 0,
+               "fe_recovered_kg": 0.0, "parts_recovered_kg": 0.0,
+               "labor_bonus_h": 0.0}
+        # 1) Auto-fabricação era III+: a frota cresce da própria colheita.
+        #    Em todas as eras, o banco de peças remonta chassi até o
+        #    tamanho nominal da era — a frota se recicla dentro da estação.
+        target = self.target_units(era)
+        if (era in ("III_tronco", "IV_copa")
+                and len(self.unit_health) < self.max_units
+                and fe_stock_kg >= self.build_cost_fe_kg * 4.0):
+            self.unit_health.append(1.0)
+            self.units_built += 1
+            out["built"] = 1
+            out["fe_spent_kg"] = self.build_cost_fe_kg
+        if (len(self.unit_health) < target
+                and self.spare_parts_kg >= self.rebuild_parts_kg):
+            self.spare_parts_kg -= self.rebuild_parts_kg
+            self.unit_health.append(self.rebuilt_health)
+            self.units_rebuilt += 1
+            out["rebuilt"] = 1
+        # 2) Capacidade de colheita: saúde pondera a capacidade unitária;
+        #    energia disponível é o veto real (mesmo pool do órgão de superfície)
+        cap = sum(h * self.unit_capacity_kg(era) for h in self.unit_health)
+        affordable = energy_budget_kwh / max(self.energy_kwh_per_kg, 1e-9)
+        mined = max(0.0, min(cap, affordable))
+        out["mined_kg"] = mined
+        out["energy_kwh"] = mined * self.energy_kwh_per_kg
+        # 3) Desgaste proporcional à carga manuseada (jitter por unidade)
+        per_unit_kt = (mined / 1000.0) / max(1, len(self.unit_health))
+        self.unit_health = [
+            max(0.0, h - per_unit_kt * self.wear_per_kt * (0.7 + 0.6 * rng.random()))
+            for h in self.unit_health
+        ]
+        # 4) Canibalização: unidade esgotada dentro da estação recicla —
+        #    chassi vira banco de peças + casco metálico (NÃO é perda)
+        kept = []
+        for h in self.unit_health:
+            if h < self.retire_health:
+                self.units_cannibalized += 1
+                out["cannibalized"] += 1
+                parts = self.chassis_kg * self.cannibalize_frac
+                self.spare_parts_kg += parts
+                out["parts_recovered_kg"] += parts
+                out["fe_recovered_kg"] += self.chassis_kg * self.chassis_fe_frac
+            else:
+                kept.append(h)
+        self.unit_health = kept
+        # 5) Recondicionamento: peças de unidades aposentadas restauram as
+        #    remanescentes — a reciclagem financia a manutenção da frota
+        for i, h in enumerate(self.unit_health):
+            if (h < self.refurb_below
+                    and self.spare_parts_kg >= self.refurb_parts_kg):
+                self.unit_health[i] = min(1.0, h + self.refurb_health_gain)
+                self.spare_parts_kg -= self.refurb_parts_kg
+                self.units_refurbished += 1
+                out["refurbished"] += 1
+        # 6) Missão externa: incidente latente pode perder uma unidade —
+        #    único write-off real de chassi
+        if latent > 2.2 and self.unit_health and rng.random() < self.mission_loss_prob:
+            self.unit_health.pop(rng.randrange(len(self.unit_health)))
+            self.units_lost_mission += 1
+            out["lost"] += 1
+        # 7) Banco de peças → demanda de reparo: só um draw limitado por
+        #    sol vira horas-labor — o resto financia refurbish/rebuild
+        draw = min(self.spare_parts_kg, self.parts_labor_draw_kg)
+        labor_bonus = draw * self.parts_to_labor_h
+        self.spare_parts_kg -= draw
+        out["labor_bonus_h"] = labor_bonus
+        return out
+
+
+@dataclass
 class StationUnifiedSimulator:
     """Simulador único de toda a estação: estado cumulativo, dinâmico e pontuado."""
 
@@ -69,6 +207,7 @@ class StationUnifiedSimulator:
     urine_proc: UrineBrineProcessor = field(default_factory=UrineBrineProcessor)
     nutrient_opt: NutrientCycleOptimizer = field(default_factory=NutrientCycleOptimizer)
     ice: IceElevatorSupply = field(default_factory=IceElevatorSupply)
+    fleet: ExcavatorFleet = field(default_factory=ExcavatorFleet)
     regime: Optional[SMetaStation] = field(
         default_factory=SMetaStation if SMetaStation else lambda: None)
     mesh: Optional[StationMesh] = field(
@@ -99,6 +238,10 @@ class StationUnifiedSimulator:
         "regolith_mined_total_t": 0.0,
     })
     
+    # Potência-base da estação (reator de fissão 100 kWe, per monografia):
+    # power_margin [0,1] × 24 × power_base_kw = orçamento energético
+    # diário em kWh — pool único disputado por frota, órgão e ECLSS.
+    power_base_kw: float = 100.0
     # Histórico recente para telemetria (janela móvel)
     recent_history: List[Dict[str, Any]] = field(default_factory=list)
     max_history_len: int = 100
@@ -171,9 +314,16 @@ class StationUnifiedSimulator:
                 "seismic_shock": 1.0 if self._rng.random() < 0.03 else 0.0
             }
         
+        env = dict(env)  # não mutar o dict do chamador (power_margin é debitado abaixo)
+        env["power_base_kw"] = self.power_base_kw  # pool energético: 100 kWe fissão
         wind = env.get("wind_speed_ms", 4.0)
         dust_dep = env.get("dust_flux", 1.0)
         seismic = env.get("seismic_shock", 0.0)
+        # fix auditoria 2026-10-03: seismic (0/1) virava `latent` e nunca
+        # cruzava o limiar 2.2 do incidente físico — o mecanismo estava
+        # morto. Choque sísmico vira excursão latente real (×3: flag 1.0 ->
+        # latent 3.0 > 2.2 com probabilidade 35%, igual ao driver series()).
+        latent_shock = seismic * 3.0
 
         # Determinação do Modo Comportamental — S_meta resolve o regime
         # (metaestabilidade), a oportunidade decide o modo nominal.
@@ -217,7 +367,14 @@ class StationUnifiedSimulator:
         # 3. Cadeia 2: Refinaria Química Estequiométrica (MarsRefinery)
         energy_budget = self.refinery.energy_budget(current_sol, dust_dep)
         ref_inputs = {
-            "perchlorate_kg": min(self.stocks["perchlorate_kg"], dust_step["perchlorate_kg"] * 1.5),
+            # voto da estação 2026-10-03: perclorato minerado a granel
+            # (frota, cadeia 3) passa a alimentar a refinaria — antes só o
+            # fluxo atmosférico (dust×1.5) alimentava. Cap +40 kg/sol do
+            # estoque a granel; o scheduler de energia da refinaria segue
+            # sendo o gate real de throughput.
+            "perchlorate_kg": min(self.stocks["perchlorate_kg"],
+                                  dust_step["perchlorate_kg"] * 1.5
+                                  + min(self.stocks["perchlorate_kg"], 40.0)),
             "fe_oxide_kg": min(self.stocks["fe_oxide_kg"], dust_step["fe_oxide_kg"] * 1.5),
             "silica_kg": min(self.stocks["silica_kg"], dust_step["silica_kg"] * 1.5),
             "gypsum_kg": min(self.stocks["gypsum_kg"], dust_step["gypsum_kg"] * 1.5),
@@ -226,6 +383,16 @@ class StationUnifiedSimulator:
         plan = self.refinery.scheduler.schedule(ref_inputs, energy_budget)
         ref_run = self.refinery.reactor.run(plan, self._rng)
         prods = ref_run["products"]
+        # Conservação: o scheduler debitava só uma cópia local — o estoque
+        # real nunca era debitado e crescia sem bound. O plano executado é
+        # o consumo real por insumo.
+        consumed_inputs: Dict[str, float] = {}
+        for _rx_key, _kg in plan.items():
+            _in_key = REACTIONS[_rx_key].input_key
+            consumed_inputs[_in_key] = consumed_inputs.get(_in_key, 0.0) + _kg
+        for _k, _kg in consumed_inputs.items():
+            if _k in self.stocks:
+                self.stocks[_k] = max(0.0, self.stocks[_k] - _kg)
         
         fe_reduced_ref_kg = prods.get("fe_metal_kg", 0.0)
         si_metal_kg = prods.get("si_metal_kg", 0.0)
@@ -239,8 +406,24 @@ class StationUnifiedSimulator:
         self.stocks["cement_geopolymer_kg"] += cement_ref_kg
         self.stocks["o2_kg"] += o2_ref_kg
         
-        # 4. Cadeia 3: Mineração e Metalurgia de Regolito Bruto (340 kg/sol)
-        regolith_sol_kg = 340.0
+        # 4. Cadeia 3: Mineração e Metalurgia de Regolito Bruto (frota viva)
+        # voto da estação 2026-10-03: a taxa não é constante — ExcavatorFleet
+        # é órgão de colheita E banco de reparo. Energia debitada do mesmo
+        # pool power_margin×24 que o órgão de superfície usará depois;
+        # unidade esgotada é canibalizada (peças→labor, casco→Fe); chassi só
+        # se perde em missão externa; era III+ fabrica unidades do próprio Fe.
+        fleet_res = self.fleet.step_sol(
+            era_name,
+            env.get("power_margin", 0.6) * 24.0 * self.power_base_kw,
+            self.stocks["fe_metal_kg"], latent_shock, self._rng)
+        regolith_sol_kg = fleet_res["mined_kg"]
+        env["power_margin"] = max(
+            0.0, env.get("power_margin", 0.6)
+            - fleet_res["energy_kwh"] / (24.0 * self.power_base_kw))
+        self.stocks["fe_metal_kg"] += fleet_res["fe_recovered_kg"]
+        self.stocks["fe_metal_kg"] -= fleet_res["fe_spent_kg"]
+        # perclorato do regolito minerado (0,6% m/m APXS) → cadeia a granel
+        self.stocks["perchlorate_kg"] += regolith_sol_kg * 0.006
         self.stocks["regolith_mined_total_t"] += regolith_sol_kg / 1000.0
         
         fe_raw_mined_kg = regolith_sol_kg * 0.19
@@ -320,18 +503,15 @@ class StationUnifiedSimulator:
         # 8. Cadeia 7: Corpo Material da Estação & Robótica
         n_robots = self.active_fleet_robots()
         labor_econ = LaborEconomy(n_robots=n_robots)
-        net_labor_h = labor_econ.net_hours_sol()
+        # Demanda de reparo (voto da estação): chassi canibalizado dentro
+        # da estação vira banco de peças → horas-labor efetivas extras.
+        net_labor_h = labor_econ.net_hours_sol() + fleet_res["labor_bonus_h"]
         
         # Se for marco de provisão de meia-vida (Synod 14, sol ~10920), alívio de revisão
         if current_synod == 14 and (current_sol % SOLS_PER_SYNOD == 0):
             for l in self.body.layers.values():
                 l.wear = max(0.02, l.wear * 0.3)
                 
-        # fix auditoria 2026-10-03: seismic (0/1) virava `latent` e nunca
-        # cruzava o limiar 2.2 do incidente físico — o mecanismo estava
-        # morto. Choque sísmico vira excursão latente real (×3: flag 1.0 ->
-        # latent 3.0 > 2.2 com probabilidade 35%, igual ao driver series()).
-        latent_shock = seismic * 3.0
         body_res = self.body.step_sol(env, latent_shock, net_labor_h, self._rng)
         mesh_res = self.mesh.step(body_res) if self.mesh is not None else {}
         
@@ -353,6 +533,9 @@ class StationUnifiedSimulator:
             "env": env,
             "production_sol": {
                 "dust_collected_kg": round(dust_step["dust_collected_kg"], 3),
+                "regolith_mined_kg": round(regolith_sol_kg, 2),
+                "mining_energy_kwh": round(fleet_res["energy_kwh"], 2),
+                "refinery_energy_kwh": ref_run["energy_kwh"],
                 "fe_metal_total_kg": round(fe_reduced_ref_kg + fe_metal_smelted_kg, 3),
                 "cement_total_kg": round(cement_ref_kg + geopoly_mined_kg, 3),
                 "silicon_metal_kg": round(si_metal_kg, 3),
@@ -377,6 +560,20 @@ class StationUnifiedSimulator:
                                                    "crew_clo4", "shield_"))},
             "organ_surfaces": {k: v for k, v in body_res.items()
                                if k.startswith(("organ_", "berm_"))},
+            "fleet_state": {
+                "units": len(self.fleet.unit_health),
+                "unit_health": [round(h, 4) for h in self.fleet.unit_health],
+                "spare_parts_kg": round(self.fleet.spare_parts_kg, 2),
+                "units_built": self.fleet.units_built,
+                "units_rebuilt": self.fleet.units_rebuilt,
+                "units_refurbished": self.fleet.units_refurbished,
+                "units_cannibalized": self.fleet.units_cannibalized,
+                "units_lost_mission": self.fleet.units_lost_mission,
+                "fleet_events_sol": {k: fleet_res[k] for k in
+                                     ("built", "rebuilt", "refurbished",
+                                      "cannibalized", "lost",
+                                      "labor_bonus_h")},
+            },
             "mesh_surfaces": mesh_res,
             "repair_load_h": body_res["repair_load_h"],
             "incident": body_res["incident"],
@@ -453,6 +650,15 @@ class StationUnifiedSimulator:
                 "shield": (self._scalar_state(self.body.shield)
                            if self.body.shield is not None else None),
             },
+            "fleet_state": {
+                "unit_health": list(self.fleet.unit_health),
+                "spare_parts_kg": self.fleet.spare_parts_kg,
+                "units_built": self.fleet.units_built,
+                "units_rebuilt": self.fleet.units_rebuilt,
+                "units_refurbished": self.fleet.units_refurbished,
+                "units_cannibalized": self.fleet.units_cannibalized,
+                "units_lost_mission": self.fleet.units_lost_mission,
+            },
             "rng_state_hex": binascii.hexlify(
                 pickle.dumps(self._rng.getstate())).decode("ascii"),
         }
@@ -484,6 +690,15 @@ class StationUnifiedSimulator:
             self._restore_scalars(self.body.boundary, bs["boundary"])
         if bs.get("shield") is not None and self.body.shield is not None:
             self._restore_scalars(self.body.shield, bs["shield"])
+
+        fs = data.get("fleet_state") or {}
+        if fs.get("unit_health") is not None:
+            self.fleet.unit_health = [float(h) for h in fs["unit_health"]]
+        for _k in ("spare_parts_kg", "units_built", "units_rebuilt",
+                   "units_refurbished", "units_cannibalized",
+                   "units_lost_mission"):
+            if fs.get(_k) is not None:
+                setattr(self.fleet, _k, fs[_k])
 
         if data.get("recent_history"):
             self.recent_history = list(data["recent_history"])

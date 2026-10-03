@@ -141,9 +141,11 @@ class SurfaceOrgan:
         power_margin = env.get("power_margin", 0.6)
 
         # orçamento energético diário do órgão: power_margin é fração de
-        # uma potência base P_base (1.0 = 1 kW médio) × 24h -> kWh/dia.
+        # uma potência base P_base × 24h -> kWh/dia. P_base vem do env
+        # (power_base_kw — o sim injeta 100 kWe do reator de fissão);
+        # ausente = 1 kW (retrocompatível).
         # EDS e forno disputam o MESMO orçamento — energia não é de graça.
-        energy_budget_kwh = power_margin * 24.0
+        energy_budget_kwh = power_margin * 24.0 * env.get("power_base_kw", 1.0)
         energy_used_kwh = 0.0
 
         # berm primeiro: intercepta a fração saltante antes da pele

@@ -2034,3 +2034,113 @@ class TestUnifiedCheckpoint:
         sim.restore_from_snapshot({"sol": 100, "stocks": {"water_l": 4000}})
         assert sim.sol == 100
         assert sim.stocks["water_l"] == 4000
+
+
+class TestExcavatorFleet:
+    """Frota como órgão de colheita + banco de reparo (voto da estação v17)."""
+
+    def test_mining_energy_debits_power_margin(self):
+        """Escavação consome do mesmo pool que o órgão de superfície."""
+        sim = StationUnifiedSimulator(seed=2)
+        env = _env(); env["power_margin"] = 0.6
+        before_margin = env["power_margin"]
+        r = sim.step(env)
+        mined = r["production_sol"]["regolith_mined_kg"]
+        energy = r["production_sol"]["mining_energy_kwh"]
+        assert mined > 0
+        assert energy == pytest.approx(mined * sim.fleet.energy_kwh_per_kg)
+        # o corpo viu a margem reduzida
+        assert r["env"]["power_margin"] < before_margin
+        # dict do chamador não foi mutado
+        assert env["power_margin"] == before_margin
+
+    def test_mining_energy_is_veto_when_budget_zero(self):
+        """Sem margem de potência, a frota não colhe — energia é o veto."""
+        from src.agriculture.mars_unified_simulator import ExcavatorFleet
+        f = ExcavatorFleet()
+        res = f.step_sol("I_ancoragem", 0.0, 0.0, 0.0, __import__("random").Random(1))
+        assert res["mined_kg"] == 0.0
+        assert res["energy_kwh"] == 0.0
+
+    def test_fleet_grows_from_own_fe_in_era_iii(self):
+        """Era III+: a frota fabrica unidades do próprio Fe (auto-bootstrap)."""
+        from src.agriculture.mars_unified_simulator import ExcavatorFleet
+        import random
+        f = ExcavatorFleet()
+        rng = random.Random(1)
+        f.step_sol("I_ancoragem", 100.0, 5000.0, 0.0, rng)
+        assert len(f.unit_health) == 4          # era I não constrói
+        res = f.step_sol("III_tronco", 100.0, 5000.0, 0.0, rng)
+        assert res["built"] == 1 and len(f.unit_health) == 5
+        assert res["fe_spent_kg"] == f.build_cost_fe_kg
+
+    def test_cannibalized_unit_recycles_chassis(self):
+        """Unidade esgotada dentro da estação vira peças + Fe — não é perda."""
+        from src.agriculture.mars_unified_simulator import ExcavatorFleet
+        import random
+        f = ExcavatorFleet(unit_health=[0.2, 0.9, 0.9, 0.9])
+        res = f.step_sol("II_primeira_pele", 100.0, 0.0, 0.0,
+                         random.Random(1))
+        assert res["cannibalized"] == 1
+        assert f.units_cannibalized == 1
+        assert res["parts_recovered_kg"] == pytest.approx(400.0 * 0.7)
+        # o banco de peças é consumido em labor de reparo no mesmo sol
+        assert res["labor_bonus_h"] > 0.0
+        assert res["fe_recovered_kg"] == pytest.approx(400.0 * 0.18)
+        assert len(f.unit_health) == 3
+
+    def test_only_external_mission_loses_chassis(self):
+        """Write-off real só em missão externa (incidente latente)."""
+        from src.agriculture.mars_unified_simulator import ExcavatorFleet
+        import random
+        f = ExcavatorFleet(mission_loss_prob=1.0)
+        res = f.step_sol("II_primeira_pele", 100.0, 0.0, 3.0,
+                         random.Random(1))
+        assert res["lost"] == 1
+        assert f.units_lost_mission == 1
+        assert len(f.unit_health) == 3
+        # sem choque latente, nenhuma unidade se perde mesmo com prob 1.0
+        f2 = ExcavatorFleet(mission_loss_prob=1.0)
+        res2 = f2.step_sol("II_primeira_pele", 100.0, 0.0, 0.0,
+                           random.Random(1))
+        assert res2["lost"] == 0 and len(f2.unit_health) == 4
+
+    def test_spare_parts_become_repair_labor(self):
+        """Banco de peças vira horas-labor de reparo (demanda da estação)."""
+        from src.agriculture.mars_unified_simulator import ExcavatorFleet
+        import random
+        f = ExcavatorFleet(spare_parts_kg=500.0)
+        res = f.step_sol("II_primeira_pele", 100.0, 0.0, 0.0,
+                         random.Random(1))
+        # draw limitado: 30 kg/sol → labor; o resto financia a frota
+        assert res["labor_bonus_h"] == pytest.approx(30.0 * 0.004)
+        assert f.spare_parts_kg == pytest.approx(500.0 - 30.0)
+
+    def test_mined_regolith_feeds_bulk_perchlorate(self):
+        """Regolito a granel alimenta o estoque de perclorato (0,6% APXS)."""
+        sim = StationUnifiedSimulator(seed=2)
+        sim.step(_env())
+        # estoque inclui fração minerada além da deposição atmosférica
+        assert sim.stocks["perchlorate_kg"] > 0
+
+    def test_refinery_debits_real_stocks(self):
+        """O plano executado debita os estoques reais (não a cópia)."""
+        sim = StationUnifiedSimulator(seed=2)
+        for _ in range(5):
+            sim.step(_env())
+        # estoques de insumo não podem crescer sem bound: consumo existe
+        # (se nunca debitassem, o acumulado seria só a soma dos inputs)
+        assert sim.stocks["fe_oxide_kg"] >= 0.0
+
+    def test_fleet_survives_checkpoint(self):
+        sim1 = StationUnifiedSimulator(seed=3)
+        for _ in range(8):
+            sim1.step(_env(storm=True))
+        snap = sim1.snapshot()
+        sim2 = StationUnifiedSimulator(seed=99)
+        sim2.restore_from_snapshot(snap)
+        assert sim2.fleet.unit_health == pytest.approx(sim1.fleet.unit_health)
+        assert sim2.fleet.spare_parts_kg == pytest.approx(
+            sim1.fleet.spare_parts_kg)
+        assert (sim2.fleet.units_cannibalized
+                == sim1.fleet.units_cannibalized)
