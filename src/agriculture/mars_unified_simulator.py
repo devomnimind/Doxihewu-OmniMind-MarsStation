@@ -29,6 +29,7 @@ from src.agriculture.mars_station_body import StationBody
 from src.agriculture.sabatier_reactor import SabatierReactor
 from src.agriculture.mealworm_protein import MealwormFarm
 from src.agriculture.circular_economy import UrineBrineProcessor, NutrientCycleOptimizer
+from src.agriculture.life_support_systems import IceElevatorSupply
 from src.agriculture.mars_colossus import LaborEconomy, STATION_TIMELINE
 from src.agriculture.mars_metallurgy import SECONDARY_STREAMS
 
@@ -67,6 +68,7 @@ class StationUnifiedSimulator:
     mealworm: MealwormFarm = field(default_factory=MealwormFarm)
     urine_proc: UrineBrineProcessor = field(default_factory=UrineBrineProcessor)
     nutrient_opt: NutrientCycleOptimizer = field(default_factory=NutrientCycleOptimizer)
+    ice: IceElevatorSupply = field(default_factory=IceElevatorSupply)
     regime: Optional[SMetaStation] = field(
         default_factory=SMetaStation if SMetaStation else lambda: None)
     mesh: Optional[StationMesh] = field(
@@ -304,6 +306,16 @@ class StationUnifiedSimulator:
         # Otimizador de ciclo de nutrientes (pirólise biochar + digestão)
         nut_res = self.nutrient_opt.step(biomass_residual_kg=plant_residue_kg)
         self.stocks["fertilizer_npk_kg"] += nut_res["recovered_kg"]
+
+        # Cadeia de gelo ISRU (auditoria v17): sem ela a estação é consumidora
+        # líquida ~37 L/sol (-791 kL em 21.060 sols). Escala por era:
+        # I elevador habitat 2.5 L/sol -> II ISRU inicial 25 -> III/IV
+        # industrial 90/120 L/sol (DRA: gelo subsuperficial ~100 kg/sol).
+        self.ice.flow_l_per_sol = {
+            "I_ancoragem": 2.5, "II_primeira_pele": 25.0,
+            "III_tronco": 90.0, "IV_copa": 120.0}[era_name]
+        ice_water_l = self.ice.step(self.stocks["water_l"])
+        self.stocks["water_l"] += ice_water_l
         
         # 8. Cadeia 7: Corpo Material da Estação & Robótica
         n_robots = self.active_fleet_robots()
@@ -348,6 +360,7 @@ class StationUnifiedSimulator:
                 "sulfuric_acid_kg": round(h2so4_kg, 3),
                 "ch4_fuel_kg": round(sab_res["ch4_kg"], 3),
                 "water_recovered_l": round(urine_res["water_recovered_l"] + sab_res["h2o_kg"], 3),
+                "ice_water_l": round(ice_water_l, 2),
                 "o2_net_kg": round(dust_step["o2_from_clo4_kg"] + o2_ref_kg + 26.0 + (40.0 if current_sol >= 1500 else 0.0), 3),
                 "spirulina_kg": spirulina_sol_kg,
                 "potatoes_kg": potatoes_sol_kg,
