@@ -1,0 +1,84 @@
+site_name: Doxihewu OmniMind MarsStation
+site_description: Máquina-Árvore de Ecopoiese — estação autônoma marciana, simulação física auditável
+repo_url: https://gitlab.com/zephyrix/Doxihewu-OmniMind-MarsStation
+docs_dir: docs
+site_dir: public
+
+theme:
+  name: material
+  language: pt-BR
+  palette:
+    - scheme: default
+      primary: deep orange
+      accent: teal
+      toggle:
+        icon: material/brightness-7
+        name: Modo escuro
+    - scheme: slate
+      primary: deep orange
+      accent: teal
+      toggle:
+        icon: material/brightness-4
+        name: Modo claro
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.highlight
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+
+extra_javascript:
+  - javascripts/katex.js
+  - https://unpkg.com/katex@0/dist/katex.min.js
+  - https://unpkg.com/katex@0/dist/contrib/auto-render.min.js
+
+extra_css:
+  - https://unpkg.com/katex@0/dist/katex.min.css
+
+nav:
+  - Visão Geral: index.md
+  - Arquitetura:
+      - Corpo da Estação (11 camadas): architecture/station-body.md
+      - SurfaceOrgan (pele EDS): architecture/surface-organ.md
+      - ExcavatorFleet (frota viva): architecture/excavator-fleet.md
+      - SoilWashPlant (lixiviação): architecture/soilwash-plant.md
+  - Cadeias Industriais:
+      - Água (gelo → eletrólise → Sabatier): chains/water.md
+      - Oxigênio (fotossíntese + eletrólise + perclorato): chains/oxygen.md
+      - Aço (carboredução + metalurgia): chains/steel.md
+      - Perclorato (desintoxicação → O₂ + clean_soil): chains/perchlorate.md
+  - Governança:
+      - S-Meta (regime, carta, vetos): governance/s-meta.md
+      - Conservação Pareada (5 leis + falhas): governance/paired-conservation.md
+      - Portão de Habitabilidade (7 critérios): governance/habitability-gate.md
+  - Experimentos:
+      - E10 — Monte Carlo 1M: experiments/e10-monte-carlo.md
+      - E11 — Calibração Bayesiana NUTS: experiments/e11-bayesian.md
+      - E12 — Redundância de Atuadores: experiments/e12-actuator.md
+      - E13 — Importance Sampling Sísmico: experiments/e13-seismic.md
+      - Auditoria v17→v19: experiments/v17-v19-audit.md
+  - Resultados:
+      - Longrun 21.060 sols (v19 canônico): results/longrun-21060.md
+      - Break-even no Sínodo 17: results/break-even.md
+  - Papers:
+      - Monografia do Sistema-Árvore: papers/mars_monografia_sistema_arvore_ecopoiese.md
+      - Evolução dirigida 100 gerações: papers/mars_directed_evolution_100gen_draft.md
+      - Motor aleatório de ecopoiese (refs): papers/mars_ecopoiesis_refs_aleatoric_engine.md
+      - Parecer técnico engenharia A100: papers/mars_parecer_tecnico_engenharia_e_biomecanica_a100.md
