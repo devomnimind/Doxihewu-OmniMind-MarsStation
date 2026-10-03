@@ -39,13 +39,67 @@ Expectativas calibradas (validação 5000 sols, 3 tempestades, 50 m²):
     (~8 mm em 60 anos). Serve como camada sacrificável/fouling-sink;
     blindagem primária contra GCR continua sendo regolito escavado
     ou água em escala de metro — nunca esperar "metros de graça".
+
+PassiveBerm (v2, 2026-10-03) — cerca de areia passiva a barlavento:
+  intercepta a componente SALTANTE do fluxo (grãos ~80-200 µm rasando o
+  solo) — não a poeira fina suspensa, que a atravessa. Cresce durante
+  tempestades (sand-fence: vento desacelera -> carga deposita no berm)
+  e decai em calmaria (reptação + slump). Não é barreira absoluta: cap
+  ~60% de interceptação da fração saltante; altura útil 0-3 m. Custo:
+  apenas escavação inicial (horas de dozer, se houver) — depois o
+  ambiente a mantém parcialmente. É a defesa "de graça" que o próprio
+  vento constrói, no espírito do órgão (coexistir, não blindar).
 """
 
 from __future__ import annotations
 
 import random
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Dict
+
+
+@dataclass
+class PassiveBerm:
+    """Cerca de areia passiva a barlavento do órgão de superfície.
+
+    Física: o berm intercepta a fração SALTANTE do transporte eólico
+    (grãos em saltação ~80-200 µm, trajetórias a cm do solo); a poeira
+    fina em suspensão o atravessa. Em tempestade ele cresce (sand-fence:
+    desaceleração deposita carga no berm); em calmaria decai por
+    reptação/slump. Interceptação capada — nunca é blindagem total.
+    """
+
+    height_m: float = 0.4                 # cota inicial (escavação rápida)
+    max_height_m: float = 3.0
+    saltation_frac_of_flux: float = 0.5   # fração do fluxo que vem saltando
+    intercept_cap: float = 0.6            # teto físico de interceptação
+    grow_per_flux: float = 0.0025         # m por (dust_flux × vento) — tempestade alimenta
+    erode_per_sol: float = 0.0004         # m/sol em calmaria — reptação + slump
+    wind_threshold_ms: float = 5.0        # abaixo disso quase nada salta
+
+    def step_sol(self, env: Dict[str, float]) -> Dict[str, float]:
+        dust_flux = env.get("dust_flux", 1.0)
+        wind_ms = env.get("wind_speed_ms", 0.0)
+
+        # crescimento: evento de saltação deposita carga no berm
+        driving = dust_flux * max(0.0, wind_ms - self.wind_threshold_ms)
+        if driving > 0:
+            self.height_m = min(self.max_height_m,
+                                self.height_m + self.grow_per_flux * driving)
+        else:
+            self.height_m = max(0.05, self.height_m - self.erode_per_sol)
+
+        # interceptação efetiva: sobe com altura até o cap, só sobre a
+        # fração saltante do fluxo, e some se o vento mal alcança a base
+        height_eff = min(1.0, self.height_m / 1.5)          # 1.5 m ~ eficaz
+        wind_eff = min(1.0, wind_ms / 15.0) if wind_ms > 0 else 0.0
+        frac = (self.intercept_cap * self.saltation_frac_of_flux
+                * height_eff * wind_eff)
+        return {
+            "berm_height_m": round(self.height_m, 4),
+            "berm_intercept_frac": round(frac, 4),
+            "berm_driving": round(driving, 3),
+        }
 
 
 @dataclass
@@ -67,6 +121,7 @@ class SurfaceOrgan:
     sinter_batch_kg: float = 5.0          # tamanho do lote da câmara
     sinter_min_batch_kg: float = 0.25     # micro-ondas sinteriza em sub-kg
     shielding_rad_gain: float = 50.0      # fator = 1/(1+shielding_m*gain)
+    berm: PassiveBerm = field(default_factory=PassiveBerm)
 
     # --- estado ---
     dust_captured_kg: float = 0.0
@@ -85,10 +140,14 @@ class SurfaceOrgan:
         wind_ms = env.get("wind_speed_ms", 0.0)
         power_margin = env.get("power_margin", 0.6)
 
+        # berm primeiro: intercepta a fração saltante antes da pele
+        berm_res = self.berm.step_sol(env)
+
         # deposição do sol — Pathfinder MAE: ~0.28%/dia de obscurecimento
         # (~3 µg/cm²/sol em calma), escalado pela área exposta tratada
         deposited_kg = (self.deposit_kg_m2_sol * self.capture_area_m2
                         * dust_flux * (1.0 + 0.5 * min(3.0, wind_ms / 10.0)))
+        deposited_kg *= (1.0 - berm_res["berm_intercept_frac"])
 
         # EDS disparado por acúmulo — duty-cycle baixo por design
         eds_fired = 0
@@ -131,6 +190,8 @@ class SurfaceOrgan:
             "organ_dust_captured_kg": round(self.dust_captured_kg, 4),
             "organ_sintered_mass_kg": round(self.sintered_mass_kg, 4),
             "organ_shielding_m": round(self.shielding_m, 6),
+            "berm_height_m": berm_res["berm_height_m"],
+            "berm_intercept_frac": berm_res["berm_intercept_frac"],
         }
 
     def neutrosophic(self) -> Dict[str, float]:
