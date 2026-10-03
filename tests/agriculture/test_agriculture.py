@@ -1260,7 +1260,7 @@ class TestMarsColossus:
     def test_salvage_nothing_lost(self):
         # a ideia soberana: 100% do casco vira ativo
         total = sum(s["mass_frac"] for s in SALVAGE_MAP)
-        assert total == 1.0
+        assert abs(total - 1.0) < 1e-9
         assert any("raptor" in s["component"] for s in SALVAGE_MAP)
         assert any("tps" in s["component"] for s in SALVAGE_MAP)
 
