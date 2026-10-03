@@ -2144,3 +2144,25 @@ class TestExcavatorFleet:
             sim1.fleet.spare_parts_kg)
         assert (sim2.fleet.units_cannibalized
                 == sim1.fleet.units_cannibalized)
+
+
+class TestOptionalOrganPresence:
+    """Guarda contra a falha silenciosa que degradou o Colab v18: um módulo
+    opcional ausente (try/except) zera consumos de RNG e desliga física sem
+    erro — divergência de ~2% só visível no longrun. Se algum órgão voltar a
+    resolver None, este teste falha no import, não no sol 21.060."""
+
+    def test_body_organs_not_none(self):
+        sim = StationUnifiedSimulator(seed=1)
+        assert sim.body.organ is not None      # SurfaceOrgan
+        assert sim.body.boundary is not None   # AirlockOrgan
+        # ShieldStack é opcional por design (só se configurado)
+
+    def test_optional_imports_resolve(self):
+        from src.agriculture import mars_station_body as msb
+        from src.agriculture import mars_unified_simulator as mus
+        assert msb.SurfaceOrgan is not None
+        assert msb.AirlockOrgan is not None
+        assert msb.ShieldStack is not None
+        assert mus.SMetaStation is not None
+        assert mus.StationMesh is not None
