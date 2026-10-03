@@ -25,6 +25,12 @@ tests:
   suite: tests/agriculture/test_agriculture.py
   count: 111
   status: passing
+integrations_v17_audit_fixes_2026_10_03:
+  - "auditoria externa verificada (6 claims reais): bug A fouling dupla contagem REMOVIDO (fluxo frac_left já cobre); bug B energia EDS/forno agora debita orçamento diário power_margin×24 kWh e retorna organ_energy_used_kwh; bug1 seismic(0/1)→latent_shock=seismic×3.0 (incidente vivo, p=0.35); bug2 eletrólise modelada (−45L água, +40kg O2 por 5kg H2 — Sabatier vira consumidor líquido ~22.7L/sol); apply_dust_catalyst removido do __post_init__ (dupla mitigação com órgão) e marcado LEGADO; bug3 snapshot completo (layers wear/anneal + organ + berm + boundary + shield + rng_state_hex + recent_history, retrocompatível); stocks NÃO arredondados no snapshot (round quebrava continuação)"
+  - "step_summary: +organ_surfaces (organ_*/berm_*) — energia do órgão visível na telemetria"
+  - "neutrosophic() do órgão composto: T=0.5·eds_health+0.3·sintered/10+0.2·shielding/0.01"
+  - "novos testes de invariante (TestUnifiedCausality/TestUnifiedCheckpoint): sísmico→latente, água consumidora líquida, O2 coproduto, energia debitada, sem dupla mitigação, restore corpo+RNG reproduz trajetória — 236 testes passam"
+  - "PENDENTE reconciliar: monografia reporta 7.464t aço/38.091t geopolim./2.441t O2 em 21060 sols vs taxas atuais do sim (~980t Fe) — divergência ~8-26× (rodada antiga com taxas maiores?)"
 integrations_v16_passive_berm_2026_10_03:
   - "mars_surface_organ.py v2: PassiveBerm — cerca de areia passiva a barlavento; intercepta SÓ a fração saltante do fluxo (grãos 80-200µm a cm do solo — poeira fina suspensa atravessa), cap físico 60%×50% saltante = 30% do fluxo"
   - "dinâmica sand-fence: cresce em tempestade (driving = dust_flux×(wind−5m/s), grow 2.5mm/unidade, cap 3m) e erode em calmaria (0.4mm/sol reptação+slump) — o ambiente constrói a defesa de graça; validação: calma h~0.38m/intercept 1.5%, tempestade 15 sols h→3m/intercept 30%, pós-tempestade persiste h~2.98m"

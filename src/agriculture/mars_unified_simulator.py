@@ -16,7 +16,9 @@ todas as cadeias são pontuadas, e o estado vivo completo é persistido em check
 
 from __future__ import annotations
 
+import binascii
 import math
+import pickle
 import random
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Any
@@ -101,12 +103,9 @@ class StationUnifiedSimulator:
     
     def __post_init__(self):
         self._rng = random.Random(self.seed)
-        # Aplica alívio de poeira EDS no corpo
-        self.body.apply_dust_catalyst({
-            "solar_arrays": 0.92,
-            "optics_windows": 0.74,
-            "radiators": 0.64
-        })
+        # fix auditoria 2026-10-03: apply_dust_catalyst REMOVIDO do init —
+        # mutação permanente de dust_sensitivity + SurfaceOrgan ativo =
+        # dupla mitigação. O órgão é o mecanismo canônico de defesa de poeira.
 
     @property
     def synod(self) -> int:
@@ -259,6 +258,13 @@ class StationUnifiedSimulator:
         # 5. Cadeia 4: Propelente & Reator Sabatier (CO2 + 4H2 -> CH4 + 2H2O)
         co2_feed_kg = 27.5 # Consumo atmosférico diário
         h2_feed_kg = 5.0   # Da eletrólise de água reciclada
+        # fix auditoria 2026-10-03: a eletrólise do H2 é modelada — 2 H2O ->
+        # 2 H2 + O2: 9 L de água e 8 kg O2 por kg de H2. Sem isso o Sabatier
+        # criava água do nada (devolve ~22.5 L mas nunca debitava os 45 L).
+        h2o_electrolyzed_l = h2_feed_kg * 9.0
+        o2_electrolysis_kg = h2_feed_kg * 8.0
+        self.stocks["water_l"] -= h2o_electrolyzed_l
+        self.stocks["o2_kg"] += o2_electrolysis_kg
         sab_res = self.sabatier.process(co2_feed_kg, h2_feed_kg)
         
         self.stocks["ch4_fuel_kg"] += sab_res["ch4_kg"]
@@ -309,7 +315,12 @@ class StationUnifiedSimulator:
             for l in self.body.layers.values():
                 l.wear = max(0.02, l.wear * 0.3)
                 
-        body_res = self.body.step_sol(env, seismic, net_labor_h, self._rng)
+        # fix auditoria 2026-10-03: seismic (0/1) virava `latent` e nunca
+        # cruzava o limiar 2.2 do incidente físico — o mecanismo estava
+        # morto. Choque sísmico vira excursão latente real (×3: flag 1.0 ->
+        # latent 3.0 > 2.2 com probabilidade 35%, igual ao driver series()).
+        latent_shock = seismic * 3.0
+        body_res = self.body.step_sol(env, latent_shock, net_labor_h, self._rng)
         mesh_res = self.mesh.step(body_res) if self.mesh is not None else {}
         
         # 9. Pontuação Composta de Prontidão (AMCI & Saúde Geral)
@@ -351,6 +362,8 @@ class StationUnifiedSimulator:
                                   if k.startswith(("airlock_", "cabin_",
                                                    "eclss_filter",
                                                    "crew_clo4", "shield_"))},
+            "organ_surfaces": {k: v for k, v in body_res.items()
+                               if k.startswith(("organ_", "berm_"))},
             "mesh_surfaces": mesh_res,
             "repair_load_h": body_res["repair_load_h"],
             "incident": body_res["incident"],
@@ -382,21 +395,60 @@ class StationUnifiedSimulator:
             
         return step_summary
 
+    @staticmethod
+    def _scalar_state(obj: Any) -> Dict[str, float]:
+        """Campos escalares de um subsistema — estado restaurável mínimo."""
+        return {k: v for k, v in vars(obj).items()
+                if isinstance(v, (int, float)) and not isinstance(v, bool)}
+
+    @staticmethod
+    def _restore_scalars(obj: Any, state: Dict[str, float]) -> None:
+        for k, v in state.items():
+            if hasattr(obj, k):
+                setattr(obj, k, v)
+
     def snapshot(self) -> Dict[str, Any]:
-        """Foto completa e soberana do estado do simulador para checkpoint."""
+        """Foto completa e soberana do estado do simulador para checkpoint.
+
+        fix auditoria 2026-10-03: agora inclui wear/anneal das camadas,
+        estado escalar do SurfaceOrgan (+berm), AirlockOrgan, ShieldStack,
+        estado do RNG e o histórico — restaurar não volta "pela metade"."""
         return {
             "sol": self.sol,
             "synod": self.synod,
             "era": self.era,
-            "stocks": {k: round(v, 2) for k, v in self.stocks.items()},
+            # SEM arredondar: stocks é fonte de restore — round() aqui
+            # quebrava a continuação exata da trajetória (bug pego pelo
+            # teste de reprodutibilidade RNG da auditoria).
+            "stocks": dict(self.stocks),
             "body_integrity": round(1.0 - sum(l.wear for l in self.body.layers.values()) / len(self.body.layers), 5),
             "active_robots": self.active_fleet_robots(),
             "neutrosophic_body": self.body.neutrosophic_state(),
-            "recent_telemetry": list(self.recent_history[-10:])
+            "recent_telemetry": list(self.recent_history[-10:]),
+            "recent_history": list(self.recent_history),
+            "body_state": {
+                "layers": {n: {"wear": l.wear, "anneal": l.anneal}
+                           for n, l in self.body.layers.items()},
+                "organ": (self._scalar_state(self.body.organ)
+                          if self.body.organ is not None else None),
+                "organ_berm": (self._scalar_state(self.body.organ.berm)
+                               if (self.body.organ is not None
+                                   and getattr(self.body.organ, "berm", None)
+                                   is not None) else None),
+                "boundary": (self._scalar_state(self.body.boundary)
+                             if self.body.boundary is not None else None),
+                "shield": (self._scalar_state(self.body.shield)
+                           if self.body.shield is not None else None),
+            },
+            "rng_state_hex": binascii.hexlify(
+                pickle.dumps(self._rng.getstate())).decode("ascii"),
         }
 
     def restore_from_snapshot(self, data: Dict[str, Any]) -> None:
-        """Restaura o estado exato da estação a partir de um checkpoint salvo."""
+        """Restaura o estado exato da estação a partir de um checkpoint salvo.
+
+        Campos novos são opcionais — checkpoints antigos (só sol+stocks)
+        continuam restauráveis."""
         if not data:
             return
         self.sol = data.get("sol", 0)
@@ -404,3 +456,24 @@ class StationUnifiedSimulator:
         for k, v in st.items():
             if k in self.stocks:
                 self.stocks[k] = v
+
+        bs = data.get("body_state") or {}
+        for name, lay in (bs.get("layers") or {}).items():
+            if name in self.body.layers:
+                self.body.layers[name].wear = lay["wear"]
+                self.body.layers[name].anneal = lay["anneal"]
+        if bs.get("organ") is not None and self.body.organ is not None:
+            self._restore_scalars(self.body.organ, bs["organ"])
+        if (bs.get("organ_berm") is not None and self.body.organ is not None
+                and getattr(self.body.organ, "berm", None) is not None):
+            self._restore_scalars(self.body.organ.berm, bs["organ_berm"])
+        if bs.get("boundary") is not None and self.body.boundary is not None:
+            self._restore_scalars(self.body.boundary, bs["boundary"])
+        if bs.get("shield") is not None and self.body.shield is not None:
+            self._restore_scalars(self.body.shield, bs["shield"])
+
+        if data.get("recent_history"):
+            self.recent_history = list(data["recent_history"])
+        if data.get("rng_state_hex"):
+            self._rng.setstate(pickle.loads(
+                binascii.unhexlify(data["rng_state_hex"])))

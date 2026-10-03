@@ -140,6 +140,12 @@ class SurfaceOrgan:
         wind_ms = env.get("wind_speed_ms", 0.0)
         power_margin = env.get("power_margin", 0.6)
 
+        # orçamento energético diário do órgão: power_margin é fração de
+        # uma potência base P_base (1.0 = 1 kW médio) × 24h -> kWh/dia.
+        # EDS e forno disputam o MESMO orçamento — energia não é de graça.
+        energy_budget_kwh = power_margin * 24.0
+        energy_used_kwh = 0.0
+
         # berm primeiro: intercepta a fração saltante antes da pele
         berm_res = self.berm.step_sol(env)
 
@@ -151,9 +157,12 @@ class SurfaceOrgan:
 
         # EDS disparado por acúmulo — duty-cycle baixo por design
         eds_fired = 0
+        eds_cost_kwh = self.eds_energy_wh / 1000.0
         if (dust_flux > 0.8 and power_margin > 0.2
-                and self.eds_health > self.eds_min_health):
+                and self.eds_health > self.eds_min_health
+                and energy_used_kwh + eds_cost_kwh <= energy_budget_kwh):
             eds_fired = 1
+            energy_used_kwh += eds_cost_kwh
             self.eds_cycles += 1
             self.eds_health = max(
                 0.0, self.eds_health - self.eds_fatigue_pulse
@@ -166,12 +175,14 @@ class SurfaceOrgan:
         self.dust_captured_kg += captured_kg
         residual_kg = deposited_kg - ejected_kg     # fica na pele: fouling real
 
-        # sinterização em lote — débito real de energia
+        # sinterização em lote — débito real do mesmo orçamento
         sintered_kg = 0.0
         if (self._pending_capture_kg >= self.sinter_min_batch_kg
                 and power_margin > 0.5):
             batch = min(self._pending_capture_kg, self.sinter_batch_kg)
-            if batch * self.sinter_kwh_per_kg <= power_margin * 24.0:
+            sinter_cost_kwh = batch * self.sinter_kwh_per_kg
+            if energy_used_kwh + sinter_cost_kwh <= energy_budget_kwh:
+                energy_used_kwh += sinter_cost_kwh
                 self._pending_capture_kg -= batch
                 self.sintered_mass_kg += batch
                 sintered_kg = batch
@@ -192,9 +203,16 @@ class SurfaceOrgan:
             "organ_shielding_m": round(self.shielding_m, 6),
             "berm_height_m": berm_res["berm_height_m"],
             "berm_intercept_frac": berm_res["berm_intercept_frac"],
+            "organ_energy_used_kwh": round(energy_used_kwh, 6),
+            "organ_energy_budget_kwh": round(energy_budget_kwh, 4),
         }
 
     def neutrosophic(self) -> Dict[str, float]:
-        f = 1.0 - self.eds_health
-        return {"T": round(self.eds_health, 4), "I": 0.05,
-                "F": round(f, 4)}
+        """Saúde composta: eletrodo + capacidade produtiva (forno/blindagem).
+
+        Um órgão com EDS são mas forno morto não é T=1.0 — compõe os três
+        subsistemas pesando o que cada um representa da função do órgão."""
+        t = (0.5 * self.eds_health
+             + 0.3 * min(1.0, self.sintered_mass_kg / 10.0)
+             + 0.2 * min(1.0, self.shielding_m / 0.01))
+        return {"T": round(t, 4), "I": 0.05, "F": round(1.0 - t, 4)}

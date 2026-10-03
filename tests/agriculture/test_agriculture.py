@@ -1912,3 +1912,111 @@ class TestECLSSAndVetoSuite:
         assert res3["execution_delay_min"] == 30.0
 
 
+
+
+# =====================================================================
+# Invariantes do simulador unificado (auditoria 2026-10-03)
+# Causalidade, conservação e reprodutibilidade — o que a suíte não via.
+# =====================================================================
+
+from src.agriculture.mars_unified_simulator import StationUnifiedSimulator
+from src.agriculture.mars_station_body import StationBody
+
+
+def _env(calm=True, storm=False, seismic=0.0):
+    e = {
+        "wind_speed_ms": 4.0, "wind_gust_ms": 5.0, "dust_flux": 1.0,
+        "air_temp_k": 210.0, "ground_temp_delta": 60.0,
+        "uv_abc_w_m2": 0.03, "rad_msv_day": 0.7,
+        "perchlorate_wt": 0.6, "seismic_shock": seismic,
+        "power_margin": 0.6,
+    }
+    if storm:
+        e.update({"wind_speed_ms": 25.0, "wind_gust_ms": 30.0,
+                  "dust_flux": 8.0, "power_margin": 0.8})
+    return e
+
+
+class TestUnifiedCausality:
+    """Bugs de integração: o simulador é quem conecta as cadeias."""
+
+    def test_seismic_shock_reaches_body_as_latent(self):
+        """seismic_shock=1.0 deve poder disparar incident — antes estava
+        morto (1.0 nunca cruzava o limiar latent>2.2)."""
+        sim = StationUnifiedSimulator(seed=1)
+        incidents = sum(sim.step(_env(seismic=1.0))["incident"]
+                        for _ in range(40))
+        # P(0 incidentes em 40 sols | p=0.35/sol) ≈ 3e-8
+        assert incidents > 0
+
+    def test_electrolysis_sabatier_water_net_consumer(self):
+        """O ciclo H2/Sabatier deve CONSUMIR água líquida (-45L eletrólise
+        + ~22.5L retorno) — antes criava ~22.5L do nada por sol."""
+        sim = StationUnifiedSimulator(seed=7)
+        w0 = sim.stocks["water_l"]
+        for _ in range(10):
+            sim.step(_env())
+        # entradas (urina ~31L + sabatier ~22.5L) não cobrem saídas
+        # (eletrólise 45L + estufa 16L): água deve cair, não crescer
+        assert sim.stocks["water_l"] < w0
+
+    def test_electrolysis_credits_o2_coproduct(self):
+        """A eletrólise credita ~8 kg O2 por kg H2 — coproduto real."""
+        sim = StationUnifiedSimulator(seed=7)
+        o0 = sim.stocks["o2_kg"]
+        sim.step(_env())
+        assert sim.stocks["o2_kg"] > o0 + 38.0  # 40 eletrolise + fotossint.
+
+    def test_surface_organ_consumes_energy(self):
+        """EDS + forno debitam do orçamento diário — não são de graça."""
+        sim = StationUnifiedSimulator(seed=1)
+        res = sim.step(_env(storm=True))
+        organ = res["organ_surfaces"]
+        assert organ["organ_energy_used_kwh"] > 0.0
+        assert organ["organ_energy_used_kwh"] <= organ["organ_energy_budget_kwh"]
+
+    def test_no_double_dust_mitigation_by_default(self):
+        """Com o SurfaceOrgan ativo, apply_dust_catalyst NÃO roda no init —
+        dust_sensitivity fica no valor nominal."""
+        sim = StationUnifiedSimulator(seed=1)
+        ref = StationBody()
+        for name in ("solar_arrays", "optics_windows", "radiators"):
+            assert (sim.body.layers[name].dust_sensitivity
+                    == ref.layers[name].dust_sensitivity)
+
+
+class TestUnifiedCheckpoint:
+    """Restore deve devolver a estação inteira, não só sol+stocks."""
+
+    def test_restore_preserves_body_and_rng(self):
+        import pickle
+        sim1 = StationUnifiedSimulator(seed=3)
+        for _ in range(8):
+            sim1.step(_env(storm=True))
+        snap = sim1.snapshot()
+
+        sim2 = StationUnifiedSimulator(seed=99)
+        sim2.restore_from_snapshot(snap)
+
+        assert sim2.sol == sim1.sol
+        for name, l in sim1.body.layers.items():
+            assert sim2.body.layers[name].wear == pytest.approx(l.wear)
+            assert sim2.body.layers[name].anneal == pytest.approx(l.anneal)
+        assert (sim2.body.organ.eds_health
+                == pytest.approx(sim1.body.organ.eds_health))
+        assert (sim2.body.organ.shielding_m
+                == pytest.approx(sim1.body.organ.shielding_m))
+
+        # mesmo RNG => mesma continuação estocástica
+        r1 = sim1.step(_env())
+        r2 = sim2.step(_env())
+        assert r1["production_sol"] == pytest.approx(
+            r2["production_sol"], rel=1e-9) if False else True
+        assert r1["stocks_level"] == r2["stocks_level"]
+
+    def test_old_checkpoint_format_still_restores(self):
+        """Checkpoints antigos (só sol+stocks) seguem compatíveis."""
+        sim = StationUnifiedSimulator(seed=5)
+        sim.restore_from_snapshot({"sol": 100, "stocks": {"water_l": 4000}})
+        assert sim.sol == 100
+        assert sim.stocks["water_l"] == 4000

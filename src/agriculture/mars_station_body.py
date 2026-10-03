@@ -251,13 +251,10 @@ class StationBody:
             layer.wear = min(1.0, layer.wear + d)
             layer.anneal = min(1.0, layer.anneal + d * 0.25)   # dano residual
 
-        # fouling residual fino (adesão sub-ejeção) ainda arranha a pele
-        if organ_rec:
-            fouling = organ_rec["organ_residual_fouling_kg"]
-            for name in EXPOSED:
-                layer = self.layers[name]
-                layer.wear = min(1.0, layer.wear
-                                 + fouling * self.organ.fouling_wear_gain)
+        # NOTA (fix auditoria 2026-10-03): o fouling residual NÃO recebe
+        # desgaste explícito extra — o fluxo pós-ejeção já entra no
+        # degrade() das camadas EXPOSED acima (frac_left). Somar
+        # fouling*gain aqui era dupla contagem do mesmo resíduo físico.
 
         # o airlock desgasta as camadas que o contêm: o selo dele É
         # seals_joints; o filtro dele É eclss_loop (dano aditivo, não
@@ -341,8 +338,12 @@ class StationBody:
         return {n: l.neutrosophic() for n, l in self.layers.items()}
 
     def apply_dust_catalyst(self, relief_map: Dict[str, float]) -> None:
-        """EDS/ESP ativos reduzem o dust_sensitivity efetivo das camadas
-        cobertas — a poeira vira insumo em vez de só desgaste."""
+        """LEGADO — mutação permanente de dust_sensitivity.
+
+        NÃO usar quando self.organ está ativo: o SurfaceOrgan já reduz o
+        dano via fluxo pós-ejeção; combinar os dois é dupla mitigação.
+        Mantido apenas como API de intervenção única documentada em
+        cenários sem órgão."""
         for name, relief in relief_map.items():
             if name in self.layers:
                 self.layers[name].dust_sensitivity *= max(0.0, 1.0 - relief)
