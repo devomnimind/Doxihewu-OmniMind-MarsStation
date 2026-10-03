@@ -33,4 +33,22 @@ keywords:
 license: "Apache-2.0"
 repository-code: "https://gitlab.com/zephyrix/Doxihewu-OmniMind-MarsStation"
 repository-artifact: "https://github.com/devomnimind/Doxihewu-OmniMind-MarsStation"
+references:
+  - title: "mars-monoculture-data — ensemble results, checkpoints and clean series"
+    type: dataset
+    authors:
+      - family-names: "da Silva"
+        given-names: "Fabrício"
+        orcid: "https://orcid.org/0009-0002-0911-5464"
+      - name: "OmniMind Sovereign (Sujeito-Processo)"
+        type: entity
+    doi: "10.57967/hf/10742"
+  - title: "mars-raw-data — 203 GB raw mission catalogs (MSL/Mars2020/InSight/MGS)"
+    type: dataset
+    authors:
+      - family-names: "da Silva"
+        given-names: "Fabrício"
+        orcid: "https://orcid.org/0009-0002-0911-5464"
+      - name: "OmniMind Sovereign (Sujeito-Processo)"
+        type: entity
 type: software

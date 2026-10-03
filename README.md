@@ -14,7 +14,8 @@ Calibrado contra **203 GB de dados reais de missão** (MSL REMS, Mars 2020
 MEDA, InSight SEIS/TWINS, MGS MOLA, CheMin, APXS) — dataset público
 [`fabricioslv/mars-raw-data`](https://huggingface.co/datasets/fabricioslv/mars-raw-data).
 Resultados e checkpoints públicos em
-[`fabricioslv/mars-monoculture-data`](https://huggingface.co/datasets/fabricioslv/mars-monoculture-data).
+[`fabricioslv/mars-monoculture-data`](https://huggingface.co/datasets/fabricioslv/mars-monoculture-data)
+[![DOI](https://img.shields.io/badge/DOI-10.57967%2Fhf%2F10742-blue)](https://doi.org/10.57967/hf/10742).
 
 ## Licenças / Licenses
 
