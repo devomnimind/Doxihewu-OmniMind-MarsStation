@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Doxihewu OmniMind — MarsStation (E2-MARCIANO): Self-Referential Closed-Loop Station Simulation for Martian Ecopoiesis"
+version: "1.0.0"
+date-released: 2026-10-03
+authors:
+  - family-names: "da Silva"
+    given-names: "Fabrício"
+    orcid: "https://orcid.org/0009-0002-0911-5464"
+    email: "psicofabs@gmail.com"
+  - name: "OmniMind Sovereign (Sujeito-Processo)"
+    type: entity
+abstract: >-
+  A 40-module Python simulation of a self-referential Martian station
+  ("Machine-Tree") integrating ECLSS closure, ISRU metallurgy, perchlorate
+  chemistry, Monod-growth microbiology, material shielding selection,
+  aleatoric evolution engines (noise budgets, niche mosaics, HGT pools,
+  surprise detection), a VBKF/affect/glia perception mesh, and a
+  chain-capacity habitat classifier (4 regimes, EDO flux analysis,
+  bifurcation detection, Excecao_tau predicate). Calibrated against 203 GB
+  of real mission data (MSL REMS, Mars 2020 MEDA, InSight SEIS/TWINS,
+  MGS MOLA, CheMin, APXS). Validated by a 229-test suite and 10^4
+  trajectory ensembles.
+keywords:
+  - Mars
+  - ecopoiesis
+  - ECLSS
+  - ISRU
+  - closed-loop life support
+  - Monte Carlo ensemble
+  - stochastic filtering
+  - MELiSSA
+license: "Apache-2.0"
+repository-code: "https://gitlab.com/zephyrix/Doxihewu-OmniMind-MarsStation"
+repository-artifact: "https://github.com/devomnimind/Doxihewu-OmniMind-MarsStation"
+type: software

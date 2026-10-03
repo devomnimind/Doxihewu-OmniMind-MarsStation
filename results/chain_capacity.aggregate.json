@@ -1,0 +1,21 @@
+{
+  "n_trajectories": 10000,
+  "policy": "functional",
+  "chain_regime_occupancy": {
+    "sterile_physical": 0.0001,
+    "survival_only": 0.5301,
+    "metabolic_habitat": 0.2675,
+    "evolutionary_habitat": 0.2023
+  },
+  "p_reach_metabolic": 1.0,
+  "p_reach_evolutionary": 0.4535,
+  "p_lose_metabolic_after_reach": 0.5465,
+  "median_t_metabolic_sol": 32,
+  "median_t_evolutionary_sol": 11407,
+  "mean_excecao_tau_frac": 0.7932,
+  "mean_rho_final": 0.608,
+  "mean_bifurcation_events_per_world": 2.546,
+  "crew_eq_mean_evolutionary": 6.733,
+  "crew_eq_mean_never_metabolic": null,
+  "storm_rate_mean_evolutionary": 0.11
+}

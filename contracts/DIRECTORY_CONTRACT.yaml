@@ -1,0 +1,107 @@
+schema_version: v1
+directory: src/agriculture
+generated_at: '2026-09-28T00:00:00Z'
+system: mars_monoculture_system
+description: "Módulos da Máquina-Árvore Marciana — 11 gaps do MARS_SYSTEM_CONTRACT.yaml"
+modules:
+  total: 19
+  monod_growth_model: "crescimento de monocultura (Monod + lei do mínimo, 4 culturas)"
+  greenhouse_actuators: "LED/CO2/nutrientes/aquecedor/mister com safety_override"
+  perchlorate_chemistry: "toxicidade ClO4- e remediação (biológica/eletroquímica), gate is_safe"
+  sabatier_reactor: "CO2+4H2->CH4+2H2O (Ni/Al2O3, 95%) — combustível + água"
+  nitrogen_cycle: "fixação N2 (2.7% Marte), nitrificação, monitor desnitrificação"
+  microbiome_manager: "inoculação (micorrizas/fixadores/solubilizadores), Shannon"
+  regolith_processor: "geoquímica: magnética + lixiviação ácida + troca iônica (NPK)"
+  mars_earth_handoff: "canal Terra 3-22min, veto classes, reordenação por sol"
+  cultural_genome: "valores culturais, memória de eventos, decisão por valores"
+  advanced_sensors: "espectrômetro de massa, HPLC, MinION DNA, NV centers"
+  life_support_systems: "algas O2/proteína, biogás, fuel cell, plasma syngas"
+  gate_evolution: "CultivarStabilityScore + EvolutionGate — gate d3 (score>=0.90/0.95, 55.7/111.4 sols, reservas; irreversível)"
+  circular_economy: "NutrientCycleOptimizer — fechamento de ciclo E3 (digestor 92%, nitrificação 2%, pirólise)"
+execution_modes:
+  - library
+  - cli_executable
+tests:
+  suite: tests/agriculture/test_agriculture.py
+  count: 111
+  status: passing
+integrations_v15_station_mesh_2026_10_03:
+  - "mars_station_mesh.py (NOVO, 23º módulo): port dos 3 padrões OmniMind para o corpo da estação"
+  - "StationVBKF (port fiel soliton_raft_detector::VBKFEstimator): Kalman sobre body_integrity com R adaptativo (inverse-gamma posterior), resíduo normalizado >2.5 rejeita outlier (ganho 0.25), stress_score modula Q (papel do D12) — a malha decide sobre ESTADO filtrado, não observação ruidosa"
+  - "StationAffect (homólogo omnimind-affective-pulse que a glia lê): 4 canais EMA ~16 sols — distress (dano), relief (reparo eficaz), fatigue (carga sustentada), vigil (incidente+cascata); dominante + tensão composta"
+  - "StationGlia (port omnimind-glia main.go): janela 7 sols, pulso = wear_rate >2.5×EMA da PRÓPRIA camada (excursão, não desgaste crônico — mesma disciplina do SurpriseDetector), estados rest|observe|suppress|quarantine c/ pending_state histerese 2 janelas; afeto árbitro suppress↔quarantine"
+  - "validação 3000 sols: rest 2321/observe 20/suppress 8/quarantine 651 — suppress dispara no sol 1 da tempestade, quarantine escalonado crônico quando cascata hull->eclss vira dor sustentada (wear>0.35); mesh_surfaces no step_summary"
+integrations_v14_aleatoric_2026_10_03:
+  - "mars_aleatoric_engine.py (NOVO, 22º módulo): motor aleatório do paper §3.2 — piso controlado + teto aberto"
+  - "NoiseBudget: taxa log-uniform [0.4-3.0]×base 1.5e-6/sol + env_gain por rad/uv REAIS + nital_bonus dirigido (NitalMutagen autorizado acelera, nunca zera o estocástico)"
+  - "NicheMosaic: 6 microcosmos (regolith_open/subsurface_ice/eclss_biofilm/airlock_rim/greenhouse_soil/dust_trap) — ótimo ambiental derivado DAS CONDIÇÕES do nicho (seleção do ambiente, não alvo externo); deriva+ruído σ∝√rate; migração parcial 2%"
+  - "HGTPool: amostra estocástica de pool aberto (16 genes), taxa ∝ ruído do sol"
+  - "SurpriseDetector: dupla — excursão >4×dev_ema do PRÓPRIO regime (auto-calibra com o orçamento) + novidade absoluta fora do envelope histórico; validação 4000 sols: 537 eventos (~8% sols), 4 !novel; sob Nital surpresas CAEM 293→67 (limiar respira — mutagênio acelera relógio, não fabrica novidade)"
+integrations_v13_shielding_boundary_2026_10_03:
+  - "mars_shielding_materials.py (NOVO, 21º módulo): SHIELD_MATERIALS (sintered_regolith/basalt_fabric/geo_polymer fabricáveis + polyethylene/water_jacket); ShieldStack com regra de sombra UV (PE H-rich só vive sob pele opaca — rad_half 10 vs regolito 30 g/cm2); select_shielding guloso (meta rad_trans, orçamento massa + earth_mass, ordem opaca-externa, consolida camadas)"
+  - "AirlockOrgan (mesmo módulo): sorteios EVA (Poisson λ~0.3, reduz em tempestade) -> ciclo Coffin-Manson nos selos (~12700 ciclos vida) + ingresso ~12g poeira/traje (Apollo) -> transferência cabine 15% -> filtro ECLSS com eficiência decaindo por carga -> crew_clo4_inhaled_ug (0.6wt% ClO4, 11 m3/sol respiração)"
+  - "mars_station_body: campos boundary + shield; shield atenua uv_abc_w_m2 E rad_msv_day no env_eff (compõe com organ.shielding_m); airlock desgasta camadas EXISTENTES (seal->seals_joints, filter->eclss_loop) — zero camadas novas, body_integrity comparável"
+  - "mars_unified_simulator step_summary: +boundary_surfaces (airlock_*/cabin_*/eclss_filter*/crew_clo4*/shield_*) — telemetria aditiva"
+  - "validação 2000 sols: cabin_dust 0.18 mg/m3 (regime fronteira), crew ClO4 ~12 ug/pessoa/sol (sub-agudo, vigilável), seal 7.9%/585 ciclos; seleção: water_jacket vence fabricável, PE só com earth_budget; 229 testes agriculture passam"
+integrations_v12_camada1_2026_10_03:
+  - "mars_chain_capacity.py (NOVO, 20º módulo): ChainCapacityClassifier — Camada 1 A100, classificador por capacidade de cadeia (4 regimes: sterile/survival/metabolic/evolutionary); EDOs dO2/dW/dI/dρ; ExcecaoTau solvente-agnóstico (fill≥0.8); BifurcationEvent (rho_closure/repro_ratio/stock_drain); políticas strict/functional (reprodução funcional E.17.11)"
+  - "ensemble_chain_capacity_run.py: mundo = forcing Camada-0 + crew_eq (0-30) + leak_base; validação 40 traj×21060 sols: p_metabolic=1.0 (sol~32), p_lose_metabolic=0.65 (água sustenta ~12 hab-eq), p_evolutionary=0.35 (mediana sol 11426, era IV), crew_eq_mean_evo=7.5, excecao_tau_frac=0.81, sterile≈0 (corpos raramente morrem)"
+  - "mars_unified_simulator.py step_summary: +layer_wear_rates, repair_load_h, incident (telemetria aditiva p/ Camada 1; 229 testes agriculture passam)"
+integrations_v11_p3p4_2026_09_28:
+  - "MartianCircadian (marcian_evolution): P3 — período circadiano livre evolui ao sol marciano 24.6598h (MARS_SOL_HOURS); circadian_factor Terra~0.72 vs entranhado~1.0"
+  - "MachinePlantSymbiosis (marcian_evolution): P4 — plantas evoluem responsiveness ao ciclo elétrico bomba(10min)x luz(16min); symbiosis_factor 1+R*overlap"
+  - "MonodGrowthModel.step: fatores emergentes opcionais circadian_period_h + machine_responsiveness + pump_light_overlap (backward compatible)"
+  - "simulação 6686 sols Colab: T_p 24.36->24.66h convergiu; R 0.52->0.97; regime colheita 10 sols +13.7% produção, luz-equivalente 1.84x (ganho = energia, não capacidade)"
+integrations_v10_synthesiswatch_2026_09_28:
+  - "mars_synthesis_watch.py (NOVO, 19º módulo): MoE-guide autowatch marciano (réplica phase56_gap_autowatch) — pressão de gap por superfície + tendência + sínteses novas"
+  - "mapa do ambiente: gaps — microbiologia 1.0 crítico, sismicidade 1.0 crítico, astrofísica 0.5 atento; 2 SÍNTESES geradas (escavação→gelo→evolução 0.72/0.98; higiene↔evolução 0.98)"
+  - "datasets baixados: Hassler RAD, SwRI, PDS MSL, BOSS Chroococcidiopsis (1.1MB), Cyano perclorato — HF privado environment/"
+integrations_v9_crosslayer_2026_09_28:
+  - "mars_cross_layer.py (NOVO, 18º módulo): Phase14/56 marciano — cruza 12 superfícies (REMS/SEIS/MOLA/solo/sensores/microbioma/evolução/recursos/escavação) com Pearson+lag"
+  - "resultado: 7 arestas, 6 pontes; fortes: higiene↔escavação 1.0, evolução↔profundidade 0.982, evolução↔gelo 0.808, solo↔gelo -0.366"
+  - "ressalva honesta: correlações de tendência temporal (séries cumulativas) — precisa detrend; SEIS sem lista events; MOLA só 4 tiles no parquet"
+integrations_v8_marciano_2026_09_28:
+  - "marcian_evolution.py (NOVO, 17º módulo): paradigma emergente — MartianMutagenesis (sinérgico radiação+perclorato, ploidia D. radiodurans), HGTSimulator (conjugação/transformação/transdução), PhenotypeMonitor (RGB/hyperspectral/thermal/fluorescence/LiDAR)"
+  - "E2-MARCIANO (400 gen): perclorato 1.998x, emergência perclorato-como-energia True; HGT 0 eventos (taxas lit. raras — desvio registrado); Phenotype Fv/Fm 0.73, 5/12 estresse"
+  - "revisão dos experimentos: 23 artefatos emergentes (evol/e2/ref) vs reprodução-Terra (kernel/tree/trilha/ecosystem) — d23 = ponto de inflexão (máquina decide)"
+integrations_v7_e2v3_2026_09_28:
+  - "EvolutionGate: radiação modulada (radiation_shielding 0-1, effective_dose, mutation_rate μ_eff=2e-4 calibrado wheat PMC9131052)"
+  - "E2-REF v3: 400 gen x 10 d/gen Spirulina, 20 réplicas -> 1.33-1.38x (modelo conservador ~40x vs dados reais Space Algae-2/PMC9315690)"
+  - "refs base: space_algae2 NTRS, spirulina PMC9315690, Hassler 2014 Science, wheat PMC9131052 — HF público references/"
+  - "PDF operador no HF privado calibracao_operador/ (33 referências)"
+integrations_v6_2026_09_28:
+  - "EvolutionGate.food_gate: gate de comida/proteína LP1 (plantas + mealworm, 0.06 kg/pessoa-dia)"
+  - "MonodGrowthModel.light_factor: luz RB > RGB > FL (Vitale 2022) — compensa radiação"
+  - "UrineBrineProcessor: custo energético real da urina (Fausta: destilador 31 + aeração 1.7 kWh/kg-N)"
+  - "E2-REF v2: 400 gen x 75 d/gen -> 2.80-3.39x (hipótese do paper confirmada; paper atualizado)"
+  - "AMCI efetivo formal no contrato MARS (nominal 0.968 -> efetivo 0.811-0.919 por buffer)"
+integrations_references_2026_09_28:
+  - "OrganicAmendment (regolith_processor): 70:30 regolito:esterco — Caporale 2023 ReBUS/ASI; penalidade salinidade/metais >30%"
+  - "ThermophilicChainElongator (circular_economy): T. melissae 50-55°C pH 6.5 — n-caproato de polissacarídeos (Nguyen IJSEM 2023, MELiSSA C-I)"
+  - "MicrobiomeManager.microbial_air_check: limites ISS/ESA — bactéria <5e2 CFU/m3, fungos <2e4 (Marra 2023)"
+  - "ElectrolysisOGS calibrado: ECLSS real 2.3-9 kg O2/dia, nominal 5.4"
+  - "relatório: mars_references_extraction_20260928.md (5 fontes, ~35 dados)"
+integrations_verification_v2_2026_09_28:
+  - "mealworm_protein.py: Tenebrio molitor (LP1) — proteína animal de resíduo vegetal (FCR 0.30, 50% proteína)"
+  - "energy_loop.py: biogás->Sabatier->fuel cell (kWh líquido do loop fechado)"
+  - "reliability_mc.py: Monte Carlo confiabilidade 30 anos (estilo LP365, redundância Voronoi)"
+  - "monod_growth_model: wheat_bwt931 calibrado c/ dataset real NASA BWT931 (μ_max 0.35, K 0.30)"
+  - "tabela 120 itens: LP1 (Yuegong-1) como 6ª coluna + render corrigido"
+integrations_verification_2026_09_28:
+  - "ElectrolysisOGS (life_support_systems): backup O2 não-biológico estilo ISS/ECLSS — cobre déficit 92->100%"
+  - "UrineBrineProcessor (circular_economy): UPA 87% + Brine Processor 85% -> água 98% (ISS jun/2023)"
+  - "MicrobiomeManager.soil_o2_sink: guarda de sumidouro de O2 do solo (lição Biosphere 2)"
+  - "verificação externa: BIOS-3 O2 ~100%/água 95%; ECLSS água 98%; MELiSSA = metas; Lunar Palace 1 = melhor referência"
+findings_portados_2026_09_28:
+  - "higiene aprendida -> CulturalGenome.step_hygiene/contamination_pct (achado d2/d3)"
+  - "yield capacidade -> MonodGrowthModel.capacity_yield (normalizado por estresse)"
+  - "bombas ativas -> NutrientPumps.respond_to_deficit (injeção quando déficit)"
+  - "gelo contínuo -> IceElevatorSupply (fluxo 0.25 L/sol + emergencial)"
+operator_decisions_2026_09_28:
+  d1_site: "15N_140E — transição Gale<->Elysium (gelo<5m)"
+  d2_veto: "3 níveis: autonomy_total 6 / veto_consultative 4 / veto_mandatory 5"
+  d3_gate: "score 0.90/0.95 + 55.7/111.4 sols + reservas; irreversível"
+test_coverage_status_2026_09_28:
+  status: covered
+  tests: 111
+  suite_dir: tests/agriculture

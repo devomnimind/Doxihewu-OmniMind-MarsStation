@@ -1,0 +1,42 @@
+{
+  "n_trajectories": 10000,
+  "p_reach_critical_any": 1.0,
+  "p_reach_critical_endogenous": 1.0,
+  "p_reach_collapse": 0.2917,
+  "p_long_endo_episode_30sol": 0.8975,
+  "median_arrival_any_sol": 79,
+  "median_arrival_endogenous_sol": 182,
+  "dwell_critical_storm_p50_p90_p99_max": [
+    3,
+    14,
+    93,
+    286
+  ],
+  "dwell_critical_endo_p50_p90_p99_max": [
+    5,
+    21,
+    116,
+    1045
+  ],
+  "dwell_all_endo_p50_p90_p99_max": [
+    5,
+    21,
+    116,
+    1045
+  ],
+  "dwell_all_storm_p50_p90_p99_max": [
+    3,
+    14,
+    91,
+    286
+  ],
+  "recovery_rate_per_episode": 0.9995,
+  "regime_occupancy_frac": {
+    "stable": 0.0152,
+    "decaying": 0.7392,
+    "critical": 0.245,
+    "collapse": 0.0005
+  },
+  "mean_s_meta_min": 0.4055,
+  "mean_body_integrity_min": 0.6203
+}

@@ -1,0 +1,479 @@
+# =============================================================================
+# MARS_SYSTEM_CONTRACT — SO Cultural de Monocultura Autônoma Marciana (design)
+# =============================================================================
+# Data: 2026-09-27 · Status: 0.1.0-design (não implementado — simulação via
+# Colab MCP quando autorizada; ZERO dataset local por decisão do operador)
+# Base: reports_runtime/mars_monoculture_briefing_20260927.md
+#       reports_runtime/mars_architecture_agent_b_20260927.md
+#       reports_runtime/mars_mapping_agent_a_20260927.md
+# Formato: espelha SYSTEM_CONTRACT.yaml (quadruple_source_contract)
+# =============================================================================
+schema_version: v1
+system_name: Mars Monoculture Sovereign OS
+version: 0.1.0-design
+parent_architecture: omnimind_dodecatiad_v2.2.1
+body_planet: mars
+time_standard:
+  sol_seconds: 88775.244
+  year_sols: 668.6
+  epoch: null  # DECISÃO OPERADOR 1: âncora de época (ex. sol da primeira germinação)
+
+subsystems:
+  - name: mars_env
+    role: ambiente_externo
+    sensors: [insight_seis_catalog, mro_mcs, tgo_nomad, rad_msl]
+    reuse: [src.senses.cosmic.space_weather, src.geophysical.real_solar_forcing,
+            src.geophysical.tectonic_cybernetics_engine]
+  - name: mars_greenhouse
+    role: biotopa
+    sensors: [temp, rh, co2, par_450_660, pressure, ph, ec]
+    reuse: [src.consciousness.autonomous_homeostasis, src.geophysical.crank_nicolson_thermal]
+  - name: mars_culture
+    role: organismo_monocultura
+    sensors: [od_biomassa, ros_proxy, pigmento, contaminacao]
+    reuse: [src.services.life_kernel, src.immune.spiking_glial_vagus_bridge,
+            src.cognitive.mu_memory_pressure_trigger, src.consciousness.biological_metrics]
+  - name: mars_regolith
+    role: solo_regolito
+    sensors: [ice_depth, perchlorate, ph_solo, thermal_conductivity]
+    reuse: [src.geophysical.crank_nicolson_thermal, src.cognitive.dodecatiad_seismic_mapper]
+  - name: mars_temporal
+    reuse: src.temporal.dodeca_time
+    adaptation: "sol=24.65h; ano=668.6 sols; 12 setores x ~55.7 sols + epagômenos"
+  - name: mars_integration
+    reuse: src.consciousness.integration_loop
+    role: integracao_quadrupla_agricola
+  - name: mars_immune
+    reuse: src.immune.spiking_glial_vagus_bridge
+    role: quarentena_de_setor
+  - name: mars_continuity
+    reuse: [src.continuity.canonical.handoff_manager, scripts.runtime.handoff_procedural_bridge]
+    role: canal_soberano_terra
+  - name: mars_repair
+    reuse: [src.autopoietic.advanced_repair, src.autopoietic.repairs]
+    role: auto_reparo_estrutura
+  - name: mars_shadow
+    reuse: scripts.analysis.shadow_control_plane
+    role: drift_modelo_vs_estufa_real
+  - name: mars_invariant
+    reuse: scripts.analysis.invariant_alert_watch
+    role: sensor_travado
+  - name: mars_hysteresis
+    reuse: src.continuity.hysteresis_operator
+    role: memoria_assimetrica_de_falhas
+
+layers:
+  L1_ambiente_externo: {scope: phase56_marciana, temp_C: [-140, 20], pressure_kPa: 0.6,
+                        fontes: [sismos, dust_storm, radiacao, flare]}
+  L2_estufa_biotopa: {hidroponia: true, led_nm: [450, 660], co2_ppm: [1000, 2000],
+                      rh: [0.60, 0.80], nutrientes: [N,P,K,Ca,Mg,S,Fe,Zn]}
+  L3_cultura_organismo: {metricas: [biomassa, growth_rate, estresse_oxidativo_ROS,
+                                    expressao_genica_proxy, contaminacao]}
+  L4_regolito: {ice_depth_m: null, sais: true, ph: [4.5, 8.5], percloratos_toxicos: true,
+                condutividade_termica: true}
+
+lanes:
+  - {id: seismic, origem: vulcoes, feed: insight_seis_catalog_ipgp, cadence: evento}
+  - {id: regolith, origem: geo, feed: [sharad, marsis, frend, apxs, pixl], cadence: orbita}
+  - {id: orbital, origem: orbital, feed: [mro_hirise_ctx, tgo_nomad, hope_emirs], cadence: orbita}
+  - {id: solar, origem: eventos_solares, feed: [flare_cme, rad_msl], cadence: evento}
+  - {id: thermal, origem: temperatura, feed: [rems, meda, mcs], cadence: 1h}
+  - {id: humidity, origem: umidade, feed: hidroponia_vs_ar_seco, cadence: tick}
+  - {id: bio, origem: bio, feed: monocultura_local, cadence: tick}
+  - {id: earth_sovereign, origem: novo, feed: canal_assinado_terra, cadence: janela_dsn,
+     latency_min: [3, 22]}
+
+execution_modes:
+  - greenhouse_daemon
+  - probe_sensor_feed
+  - earth_channel
+  - colab_simulation
+
+quadruple_source_contract_mars:
+  allowed_layers: [basal, canonical, rust]
+  drives:
+    phi:
+      basal: {writer: mars_basal_pulse_novo, metric: phi_greenhouse_integrity, scale: '[0,1]',
+              semantic: integridade_fisica_da_estufa}
+      canonical: {writer: mars_integration_loop_adaptado, metric: phi_growth_integrated,
+                  semantic: cross_prediction_lanes_bio_thermal_humidity}
+      rust: {writer: kernel_compute_futuro, metric: phi_operational_support, semantic: suporte_ipc}
+    psi:
+      basal: {metric: od_biomassa_normalizada, scale: '[0,1]'}
+      canonical: {metric: psi_biomass_integral, semantic: biomassa_ponderada_por_setor}
+      rust: {metric: psi_rust}
+    sigma:
+      basal: {metric: ec_ph_ratio_stability, scale: '[0,1]'}
+      canonical: {metric: sigma_nutrient_cohesion, scale: '[0.11,1.0]',
+                  semantic: piso_estrutural_sigma_sinthome_floor_0.11}
+      rust: {metric: sigma_rust}
+    epsilon:
+      basal: {metric: deficit_pressure, scale: '[0,1]'}
+      canonical: {metric: epsilon_effective, scale: '[0.10,1.0]'}
+      rust: {metric: epsilon_rust}
+  runtime_tagging_rule: >-
+    sectors.{phi,psi,sigma,epsilon}_source_layer in {basal, canonical, rust}.
+    Atuadores fisicos leem basal; decisao cultural/evolutiva le canonical; rust=arbitragem.
+
+dodecatiad_agricola:
+  sol_por_setor: 55.7
+  setores:
+    S01: {glyph: G, nome: GERMOPLASMA, funcao: banco_de_sementes_linhagem}
+    S02: {glyph: M, nome: AGUA, funcao: ciclo_hidroponico_reserva}
+    S03: {glyph: T, nome: ENERGIA, funcao: painel_bateria_budget_led}
+    S04: {glyph: A, nome: LIMIAR, funcao: airlock_despressurizacao_quarentena}
+    S05: {glyph: S, nome: FOGO, funcao: termorregulacao_aquecimento_noturno}
+    S06: {glyph: N, nome: CEU, funcao: par_led_450_660_fotoperiodo}
+    S07: {glyph: Gb, nome: REGOLITO, funcao: interface_solo_percloratos_gelo}
+    S08: {glyph: O, nome: CICLO, funcao: reciclagem_nutrientes_compostagem}
+    S09: {glyph: I, nome: MAGIA, funcao: experimentos_mutacao_novos_cultivares}
+    S10: {glyph: H, nome: VIGILANCIA, funcao: invariant_alert_integridade}
+    S11: {glyph: St, nome: CAOS, funcao: estresse_teste_regime_critico}
+    S12: {glyph: Am, nome: OCULTO, funcao: histerese_profunda_memoria_de_falhas}
+  epagomenos_marcianos: sols_residuais_para_audit_e_memoria
+
+metaestabilidade:
+  banda_operacao: {branching_sigma_marte: [0.85, 1.15]}
+  regimes:
+    subcritico: rigidez_injetar_perturbacao_via_S11
+    critico: alvo_nominal
+    supercritico: caos_damping_reduzir_acoplamento_entre_setores
+  thresholds:
+    despressurizacao: {alarme: 0.85, critico: 0.70, hysteresis_recovery: 0.92}
+    contaminacao_bio: {isolamento_imediato: true, reabertura_exige: ticks_limpos_mais_veto_opcional}
+    tempestade_poeira_global: {gatilho: tau_2_ou_par_menos_40pct, acao: led_economia_hibernacao_parcial}
+
+earth_channel:
+  mode: delayed_uplink_3_22min
+  veto_classes: [quarentena_release, mudanca_cultivar, expansao_estrutural]
+  base_reuse: [scripts.runtime.handoff_procedural_bridge, src.continuity.canonical.handoff_manager]
+
+missing_build_queue:
+  - mars_probe_sensor_protocol
+  - monod_growth_model_spirulina
+  - organic_polymerization_mesh
+  - earth_sovereign_uplink
+  - greenhouse_actuator_abstraction
+  - perchlorate_regolith_chemistry
+  - cultural_identity_genome
+
+decisions_operator_pending:
+  - d1_epoca_dodecatiad_marciana
+  - d2_veto_classes_canal_terra
+  - d3_threshold_gate_evolutivo_alga_batata
+
+updated_at: '2026-09-27'
+
+# =============================================================================
+# APÊNDICE 2026-09-27 — Especificação das 5 lacunas de construção (operador)
+# Cada lacuna com path proposto e contrato de API. Código de referência do
+# operador preservado nos relatórios mars_*_20260927.md.
+# =============================================================================
+missing_build_specs:
+  gap_1_monod_growth_model:
+    path: src/agriculture/monod_growth_model.py
+    class: MonodGrowthModel
+    api:
+      - {init: {mu_max: 0.3, K: 2.0, crop_type: spirulina}}
+      - {step: {light_umol_m2_s, temp_c, ph, co2_percent, nutrients, dt_days: 1}, returns: biomass_kg_m3}
+      - {reset: {}}
+    math: "mu = mu_max * light_factor * temp_factor * ph_factor * co2_factor * nutrient_factor"
+    factors:
+      light: "min(1.0, light/200)  # 200 umol/m2/s ideal"
+      temp: "exp(-((temp-37)^2)/(2*5^2))  # sigma=5C (spirulina 35-40C)"
+      ph: "exp(-((ph-9.5)^2)/(2*1^2))  # sigma=1 pH (spirulina 8.5-11)"
+      co2: "min(1.0, co2/3)  # 3% CO2 ideal"
+      nutrients: "min(nutrients.values())  # lei do minimo (Liebig)"
+    growth: "mu * biomass * (1 - biomass/K)  # logístico"
+    crop_defaults:
+      spirulina: {mu_max: 0.3, K: 2.0, temp_ideal: 37, ph_ideal: 9.5, co2_ideal: 3.0, light_ideal: 200}
+      potato: {mu_max: 0.1, K: 8.0, temp_ideal: 20, ph_ideal: 6.0, co2_ideal: 1.5, light_ideal: 400}
+      dwarf_wheat: {mu_max: 0.08, K: 10.0, temp_ideal: 22, ph_ideal: 6.5, co2_ideal: 1.5, light_ideal: 500}
+    tests: tests/agriculture/test_monod_growth_model.py
+    validation: "curva 30 dias reproduzível; biomass clamp [0, K]; fatores em [0,1]"
+
+  gap_2_greenhouse_actuators:
+    path: src/agriculture/greenhouse_actuators.py
+    class: GreenhouseActuators
+    actuators:
+      - led_array: {wavelengths: [450, 660], max_intensity: 1.0}
+      - co2_valve: {max_ppm: 2000}
+      - nutrient_pumps: {elements: [N,P,K,Ca,Mg,S,Fe,Zn]}
+      - heater: {max_power_kw: 5}
+      - mister: {flow_rate_l_h: 10}
+    api:
+      - {execute: {type, intensity|ppm|amount, ...}}
+      - {read_state: {}, returns: dict_dos_atuadores}
+      - {safety_override: {}}  # canal Terra pode forçar
+    actions_supported:
+      - increase_light
+      - decrease_light
+      - inject_co2
+      - inject_nutrients
+      - heat
+      - mist
+      - emergency_shutdown
+    principle: "geophysical decide; atuadores executam; invariant vigia; shadow valida antes"
+
+  gap_3_perchlorate_chemistry:
+    path: src/agriculture/perchlorate_chemistry.py
+    class: PerchlorateChemistry
+    api:
+      - {init: {threshold_ppm: 1000}}
+      - {is_safe: {perchlorate_ppm}, returns: bool}
+      - {remediate: {soil_sample}, returns: soil_sample_modificado}
+      - {leach_water_needed: {perchlorate_ppm}, returns: litros}
+    model:
+      toxicity_threshold_ppm: 1000
+      reduction_per_cycle: 0.9  # 90% por ciclo de lavagem + bactérias redutoras
+      methods: [water_leaching, perchlorate_reducing_bacteria, electrolysis]
+    gate: "L4 gate obrigatório antes de usar regolito in-situ (só após is_safe)"
+
+  gap_4_earth_sovereign_channel:
+    path: src/agriculture/mars_earth_handoff.py  (adapta src/continuity/canonical/handoff_manager.py)
+    class: MarsEarthHandoff
+    api:
+      - {init: {latency_min: [3, 22], veto_classes: [quarantine_release, cultivar_change, structural_expansion]}}
+      - {send_to_earth: {message}, returns: queued}
+      - {receive_from_earth: {}, returns: mensagem_ou_none}
+      - {execute_with_veto: {decision}, returns: executed|vetoed}
+    properties:
+      latency: "uniforme 3-22min (ida e volta)"
+      conjuction_windows: "conjunção solar: sem canal por ~2 semanas (store-and-forward)"
+      ordering: "reordena por sol (fora de ordem permitido)"
+      veto: "Terra vence SÓ em veto_classes; resto consultivo"
+      idempotency: "mensagens com handoff_id (base: handoff_procedural_bridge)"
+
+  gap_5_cultural_identity_genome:
+    path: src/agriculture/cultural_genome.py  (adapta src/narrative_consciousness/meaning_maker.py)
+    class: CulturalGenome
+    api:
+      - {init: {station_name: Chryse_Planitia_Alpha}}
+      - {log_event: {event_type, severity, lesson}, returns: memória_append}
+      - {get_decision: {options}, returns: melhor_opcao_por_valores}
+      - {narrative_snapshot: {}, returns: texto_narrativo}
+    values_default:
+      survival: 1.0
+      biomass_production: 0.9
+      resource_efficiency: 0.7
+      experimentation: 0.5
+    memory: "eventos marcados: traumas (despressurização, contaminação) + conquistas (colheita, adaptação)"
+    learning: "lesson atualiza values (histerese de valores — espelha hysteresis_operator)"
+    integration: "alimenta narrative_consciousness e o DriveState de life_kernel"
+
+build_order: [gap_2, gap_3, gap_1, gap_4, gap_5]  # atuadores→química→crescimento→canal→identidade
+updated_at: '2026-09-27T23:30:00Z'
+
+# =============================================================================
+# APÊNDICE 2026-09-27 — MÁQUINA-ÁRVORE (arquitetura de autopoiese por descoberta)
+# Visão do operador: corpo = árvore; raízes = braços mecânicos que escavam;
+# elevadores entre braços; circunferência de 2-3km entre braços.
+# Documento completo: reports_runtime/mars_tree_architecture_20260927.md
+# =============================================================================
+tree_architecture:
+  status: design_v1
+  geometry:
+    trunk: "nucleo_central (energia, agua, germoplasma, estufa vertical, laboratorio, radio_terra)"
+    arms: "12_bracos_raiz (Dodecatíade agrícola; espacamento 2-3km na circunferência; raio ~4-5km)"
+    elevator: "anel_subterraneo_pressurizado (sistema circulatório: nutrientes, agua, amostras, energia, modulos)"
+    redundancy: "anel_fechado_2_caminhos (falha de trecho -> caminho alternativo)"
+  autopoiesis_loop:
+    - "escanear: orbitais (MOLA/HiRISE/CRISM) + locais (temp/vento/sismos)"
+    - "escavar: bracos perfuram regolito em profundidade crescente"
+    - "analisar: composicao, percloratos, sais, gelo, pH, condutividade (gate is_safe)"
+    - "cruzar: solo x clima real (REMS/MEDA) x histerese x quadrupla -> decisao de cultivo"
+    - "adaptar: ajuste da estufa setorial, transplante via elevadores, quarentena"
+    - "recordar: memoria cultural (S12 OCULTO) — arvore cresce em conhecimento"
+  data_support:
+    rems_gale: "116.6GB / 7168 sols clima real (Curiosity)"
+    meda_jezero: "8.1GB segunda regiao (Perseverance)"
+    mola: "5.3GB topografia global (MEGDR 16+128ppd)"
+    seis: "2716 eventos sismicidade (InSight v14)"
+  mapping_reuse:
+    - "dodecatiad_agricola -> 12 bracos"
+    - "soma_fluid_storage -> transplante via elevadores"
+    - "spiking_glial_vagus -> quarentena de braco"
+    - "mu_memory_pressure -> pressao de recursos"
+    - "pressure_degrade -> hibernacao sob poeira"
+    - "invariant_alert_watch -> sensor travado por braco"
+    - "gravitational_ear/SEIS -> sismicidade"
+    - "crank_nicolson_thermal -> termica do regolito"
+    - "cosmic_observation_memory -> memoria de descobertas"
+  data_gaps_next:
+    - hirise_ctx_tiles_sitio
+    - crism_omega_mineralogia_percloratos
+    - apxs_chemmam_pixl_composicao
+    - maven_radiacao
+    - mola_polar
+    - insight_hp3_fluxo_termico
+  decision_operator:
+    - "sitio_referencia: gale_para_calibracao + jezero_segunda_regiao"
+    - "n_bracos_simulacao: 12_recomendado (dodecatíade completa)"
+updated_at: '2026-09-27T02:30:00Z'
+
+# =============================================================================
+# APÊNDICE 2026-09-28 — LACUNAS CRÍTICAS (química/geoquímica/ecologia/sensores)
+# Acréscimo do operador após revisão: o ciclo autotrófico exige mais que CO2/O2.
+# Código de referência completo: relatório do operador (sessão 2026-09-28).
+# =============================================================================
+missing_build_specs_critical:
+  gap_6_sabatier_and_perchlorates:
+    path: src/agriculture/sabatier_reactor.py + src/agriculture/perchlorate_reducer.py
+    priority: alta
+    sabatier: "CO2 + 4H2 -> CH4 + 2H2O (300-400C, Ni/Al2O3, 95% conversão) — MOXIE-derivado; CH4 combustível + H2O de eletrólise"
+    perchlorate: "ClO4- + 8e- + 8H+ -> Cl- + 4H2O — biológica (Dechloromonas, 90%/ciclo) ou eletroquímica (catodo Ti/Pt 2-3V, 95%); threshold 1000 ppm (is_safe gate)"
+    sources: [MOXIE_122g_O2_12g_h, Sabatier_ISS, Dechloromonas_Azospira_solo_simulado]
+  gap_7_regolith_geochemistry:
+    path: src/agriculture/regolith_processor.py
+    priority: media
+    composition: "sulfatos (MgSO4/CaSO4 — fonte S), oxidos de Fe (hematita/magnetita — abrasivos), argilas filossilicatos (agua antiga, retem nutrientes), pH 4.5-8.5"
+    process: "moagem -> separacao magnetica (remove Fe2O3) -> lixiviacao acida H2SO4 0.1M (Mg 0.85/Ca 0.75/K 0.70/P 0.60/Fe 0.90) -> neutralizacao -> troca ionica (ajusta NPK)"
+    sources: [APXS_Curiosity_Perseverance, ChemCam_LIBS, PIXL_100um]
+  gap_8_nitrogen_cycle:
+    path: src/agriculture/nitrogen_cycle.py
+    priority: alta
+    fixacao: "N2 atmosferico 2.7% em Marte -> NH3/NH4+ (nitrogenase; Rhizobium/Azotobacter/cianobacterias); 0.05 kg N fixado/kg N2/dia"
+    nitrificacao: "NH4+ -> NO2- (Nitrosomonas) -> NO3- (Nitrobacter); 90% eficiencia — forma assimilavel"
+    desnitrificacao: "NO3- -> N2 em anaerobiose — MONITORAR (perda); alerta se O2 < 5%"
+    sources: [BIOS-3_1972, MELiSSA_ESA]
+  gap_9_microbiome_ecology:
+    path: src/agriculture/microbiome_manager.py
+    priority: media
+    inoculum: "micorrizas 1e6 esporos/g + fixadores 1e7 CFU/g + solubilizadores de P 1e6 CFU/g (Bacillus/Pseudomonas)"
+    monitor: "indice Shannon >= 2.0, respiracao do solo, atividade de fosfatase — alerta low_microbiome_diversity"
+    consorcio: "nao monocultura pura: bacterias + algas + fungos (Spirulina + consorcio)"
+    sources: [MARS-500, solo_antartico_McMurdo, cianobacterias_ESA_NASA]
+  gap_10_advanced_sensors:
+    path: src/agriculture/advanced_sensors.py
+    priority: baixa
+    suite: "espectrometro de massa (gases traco CH4/NH3/H2S/VOC), HPLC (aminoacidos/acucares), MinION DNA (microbioma em tempo real), NV centers em diamante (campos magneticos fracos)"
+    sources: [SAM_Curiosity, MinION_ISS, NV_centers_Nature_2020]
+  gap_11_life_support_systems:
+    path: src/agriculture/life_support_systems.py
+    priority: media
+    systems: "reator de algas (Spirulina O2+proteina 60-70%), digestor anaerobio (biomassa -> CH4+CO2+digestate), fuel cell (H2+O2 -> H2O+energia), reator de plasma (residuos -> syngas CO+H2)"
+    sources: [MELiSSA, BIOS-3, fuel_cells_ISS]
+  build_order_critical: [gap_6, gap_8, gap_7, gap_9, gap_11, gap_10]
+updated_at: '2026-09-28T02:00:00Z'
+
+# =============================================================================
+# APÊNDICE 2026-09-28 — DECISÕES DO OPERADOR (d1 sítio, d2 veto, d3 gate)
+# Decisões finais registradas — fonte: operador, sessão 2026-09-28.
+# =============================================================================
+operator_decisions:
+  d1_site:
+    decision: "15N_140E — zona de transição Gale<->Elysium"
+    rationale: "gelo<5m (SHARAD/FREND), temperatura moderada, poeira aceitável, sismicidade longe de Cerberus Fossae, pressão suficiente p/ painéis"
+    comparison:
+      - gale: "clima quente -63C, percloratos altos 0.5-1%, gelo profundo >50m inviável"
+      - elysium: "gelo raso <2m confirmado, mas frio -70C, poeira alta, sismos Mw>4"
+    sources: [SHARAD_MRO, FREND_TGO, SEIS_InSight_174_eventos, CRISM_OMEGA]
+  d2_veto_classes:
+    decision: "3 níveis — autonomia_total / veto_consultative / veto_mandatory"
+    autonomy_total:
+      - photoperiod_adjustment
+      - nutrient_balance
+      - ph_co2_regulation
+      - sector_quarantine_local
+      - routine_cultivation
+      - hysteresis_threshold_adjustment
+    veto_consultative:
+      - greenhouse_expansion
+      - cultivar_rotation_same_class
+      - mutation_experiments_S09
+      - controlled_perturbation_S11
+    veto_mandatory:
+      - quarantine_release_global
+      - dominant_cultivar_change
+      - structural_expansion
+      - mission_abort
+      - permanent_hibernation
+    analogy_omnimind: "basal->autonomia_total; canonical->veto_consultative; rust->veto_mandatory"
+  d3_gate_evolution:
+    decision: "gate por score de estabilidade + duração + reservas; transições irreversíveis"
+    algae_to_potato:
+      stability_score_min: 0.90
+      duration_min_sols: 55.7
+      epsilon_max: 0.15
+      energy_reserve_min: 0.60  # 0.50->0.60 (ação E5 black swan: margem 2% insuficiente)
+      water_reserve_min: 0.60
+      nutrient_reserve_min: 0.30
+      pilot_duration_sols: 55.7
+      pilot_success: "yield>0.5 kg/m2/dia, contaminacao<5%, eficiencia>80%"
+      max_sectors_per_cycle: 2
+      rollback_possible: false
+    potato_to_wheat:
+      stability_score_min: 0.95
+      duration_min_sols: 111.4
+      epsilon_max: 0.10
+      energy_reserve_min: 0.70
+      water_reserve_min: 0.80
+      nutrient_reserve_min: 0.50
+      soil_volume_min_m3: 100
+      pilot_duration_sols: 111.4
+      pilot_success: "yield>0.3 kg/m2/dia, proteina>12%, contaminacao<2%"
+      max_sectors_per_cycle: 3
+      rollback_possible: false
+    stability_weights: {yield_consistency: 0.30, contamination_resistance: 0.25, energy_efficiency: 0.20, nutrient_uptake: 0.15, stress_tolerance: 0.10}
+    implementation: "src/agriculture/gate_evolution.py — CultivarStabilityScore"
+updated_at: '2026-09-28T03:00:00Z'
+
+# =============================================================================
+# APÊNDICE 2026-09-28 — AÇÕES DAS 5 EVOLUÇÕES (E1-E5)
+# =============================================================================
+evolutions_actions:
+  E1_topology: "vencedor voronoi_adaptive (score 0.006: redundância 35x, túnel -31%) — maquete 3D refeita com layout voronoi (scripts/viz)"
+  E2_mutagenesis: "paper draft: docs/papers/mars_directed_evolution_100gen_draft.md (+31% perclorato, +37% frio, +28% fitness)"
+  E3_circular: "gargalo nutrientes 88% — NutrientCycleOptimizer implementado (digestor 92%, nitrificação 2%, pirólise; target >=90% atingido)"
+  E4_negotiation: "Nash proporcional domina política individual — gini 0, survival 100% até déficit 45%; conflito exigiria leilão com preço"
+  E5_blackswan: "energy_reserve_min 0.50 -> 0.60 (contrato d3 + gate_evolution.py) — margem 2% insuficiente"
+updated_at: '2026-09-28T03:30:00Z'
+
+# =============================================================================
+# APÊNDICE 2026-09-28 — CONCEITOS ORBITAIS + CHECKLIST ESPERADO VS REAL
+# =============================================================================
+orbital_concepts:
+  gravity_assist:
+    fobos_deimos: "flybys dão fine-tuning (0.00007-0.00014 km/s com mu real 7.1e-4 — operador usava 7.07e-3, 10x maior)"
+    mars_flyby: "flyby de Marte dá ~1.8 km/s de deflexão — o GA útil real"
+    validated_by: [Voyager, Cassini, Galileo]
+  lagrange:
+    mars_phobos_L1: "~16.6 km de Fobos (fórmula r*(mu/3)^(1/3); operador esperava 2.5 km)"
+    mars_sun_L1: "~1.08M km de Marte"
+    validated_by: [JWST_L2, Lunar_Gateway_NRHO]
+  nuclear_energy:
+    bimodal_ntp_10MWth: "thrust 1.6 kN (operador esperava 1550 kN — erro de unidade 1000x) + 1050 kWe prop / 3500 kWe elétrico"
+    kilopower_fsp: "energia contínua 10 anos, independente de sol/poeira"
+    validated_by: [Project_Orion, Kilopower, Fission_Surface_Power]
+  orbital_transitions:
+    aerocapture: "dVa 0.1 vs 1.1 km/s química — poupa ~90% do combustível de captura (MSR valida)"
+    variable_gravity: "0.3g Marte -> 1g Terra por rotação"
+esperado_vs_real_checklist: reports_runtime/mars_esperado_vs_real_20260928.md
+esperado_vs_real_summary: {bateram: 22, desviaram_com_causa: 18, falharam_e_corrigidos: 2}
+hf_checklist_2026_09_28: {publico: 13488_arquivos, privado: 1483_arquivos, simulations: 49, parquet: 3, notebook: 1, cena_3d: 1, manifests: 4, completo: true}
+updated_at: '2026-09-28T04:00:00Z'
+
+# ---- config recomendada (sweep v2-v8, 2026-09-28) ----
+sweep_recommended_config:
+  version: "v5+v6"
+  elevador_gelo_flow_l_per_sol: 2.5        # 10x antigo (buffer 170 -> 1626 L)
+  reservatorio_agua_l: 20000               # emergência a 2000 L
+  fissao_boost: 0.08                       # Kilopower contínuo (gate d3 0/13 -> 13/13)
+  luz_led: "red-blue"                      # Vitale 2022: compensa radiação, +0.7t caproate/10a
+  black_swan_intervalo_sols: 1000          # robusto até 300 sols (v7 validado)
+  amci_alvo: 0.9582                        # fechamento agregado nominal
+  gate_d3_passes: "13/13"                  # spirulina->batata viável nos 10 anos
+  limitação_modelo: "biomassa satura em K=2000 — perda de braço/mealworm mascarados"
+
+# ---- AMCI efetivo com risco de buffer (2026-09-28) ----
+amci_effective:
+  formula: "AMCI_eff = AMCI_nominal x (0.85 + 0.15 x p_agua) x (0.85 + 0.15 x p_energia)"
+  p_agua: "min(min_agua_l / reservatorio_l * 8, 1.0)"       # 12.5% do reservatório = 1.0
+  p_energia: "min(max((energia_min - 0.50) / 0.10, 0), 1.0)"  # 0.50->0, 0.60->1.0 (gate d3)
+  nominal: 0.9676
+  v2_integrada_base: 0.8111    # p_agua 0.068 — buffer quase vazio
+  v3_fix_agua: 0.8935
+  v4_fix_energia: 0.8324
+  v5_fixes_ambos: 0.9169
+  v7_clima_extremo: 0.9189     # melhor config efetiva
+  nota: "o nominal (0.968) não capturava risco de buffer; min_água e margem de energia são as métricas reais de segurança"

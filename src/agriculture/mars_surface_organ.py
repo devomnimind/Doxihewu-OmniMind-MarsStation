@@ -1,0 +1,139 @@
+"""Mars Surface Organ — a pele multicamada que come tempestade.
+
+Decisão de design (2026-10-03): coexistir com o ambiente em vez de
+blindar contra ele — o calor residual do corpo e a carga eletrostática
+da própria poeira viram ferramentas de defesa.
+
+Stack físico (avaliação da proposta + correções de stack):
+  pele composta   — radiador de alta emissividade COM eletrodos EDS
+                    interdigitados sob polimida fina (mesma camada —
+                    eletrodo sob alumínio não alcança o grão).
+                    EDS dispara por EVENTO (sensor capacitivo detecta
+                    acúmulo), não contínuo — menos energia, menos EMI
+                    (o próprio EDS é fonte de EMI; GND na stack).
+  coletor         — geometria (defletor/ciclone) captura o ejetado;
+                    sem ele o EDS só redeposita a poeira ao lado.
+  anel quente     — guarda termoforético em bordas/aberturas
+                    (gimbals, airlock, conectores) — regime mm-cm onde
+                    termoforese domina. +50-70C via calor roteado.
+  forno dedicado  — sinterização por micro-ondas (Shulman/NASA):
+                    poeira coletada vira bloco de blindagem.
+
+Ancoras de literatura:
+  Pathfinder MAE: obscurecimento de painel ~0.28%/dia (Calle et al.,
+  NASA TM 2012-2164) — sem tempestade global.
+  Micro-ondas em simulante: ~2.5 kWh/kg sinterizado (FOM 1.8-2.9).
+  Regolito ~1600 kg/m3: 1 mm/m2 = 1.6 kg de blindagem equivalente.
+
+O laço honesto: poeira chega -> EDS ejeta (custa Wh, degrada eletrodo)
+-> coletor captura fração -> forno sinteriza (custa kWh) -> bloco
+engrossa blindagem -> menos dose. O residual NAO ejetado continua
+alimentando wear — o orgão reduz dano, não decreta fim da poeira.
+
+Expectativas calibradas (validação 5000 sols, 3 tempestades, 50 m²):
+  - Integridade do corpo ~0.55 mesmo com órgão: reflete o orçamento
+    de reparo (repair_fraction=0.12 do labor), não a física do órgão.
+    Subir repair_fraction ou priorizar camadas críticas eleva a
+    integridade sem mudar nada aqui.
+  - Blindagem sinterizada é INCREMENTO, não primária: ~0.4 µm/sol
+    (~8 mm em 60 anos). Serve como camada sacrificável/fouling-sink;
+    blindagem primária contra GCR continua sendo regolito escavado
+    ou água em escala de metro — nunca esperar "metros de graça".
+"""
+
+from __future__ import annotations
+
+import random
+from dataclasses import dataclass
+from typing import Dict
+
+
+@dataclass
+class SurfaceOrgan:
+    """Pele + anel + coletor + forno. Um órgão do StationBody."""
+
+    # --- parâmetros de design (calibráveis; âncoras no docstring) ---
+    capture_area_m2: float = 50.0         # área exposta tratada pelo órgão
+    deposit_kg_m2_sol: float = 3e-5       # ~0.28%/dia Pathfinder -> ~3 µg/cm2/sol
+    eds_energy_wh: float = 0.8            # Wh por disparo de ejeção
+    capture_fraction: float = 0.35        # fração do ejetado que o coletor pega
+    sinter_kwh_per_kg: float = 2.5        # micro-ondas em simulante (medido)
+    block_kg_per_mm_shield: float = 1.6   # 1 mm/m2 a 1600 kg/m3
+    eds_fatigue_pulse: float = 2e-6       # desgaste do eletrodo por disparo
+    eds_fatigue_thermal: float = 8e-7     # fadiga extra por ciclo térmico sol
+    eds_min_health: float = 0.3           # abaixo disso o EDS para de disparar
+    eject_efficiency: float = 0.85        # fração do depositado que sai por pulso
+    fouling_wear_gain: float = 1e-5       # kg residual -> wear extra/sol
+    sinter_batch_kg: float = 5.0          # tamanho do lote da câmara
+    sinter_min_batch_kg: float = 0.25     # micro-ondas sinteriza em sub-kg
+    shielding_rad_gain: float = 50.0      # fator = 1/(1+shielding_m*gain)
+
+    # --- estado ---
+    dust_captured_kg: float = 0.0
+    eds_cycles: int = 0
+    sintered_mass_kg: float = 0.0
+    shielding_m: float = 0.0              # acima do regolito escavado primário
+    eds_health: float = 1.0
+    _pending_capture_kg: float = 0.0      # buffer aguardando lote de forno
+
+    def step_sol(self, env: Dict[str, float], latent: float,
+                 rng: random.Random) -> Dict[str, float]:
+        """Um sol do órgão: deposita, ejeta (se houver margem), captura,
+        sinteriza. Lê power_margin do env (default 0.6 — margem moderada)."""
+        dust_flux = env.get("dust_flux", 1.0)
+        dt_ground = env.get("ground_temp_delta", 60.0)
+        wind_ms = env.get("wind_speed_ms", 0.0)
+        power_margin = env.get("power_margin", 0.6)
+
+        # deposição do sol — Pathfinder MAE: ~0.28%/dia de obscurecimento
+        # (~3 µg/cm²/sol em calma), escalado pela área exposta tratada
+        deposited_kg = (self.deposit_kg_m2_sol * self.capture_area_m2
+                        * dust_flux * (1.0 + 0.5 * min(3.0, wind_ms / 10.0)))
+
+        # EDS disparado por acúmulo — duty-cycle baixo por design
+        eds_fired = 0
+        if (dust_flux > 0.8 and power_margin > 0.2
+                and self.eds_health > self.eds_min_health):
+            eds_fired = 1
+            self.eds_cycles += 1
+            self.eds_health = max(
+                0.0, self.eds_health - self.eds_fatigue_pulse
+                - self.eds_fatigue_thermal * (dt_ground / 60.0))
+
+        ejected_kg = deposited_kg * (self.eject_efficiency * self.eds_health
+                                     if eds_fired else 0.0)
+        captured_kg = ejected_kg * self.capture_fraction
+        self._pending_capture_kg += captured_kg
+        self.dust_captured_kg += captured_kg
+        residual_kg = deposited_kg - ejected_kg     # fica na pele: fouling real
+
+        # sinterização em lote — débito real de energia
+        sintered_kg = 0.0
+        if (self._pending_capture_kg >= self.sinter_min_batch_kg
+                and power_margin > 0.5):
+            batch = min(self._pending_capture_kg, self.sinter_batch_kg)
+            if batch * self.sinter_kwh_per_kg <= power_margin * 24.0:
+                self._pending_capture_kg -= batch
+                self.sintered_mass_kg += batch
+                sintered_kg = batch
+                self.shielding_m += (batch / self.block_kg_per_mm_shield
+                                     / 1000.0)
+
+        return {
+            "organ_deposited_kg": round(deposited_kg, 6),
+            "organ_ejected_kg": round(ejected_kg, 6),
+            "organ_captured_kg": round(captured_kg, 6),
+            "organ_sintered_kg": round(sintered_kg, 6),
+            "organ_residual_fouling_kg": round(residual_kg, 6),
+            "organ_eds_fired": eds_fired,
+            "organ_eds_cycles": self.eds_cycles,
+            "organ_eds_health": round(self.eds_health, 5),
+            "organ_dust_captured_kg": round(self.dust_captured_kg, 4),
+            "organ_sintered_mass_kg": round(self.sintered_mass_kg, 4),
+            "organ_shielding_m": round(self.shielding_m, 6),
+        }
+
+    def neutrosophic(self) -> Dict[str, float]:
+        f = 1.0 - self.eds_health
+        return {"T": round(self.eds_health, 4), "I": 0.05,
+                "F": round(f, 4)}
