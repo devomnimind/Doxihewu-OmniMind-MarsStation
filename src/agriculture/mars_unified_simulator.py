@@ -192,6 +192,61 @@ class ExcavatorFleet:
 
 
 @dataclass
+class SoilWashPlant:
+    """Usina fixa de lixiviação de perclorato — o complemento industrial da
+    frota móvel. O ClO4- é solúvel em água: lavar solo a granel extrai o
+    sal (que segue para a refinaria PERC_O2/DETOX) e devolve ``clean_soil``
+    — substrato desintoxicado para a estufa, fechando a dupla produção da
+    mesma cadeia (O2/fertilizante + solo arável).
+
+    A capacidade é por era (piloto era II, industrial III/IV) — uma
+    instalação de correia/contator contínuo, não rovers; sua matéria-prima
+    é o solo ao redor da estação, não o regolito contado da frota.
+
+    Água: o lixiviado recircula (``water_recycle_frac``); o débito líquido
+    sai do reservatório. Energia: debitada do mesmo pool compartilhado
+    ``power_margin × 24 × power_base_kw`` — a usina vota contra a frota,
+    o forno e o EDS pelo mesmo orçamento.
+    """
+    throughput_era_ii_kg: float = 200.0     # piloto: contador de batelada
+    throughput_era_iii_kg: float = 800.0    # industrial: correia contínua
+    throughput_era_iv_kg: float = 6000.0    # madura: lixivia o entorno da estação
+    clo4_wt: float = 0.006                  # 0,6% m/m (APXS)
+    extract_eff: float = 0.90               # extração do sal no contator
+    water_gross_l_per_kg: float = 0.4       # lixiviado bruto por kg de solo
+    water_recycle_frac: float = 0.98        # recirculação do lixiviado
+    energy_kwh_per_kg: float = 0.08         # correia+agitação+centrifuga
+    soil_washed_total_t: float = 0.0
+
+    def throughput_kg(self, era: str) -> float:
+        return {"II_primeira_pele": self.throughput_era_ii_kg,
+                "III_tronco": self.throughput_era_iii_kg,
+                "IV_copa": self.throughput_era_iv_kg}.get(era, 0.0)
+
+    def step_sol(self, era: str, energy_budget_kwh: float) -> Dict[str, float]:
+        out = {"soil_kg": 0.0, "clo4_kg": 0.0, "clean_soil_kg": 0.0,
+               "water_net_l": 0.0, "energy_kwh": 0.0}
+        soil = self.throughput_kg(era)
+        if soil <= 0.0:
+            return out
+        # energia é o veto real: a usina só processa o que o pool cobre
+        soil = min(soil, energy_budget_kwh / self.energy_kwh_per_kg)
+        if soil <= 0.0:
+            return out
+        clo4 = soil * self.clo4_wt * self.extract_eff
+        self.soil_washed_total_t += soil / 1000.0
+        out.update({
+            "soil_kg": soil,
+            "clo4_kg": clo4,
+            "clean_soil_kg": soil * (1.0 - self.clo4_wt * self.extract_eff),
+            "water_net_l": soil * self.water_gross_l_per_kg
+                           * (1.0 - self.water_recycle_frac),
+            "energy_kwh": soil * self.energy_kwh_per_kg,
+        })
+        return out
+
+
+@dataclass
 class StationUnifiedSimulator:
     """Simulador único de toda a estação: estado cumulativo, dinâmico e pontuado."""
 
@@ -208,6 +263,7 @@ class StationUnifiedSimulator:
     nutrient_opt: NutrientCycleOptimizer = field(default_factory=NutrientCycleOptimizer)
     ice: IceElevatorSupply = field(default_factory=IceElevatorSupply)
     fleet: ExcavatorFleet = field(default_factory=ExcavatorFleet)
+    soil_wash: SoilWashPlant = field(default_factory=SoilWashPlant)
     regime: Optional[SMetaStation] = field(
         default_factory=SMetaStation if SMetaStation else lambda: None)
     mesh: Optional[StationMesh] = field(
@@ -235,6 +291,7 @@ class StationUnifiedSimulator:
         "wheat_kg": 0.0,
         "protein_animal_kg": 0.0,
         "n_caproate_kg": 0.0,
+        "clean_soil_kg": 0.0,
         "regolith_mined_total_t": 0.0,
     })
     
@@ -373,12 +430,12 @@ class StationUnifiedSimulator:
         ref_inputs = {
             # voto da estação 2026-10-03: perclorato minerado a granel
             # (frota, cadeia 3) passa a alimentar a refinaria — antes só o
-            # fluxo atmosférico (dust×1.5) alimentava. Cap +40 kg/sol do
-            # estoque a granel; o scheduler de energia da refinaria segue
-            # sendo o gate real de throughput.
+            # fluxo atmosférico (dust×1.5) alimentava. Cap +60 kg/sol do
+            # estoque a granel (frota + usina de lixiviação); o scheduler
+            # de energia da refinaria segue sendo o gate real de throughput.
             "perchlorate_kg": min(self.stocks["perchlorate_kg"],
                                   dust_step["perchlorate_kg"] * 1.5
-                                  + min(self.stocks["perchlorate_kg"], 40.0)),
+                                  + min(self.stocks["perchlorate_kg"], 60.0)),
             "fe_oxide_kg": min(self.stocks["fe_oxide_kg"], dust_step["fe_oxide_kg"] * 1.5),
             "silica_kg": min(self.stocks["silica_kg"], dust_step["silica_kg"] * 1.5),
             "gypsum_kg": min(self.stocks["gypsum_kg"], dust_step["gypsum_kg"] * 1.5),
@@ -429,6 +486,19 @@ class StationUnifiedSimulator:
         # perclorato do regolito minerado (0,6% m/m APXS) → cadeia a granel
         self.stocks["perchlorate_kg"] += regolith_sol_kg * 0.006
         self.stocks["regolith_mined_total_t"] += regolith_sol_kg / 1000.0
+
+        # usina de lixiviação (era II+): solo a granel -> ClO4- p/ refinaria
+        # + clean_soil (substrato desintoxicado). Energia do mesmo pool —
+        # sobra de energia da frota alimenta a usina no mesmo sol.
+        wash_res = self.soil_wash.step_sol(
+            era_name,
+            env.get("power_margin", 0.6) * 24.0 * self.power_base_kw)
+        env["power_margin"] = max(
+            0.0, env.get("power_margin", 0.6)
+            - wash_res["energy_kwh"] / (24.0 * self.power_base_kw))
+        self.stocks["perchlorate_kg"] += wash_res["clo4_kg"]
+        self.stocks["clean_soil_kg"] += wash_res["clean_soil_kg"]
+        self.stocks["water_l"] -= wash_res["water_net_l"]
         
         fe_raw_mined_kg = regolith_sol_kg * 0.19
         fe_metal_smelted_kg = fe_raw_mined_kg * 0.72 # Carboredução com CO
@@ -578,6 +648,8 @@ class StationUnifiedSimulator:
                                       "cannibalized", "lost",
                                       "labor_bonus_h")},
             },
+            "soil_wash_sol": {k: round(v, 4) for k, v in wash_res.items()},
+            "soil_washed_total_t": round(self.soil_wash.soil_washed_total_t, 2),
             "mesh_surfaces": mesh_res,
             "repair_load_h": body_res["repair_load_h"],
             "incident": body_res["incident"],
@@ -690,6 +762,7 @@ class StationUnifiedSimulator:
                 "dcs": {sub: self._scalar_state(getattr(self.dcs, sub))
                         for sub in ("flux", "eds", "esp", "climber", "frac")
                         if getattr(self.dcs, sub, None) is not None},
+                "soil_wash": self._scalar_state(self.soil_wash),
                 "refinery": ({sub: self._scalar_state(getattr(self.refinery, sub))
                               for sub in ("scheduler", "reactor")
                               if getattr(self.refinery, sub, None) is not None}
@@ -768,6 +841,8 @@ class StationUnifiedSimulator:
             for sub, state in ds.items():
                 if getattr(self.dcs, sub, None) is not None:
                     self._restore_scalars(getattr(self.dcs, sub), state)
+        if ss.get("soil_wash") is not None:
+            self._restore_scalars(self.soil_wash, ss["soil_wash"])
         fs2 = ss.get("refinery")
         if fs2 is not None and self.refinery is not None:
             for sub, state in fs2.items():

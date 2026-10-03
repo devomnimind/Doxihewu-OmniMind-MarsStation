@@ -1796,7 +1796,7 @@ class TestMarsUnifiedSimulator:
     """Valida o simulador unificado contínuo da estação operado pelo daemon."""
 
     def test_single_step_all_chains_active(self):
-        from src.agriculture.mars_unified_simulator import StationUnifiedSimulator
+        from src.agriculture.mars_unified_simulator import StationUnifiedSimulator, SoilWashPlant
         sim = StationUnifiedSimulator()
         res = sim.step()
         assert res["sol"] == 1
@@ -1919,7 +1919,7 @@ class TestECLSSAndVetoSuite:
 # Causalidade, conservação e reprodutibilidade — o que a suíte não via.
 # =====================================================================
 
-from src.agriculture.mars_unified_simulator import StationUnifiedSimulator
+from src.agriculture.mars_unified_simulator import StationUnifiedSimulator, SoilWashPlant
 from src.agriculture.mars_station_body import StationBody
 
 
@@ -2209,3 +2209,37 @@ class TestCheckpointSubsystemState:
         assert ss["regime"]["s_meta"] is not None
         assert ss["mesh"]["vbkf"]["x"] is not None
         assert "flux" in ss["dcs"]
+
+
+class TestSoilWashPlant:
+    """Usina de lixiviação: era-gating, veto energético, dupla produção
+    (ClO4 p/ refinaria + clean_soil substrato) e conservação de água."""
+
+    def test_era_gating(self):
+        plant = SoilWashPlant()
+        assert plant.step_sol("I_ancoragem", 1e6)["soil_kg"] == 0.0
+        assert plant.step_sol("II_primeira_pele", 1e6)["soil_kg"] == 200.0
+        assert plant.step_sol("IV_copa", 1e6)["soil_kg"] == 6000.0
+
+    def test_energy_veto(self):
+        plant = SoilWashPlant()
+        assert plant.step_sol("IV_copa", 0.0)["soil_kg"] == 0.0
+        # orçamento parcial limita throughput, não zera
+        r = plant.step_sol("IV_copa", 40.0)  # 40/0.08 = 500 kg
+        assert r["soil_kg"] == 500.0
+
+    def test_outputs_and_water(self):
+        plant = SoilWashPlant()
+        r = plant.step_sol("III_tronco", 1e6)
+        assert r["clo4_kg"] == pytest.approx(800*0.006*0.90)
+        assert r["clean_soil_kg"] == pytest.approx(800*(1-0.006*0.90))
+        assert r["water_net_l"] == pytest.approx(800*0.4*0.02)
+        assert plant.soil_washed_total_t == pytest.approx(0.8)
+
+    def test_sim_wash_feeds_perchlorate_and_clean_soil(self):
+        sim = StationUnifiedSimulator(seed=5)
+        sim.sol = 8000  # era III
+        for _ in range(10):
+            sim.step(_env())
+        assert sim.stocks["clean_soil_kg"] > 0.0
+        assert sim.soil_wash.soil_washed_total_t > 0.0
