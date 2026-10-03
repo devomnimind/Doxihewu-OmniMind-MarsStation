@@ -1,5 +1,9 @@
 # Doxihewu OmniMind — MarsStation (E2-MARCIANO)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23127233.svg)](https://doi.org/10.5281/zenodo.23127233)
+[![License: Apache-2.0](https://img.shields.io/badge/code-Apache--2.0-blue)](LICENSE)
+[![Docs: CC-BY-4.0](https://img.shields.io/badge/docs-CC--BY--4.0-green)]()
+
 **Estação Máquina-Árvore**: simulador de estação marciana autorreferente —
 ECLSS fechado, ISRU, microbiologia de perclorato, evolução aleatória em
 mosaico de nichos, malha de percepção (VBKF + afeto + glia) e classificador

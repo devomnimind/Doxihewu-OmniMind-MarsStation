@@ -31,6 +31,7 @@ keywords:
   - stochastic filtering
   - MELiSSA
 license: "Apache-2.0"
+doi: "10.5281/zenodo.23127233"
 repository-code: "https://gitlab.com/zephyrix/Doxihewu-OmniMind-MarsStation"
 repository-artifact: "https://github.com/devomnimind/Doxihewu-OmniMind-MarsStation"
 references:
