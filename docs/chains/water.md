@@ -2,6 +2,8 @@
 
 Gelo subsuperficial → elevador era-escalado → reservatório → eletrólise (H₂ + O₂) → Sabatier (CO₂ + H₂ → CH₄ + H₂O) → retorno ao reservatório.
 
+![Braço-raiz subterrâneo — elevador de gelo, bombas de nutrientes, microhabitats e estufa enterrada](../assets/mars_root_arm_cutaway_1790935462792.jpg)
+
 ## Números v19
 
 | Métrica | Valor |

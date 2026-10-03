@@ -2,6 +2,8 @@
 
 **Máquina-Árvore de Ecopoiese** — uma estação autônoma marciana simulada como organismo, não como máquina. Cada subsistema é um órgão com estado, desgaste, reparo e veto energético; cada cadeia industrial fecha massa e energia de forma auditável.
 
+![Vista aérea da estação — raiz radial, braços, solar e refinaria](assets/mars_station_aerial_1790935409753.jpg)
+
 ## Números canônicos (v19, seed 42, 21.060 sols — Sínodo 27)
 
 | Métrica | Valor | Nota |

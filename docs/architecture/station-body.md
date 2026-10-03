@@ -4,6 +4,8 @@
 
 A estação não é um edifício — é um corpo de camadas empilhadas cuja integridade composta decai sob incidentes e é restaurada por reparo (`repair_fraction = 0.12`).
 
+![Corte do tronco — laboratório, germoplasma, computação, ECLSS, água e reator](../assets/mars_trunk_cutaway_1790935434626.jpg)
+
 ## Cascata de integridade
 
 A integridade global é o produto da saúde das camadas; incidentes sísmicos/dusto-térmicos degradam camadas específicas. Estado final v19: **integridade 0,5691** após 217 incidentes.
