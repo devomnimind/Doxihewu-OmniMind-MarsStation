@@ -293,7 +293,11 @@ class StationUnifiedSimulator:
         # 1. Ambiente Físico Marciano (REMS/InSight ou Sintético calibrado)
         if env is None:
             # Oscilação sazonal Ls e rajadas
-            season = math.sin(2 * math.pi * current_sol / 669.0)
+            # round(...,6): quantiza a saída libm de math.sin — builds
+            # Clang/GCC divergem no ULP e o erro não-arredondado explodia
+            # caoticamente em 21k sols (~2% cross-env; água idêntica,
+            # contadores raros divergiam 196↔224).
+            season = round(math.sin(2 * math.pi * current_sol / 669.0), 6)
             base_wind = 4.2 + 1.5 * season + self._rng.gauss(0, 1.2)
             base_wind = max(0.5, base_wind)
             gust = base_wind * (1.3 + 0.3 * self._rng.random())
@@ -661,6 +665,36 @@ class StationUnifiedSimulator:
             },
             "rng_state_hex": binascii.hexlify(
                 pickle.dumps(self._rng.getstate())).decode("ascii"),
+            "subsystem_state": {
+                "regime": (({
+                    **self._scalar_state(self.regime),
+                    "_pending": list(self.regime._pending)
+                    if getattr(self.regime, "_pending", None) is not None
+                    else None,
+                    "_integrity_hist": list(self.regime._integrity_hist)
+                    if getattr(self.regime, "_integrity_hist", None) is not None
+                    else None})
+                    if self.regime is not None else None),
+                "mesh": (({
+                    **self._scalar_state(self.mesh),
+                    "vbkf": (self._scalar_state(self.mesh.vbkf)
+                             if getattr(self.mesh, "vbkf", None) is not None
+                             else None),
+                    "afex": (self._scalar_state(self.mesh.afex)
+                             if getattr(self.mesh, "afex", None) is not None
+                             else None),
+                    "glia": (self._scalar_state(self.mesh.glia)
+                             if getattr(self.mesh, "glia", None) is not None
+                             else None)})
+                    if self.mesh is not None else None),
+                "dcs": {sub: self._scalar_state(getattr(self.dcs, sub))
+                        for sub in ("flux", "eds", "esp", "climber", "frac")
+                        if getattr(self.dcs, sub, None) is not None},
+                "refinery": ({sub: self._scalar_state(getattr(self.refinery, sub))
+                              for sub in ("scheduler", "reactor")
+                              if getattr(self.refinery, sub, None) is not None}
+                             if self.refinery is not None else None),
+            },
         }
 
     def restore_from_snapshot(self, data: Dict[str, Any]) -> None:
@@ -705,3 +739,37 @@ class StationUnifiedSimulator:
         if data.get("rng_state_hex"):
             self._rng.setstate(pickle.loads(
                 binascii.unhexlify(data["rng_state_hex"])))
+
+        ss = data.get("subsystem_state") or {}
+        rs = ss.get("regime")
+        if rs is not None and self.regime is not None:
+            self._restore_scalars(
+                self.regime,
+                {k: v for k, v in rs.items()
+                 if isinstance(v, (int, float)) and not isinstance(v, bool)})
+            if rs.get("_pending") is not None:
+                self.regime._pending = tuple(rs["_pending"])
+            if rs.get("_integrity_hist") is not None:
+                from collections import deque
+                self.regime._integrity_hist = deque(
+                    rs["_integrity_hist"],
+                    maxlen=self.regime._integrity_hist.maxlen)
+        ms = ss.get("mesh")
+        if ms is not None and self.mesh is not None:
+            self._restore_scalars(
+                self.mesh,
+                {k: v for k, v in ms.items()
+                 if isinstance(v, (int, float)) and not isinstance(v, bool)})
+            for sub in ("vbkf", "afex", "glia"):
+                if ms.get(sub) is not None and getattr(self.mesh, sub, None) is not None:
+                    self._restore_scalars(getattr(self.mesh, sub), ms[sub])
+        ds = ss.get("dcs")
+        if ds is not None:
+            for sub, state in ds.items():
+                if getattr(self.dcs, sub, None) is not None:
+                    self._restore_scalars(getattr(self.dcs, sub), state)
+        fs2 = ss.get("refinery")
+        if fs2 is not None and self.refinery is not None:
+            for sub, state in fs2.items():
+                if getattr(self.refinery, sub, None) is not None:
+                    self._restore_scalars(getattr(self.refinery, sub), state)

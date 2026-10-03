@@ -2166,3 +2166,46 @@ class TestOptionalOrganPresence:
         assert msb.ShieldStack is not None
         assert mus.SMetaStation is not None
         assert mus.StationMesh is not None
+
+
+class TestCheckpointSubsystemState:
+    """O padrão-ouro do checkpoint: restaurar e continuar deve produzir a
+    mesma trajetória que nunca ter parado. Cobre regime (s_meta, _pending,
+    _integrity_hist), mesh (vbkf/afex/glia), dcs e refinery — o estado que
+    a v18.1 passou a fotografar."""
+
+    def test_restore_then_continue_matches_uninterrupted(self):
+        sim_a = StationUnifiedSimulator(seed=11)
+        for _ in range(60):
+            sim_a.step()
+        snap = sim_a.snapshot()
+        # A continua interrompida
+        for _ in range(40):
+            sim_a.step()
+        # B restaura no sol 60 e continua
+        sim_b = StationUnifiedSimulator(seed=99)
+        sim_b.restore_from_snapshot(snap)
+        for _ in range(40):
+            sim_b.step()
+        assert sim_b.stocks == pytest.approx(sim_a.stocks)
+        assert sim_b.sol == sim_a.sol
+        assert (sim_b.regime.s_meta
+                == pytest.approx(sim_a.regime.s_meta))
+        assert (list(sim_b.regime._integrity_hist)
+                == pytest.approx(list(sim_a.regime._integrity_hist)))
+        assert (sim_b.mesh.vbkf.x == pytest.approx(sim_a.mesh.vbkf.x))
+        assert (sim_b.mesh.afex.ema == pytest.approx(sim_a.mesh.afex.ema))
+        assert sim_b.fleet.unit_health == pytest.approx(
+            sim_a.fleet.unit_health)
+        # histórico só existe pós-restore: compara a janela de 40 sols
+        assert (sim_b.body._incident_log
+                == sim_a.body._incident_log[-40:])
+
+    def test_subsystem_state_present_in_snapshot(self):
+        sim = StationUnifiedSimulator(seed=1)
+        sim.step()
+        snap = sim.snapshot()
+        ss = snap["subsystem_state"]
+        assert ss["regime"]["s_meta"] is not None
+        assert ss["mesh"]["vbkf"]["x"] is not None
+        assert "flux" in ss["dcs"]
