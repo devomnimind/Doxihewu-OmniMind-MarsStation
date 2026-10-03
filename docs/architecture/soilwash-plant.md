@@ -4,6 +4,8 @@
 
 O diagnóstico que mudou o desenho: o gargalo do perclorato **não era throughput da refinaria — era insumo** (a frota entregava ~4 kg ClO₄/sol). Como ClO₄⁻ é solúvel, a solução física é uma usina fixa que lixivia solo a granel.
 
+![Usina de lixiviação — feed de regolito, wash drum, reciclo de lixiviado 98%, concentração térmica → O₂, clean_soil → estufa](../assets/mars_soilwash_plant_ai.png)
+
 ## Parâmetros físicos
 
 | Parâmetro | Valor |

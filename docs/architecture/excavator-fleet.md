@@ -4,6 +4,8 @@
 
 A frota substituiu a constante mágica de 340 kg/sol (v17) por um órgão de colheita com história, desgaste e reciclagem.
 
+![Ciclo de vida da frota — escavação, canibalização, banco de peças, refurbish, auto-fabricação](../assets/mars_excavator_fleet_ai.png)
+
 ## Capacidade por era
 
 | Era | Capacidade unitária | Caráter |
