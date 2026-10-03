@@ -25,6 +25,13 @@ tests:
   suite: tests/agriculture/test_agriculture.py
   count: 111
   status: passing
+integrations_v16_passive_berm_2026_10_03:
+  - "mars_surface_organ.py v2: PassiveBerm — cerca de areia passiva a barlavento; intercepta SÓ a fração saltante do fluxo (grãos 80-200µm a cm do solo — poeira fina suspensa atravessa), cap físico 60%×50% saltante = 30% do fluxo"
+  - "dinâmica sand-fence: cresce em tempestade (driving = dust_flux×(wind−5m/s), grow 2.5mm/unidade, cap 3m) e erode em calmaria (0.4mm/sol reptação+slump) — o ambiente constrói a defesa de graça; validação: calma h~0.38m/intercept 1.5%, tempestade 15 sols h→3m/intercept 30%, pós-tempestade persiste h~2.98m"
+  - "deposited_kg *= (1−berm_intercept_frac) ANTES do EDS — berm é a 1ª linha passiva, EDS fica p/ o que atravessa; telemetria +berm_height_m/berm_intercept_frac no step_summary do órgão"
+  - "GLDS-191 MARS-500 publicado em mars-raw-data/microbiome/glds191/ (taxonomy-and-counts.tsv 2917 ASVs + ISA metadata) — fonte real p/ microbioma de confinamento"
+  - "REMS rebuild v3 no Colab: watch rems-pds-watch armada cobrindo 3479→4843 (repara 3 arquivos HF quebrados 3479/3480/3493, recusa <500KB, download cru→mars-raw-data + rebuild parquet); NMSU segue fora (502→conn reset)"
+  - "229 testes agriculture passam"
 integrations_v15_station_mesh_2026_10_03:
   - "mars_station_mesh.py (NOVO, 23º módulo): port dos 3 padrões OmniMind para o corpo da estação"
   - "StationVBKF (port fiel soliton_raft_detector::VBKFEstimator): Kalman sobre body_integrity com R adaptativo (inverse-gamma posterior), resíduo normalizado >2.5 rejeita outlier (ganho 0.25), stress_score modula Q (papel do D12) — a malha decide sobre ESTADO filtrado, não observação ruidosa"
