@@ -4,7 +4,9 @@
 
 A pele da estação: cinco camadas físicas — composta externa, varredura eletrostática (EDS), núcleo térmico, anel quente e camada dielétrica — mais o **PassiveBerm** (v16), defesa eólica passiva de regolito.
 
-![Corte transversal da parede — 5 camadas + berm passivo](../assets/mars_surface_organ_cutaway.svg)
+![Corte transversal do domo — berm passivo e 5 camadas da pele](../assets/mars_surface_organ_cutaway_ai.png)
+
+![Esquema técnico rotulado — composição das 5 camadas + berm](../assets/mars_surface_organ_cutaway.svg)
 
 ## Ledger energético
 
