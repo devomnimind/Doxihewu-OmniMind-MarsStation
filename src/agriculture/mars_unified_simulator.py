@@ -247,6 +247,135 @@ class SoilWashPlant:
 
 
 @dataclass
+class ArmsMesh:
+    """Malha de braços radiais — tecido redundante, não órgão crítico.
+
+    PH-8 (abscisão e realocação de tecido): braço perdido não é restaurado
+    — é abscindido. Os conduítes selam na base (cicatriz), a fração de
+    massa recuperável volta ao estoque comum e a FUNÇÃO é re-alocada aos
+    braços sobreviventes (a malha vascular re-roteia). Reposição só via
+    broto novo (custo de construção) ou missão de arquitetura — nunca
+    ressurgimento silencioso.
+
+    Cada braço carrega ``greenhouse_share_per_arm`` da capacidade de
+    estufa; 50% da estufa fica no tronco (imune a perda de braço), 50%
+    distribuída — perder braços degrada a cadeia alimentar de forma
+    medida e auditável, nunca a zero de uma vez.
+
+    Histerese obrigatória: um sol de queda não abscinde — exige
+    ``compromised_sols`` consecutivos abaixo do limiar, ou falha
+    estrutural imediata (integridade <= 0.05).
+    """
+    n_arms: int = 8
+    arm_integrity: List[float] = field(default_factory=lambda: [1.0] * 8)
+    compromised_run: List[int] = field(default_factory=lambda: [0] * 8)
+    abscised: List[bool] = field(default_factory=lambda: [False] * 8)
+    # física do módulo-braço
+    arm_mass_kg: float = 40000.0          # segmento pressurizado + conduíte
+    salvage_fraction: float = 0.5         # massa colhida na abscisão
+    salvage_fe_share: float = 0.6         # -> fe_metal; resto -> cimento
+    seal_energy_kwh: float = 40.0         # selamento dos conduítes na base
+    compromised_threshold: float = 0.35
+    compromised_sols: int = 30            # histerese da abscisão
+    fatal_threshold: float = 0.05         # colapso imediato, sem histerese
+    wear_per_sol: float = 0.0001          # senescência lenta (~0.21/21k sols)
+    incident_hit_prob: float = 0.15       # braços são semienterrados —
+                                          # só fração dos choques alcança
+    incident_wear_min: float = 0.02
+    incident_wear_rng: float = 0.04       # hit de 2-6% por incidente
+    incident_shock_threshold: float = 2.2 # mesmo limiar da frota
+    # broto (Era III+): construção nova. O custo casa exato com a massa
+    # colhida (12t Fe + 8t cimento = os 20t do salvage) — o ciclo é
+    # neutro em massa; o preço real é energia (selagem+montagem) e o
+    # cooldown de projeto. Salvage nunca pode lucrar contra o broto.
+    sprout_fe_kg: float = 12000.0
+    sprout_cement_kg: float = 8000.0
+    sprout_energy_kwh: float = 400.0      # montagem + repressurização
+    sprout_cooldown_sols: int = 120       # broto é projeto, não reflexo
+    sprout_cd: int = 0
+    # função hospedada: fração da estufa fora do tronco
+    greenhouse_hosted_frac: float = 0.5
+    # contadores/telemetria
+    arms_abscised_total: int = 0
+    arms_sprouted_total: int = 0
+    mass_salvaged_kg: float = 0.0
+    mass_lost_kg: float = 0.0
+
+    def surviving(self) -> int:
+        return sum(1 for a in self.abscised if not a)
+
+    def greenhouse_factor(self) -> float:
+        """Fração efetiva da capacidade de estufa: tronco (imune) +
+        braços sobreviventes. Chão = fração hospedada no tronco."""
+        frac_alive = self.surviving() / max(1, self.n_arms)
+        return (1.0 - self.greenhouse_hosted_frac
+                + self.greenhouse_hosted_frac * frac_alive)
+
+    def step_sol(self, era: str, energy_budget_kwh: float,
+                 latent_shock: float, fe_stock_kg: float,
+                 cement_stock_kg: float,
+                 rng: random.Random) -> Dict[str, float]:
+        out = {"energy_kwh": 0.0, "abscised": 0, "sprouted": 0,
+               "salvaged_fe_kg": 0.0, "salvaged_cement_kg": 0.0,
+               "greenhouse_factor": self.greenhouse_factor(),
+               "surviving": self.surviving()}
+        if era == "I_ancoragem":
+            return out  # braços ainda não existem na ancoragem
+        # senescência + incidentes (o mesmo choque latente da frota)
+        hit = latent_shock > self.incident_shock_threshold
+        for i in range(self.n_arms):
+            if self.abscised[i]:
+                continue
+            w = self.wear_per_sol
+            if hit and rng.random() < self.incident_hit_prob:
+                w += self.incident_wear_min + rng.random() * self.incident_wear_rng
+            self.arm_integrity[i] = max(0.0, self.arm_integrity[i] - w)
+            if self.arm_integrity[i] < self.compromised_threshold:
+                self.compromised_run[i] += 1
+            else:
+                self.compromised_run[i] = 0
+            fatal = self.arm_integrity[i] <= self.fatal_threshold
+            if fatal or self.compromised_run[i] >= self.compromised_sols:
+                # abscisão: selar conduítes (custo) + colher fração
+                if energy_budget_kwh - out["energy_kwh"] < self.seal_energy_kwh:
+                    continue  # sem energia para a cicatriz neste sol
+                out["energy_kwh"] += self.seal_energy_kwh
+                self.abscised[i] = True
+                salv = self.arm_mass_kg * self.salvage_fraction
+                out["salvaged_fe_kg"] += salv * self.salvage_fe_share
+                out["salvaged_cement_kg"] += salv * (1.0 - self.salvage_fe_share)
+                self.mass_salvaged_kg += salv
+                self.mass_lost_kg += self.arm_mass_kg - salv
+                self.arms_abscised_total += 1
+                out["abscised"] += 1
+        # broto: Era III+, construção nova custando Fe+cimento. Nunca no
+        # mesmo sol de uma abscisão — a estação sela a ferida antes de
+        # reabrir a malha (cicatriz precede broto).
+        if self.sprout_cd > 0:
+            self.sprout_cd -= 1
+        elif era in ("III_tronco", "IV_copa") and self.surviving() < self.n_arms \
+                and out["abscised"] == 0 \
+                and fe_stock_kg >= self.sprout_fe_kg \
+                and cement_stock_kg >= self.sprout_cement_kg \
+                and energy_budget_kwh - out["energy_kwh"] >= self.sprout_energy_kwh:
+            for i in range(self.n_arms):
+                if self.abscised[i]:
+                    self.abscised[i] = False
+                    self.arm_integrity[i] = 1.0
+                    self.compromised_run[i] = 0
+                    break
+            self.sprout_cd = self.sprout_cooldown_sols
+            self.arms_sprouted_total += 1
+            out["energy_kwh"] += self.sprout_energy_kwh
+            out["sprouted"] = 1
+            out["sprout_fe_cost_kg"] = self.sprout_fe_kg
+            out["sprout_cement_cost_kg"] = self.sprout_cement_kg
+        out["greenhouse_factor"] = self.greenhouse_factor()
+        out["surviving"] = self.surviving()
+        return out
+
+
+@dataclass
 class StationUnifiedSimulator:
     """Simulador único de toda a estação: estado cumulativo, dinâmico e pontuado."""
 
@@ -264,6 +393,7 @@ class StationUnifiedSimulator:
     ice: IceElevatorSupply = field(default_factory=IceElevatorSupply)
     fleet: ExcavatorFleet = field(default_factory=ExcavatorFleet)
     soil_wash: SoilWashPlant = field(default_factory=SoilWashPlant)
+    arms: ArmsMesh = field(default_factory=ArmsMesh)
     regime: Optional[SMetaStation] = field(
         default_factory=SMetaStation if SMetaStation else lambda: None)
     mesh: Optional[StationMesh] = field(
@@ -499,6 +629,26 @@ class StationUnifiedSimulator:
         self.stocks["perchlorate_kg"] += wash_res["clo4_kg"]
         self.stocks["clean_soil_kg"] += wash_res["clean_soil_kg"]
         self.stocks["water_l"] -= wash_res["water_net_l"]
+
+        # PH-8: malha de braços — tecido redundante. Braço perdido é
+        # abscindido (conduítes selam na base, custo do mesmo pool), a
+        # fração recuperável volta ao estoque e a função (fração de
+        # estufa hospedada nos braços) é re-alocada aos sobreviventes.
+        # Broto em Era III+ é construção NOVA (custo Fe+cimento), nunca
+        # restauração silenciosa.
+        arms_res = self.arms.step_sol(
+            era_name,
+            env.get("power_margin", 0.6) * 24.0 * self.power_base_kw,
+            latent_shock, self.stocks["fe_metal_kg"],
+            self.stocks["cement_geopolymer_kg"], self._rng)
+        env["power_margin"] = max(
+            0.0, env.get("power_margin", 0.6)
+            - arms_res["energy_kwh"] / (24.0 * self.power_base_kw))
+        self.stocks["fe_metal_kg"] += arms_res["salvaged_fe_kg"]
+        self.stocks["cement_geopolymer_kg"] += arms_res["salvaged_cement_kg"]
+        self.stocks["fe_metal_kg"] -= arms_res.get("sprout_fe_cost_kg", 0.0)
+        self.stocks["cement_geopolymer_kg"] -= arms_res.get(
+            "sprout_cement_cost_kg", 0.0)
         
         fe_raw_mined_kg = regolith_sol_kg * 0.19
         fe_metal_smelted_kg = fe_raw_mined_kg * 0.72 # Carboredução com CO
@@ -537,18 +687,22 @@ class StationUnifiedSimulator:
         self.stocks["o2_kg"] += 26.0   # Fotossíntese O2 líquido
         
         # Cultivos de estufa (após estabilização no sol 1500)
+        # PH-8: metade da capacidade de estufa vive nos braços — a malha
+        # re-aloca função aos sobreviventes (greenhouse_factor em [0.5, 1]);
+        # spirulina e mealworm ficam no tronco (bioreator/berçário imunes).
+        gh = arms_res["greenhouse_factor"]
         potatoes_sol_kg = 0.0
         wheat_sol_kg = 0.0
         n_caproate_sol_kg = 0.0
         if current_sol >= 1500:
-            potatoes_sol_kg = 45.0
-            wheat_sol_kg = 30.0
-            n_caproate_sol_kg = 0.024 * 0.95 * 1000.0 # ~22.8 kg/sol
+            potatoes_sol_kg = 45.0 * gh
+            wheat_sol_kg = 30.0 * gh
+            n_caproate_sol_kg = 0.024 * 0.95 * 1000.0 * gh # ~22.8 kg/sol
             self.stocks["potatoes_kg"] += potatoes_sol_kg
             self.stocks["wheat_kg"] += wheat_sol_kg
             self.stocks["n_caproate_kg"] += n_caproate_sol_kg
-            self.stocks["water_l"] -= 35.0
-            self.stocks["o2_kg"] += 40.0
+            self.stocks["water_l"] -= 35.0 * gh
+            self.stocks["o2_kg"] += 40.0 * gh
             
         # Proteína animal: Tenebrio molitor consumindo resíduos vegetais (15 kg casca/farelo)
         plant_residue_kg = 15.0 if current_sol >= 1500 else 5.0
@@ -650,6 +804,18 @@ class StationUnifiedSimulator:
             },
             "soil_wash_sol": {k: round(v, 4) for k, v in wash_res.items()},
             "soil_washed_total_t": round(self.soil_wash.soil_washed_total_t, 2),
+            "arms_state": {
+                "arm_integrity": [round(v, 4) for v in self.arms.arm_integrity],
+                "abscised": list(self.arms.abscised),
+                "surviving": self.arms.surviving(),
+                "greenhouse_factor": round(arms_res["greenhouse_factor"], 4),
+                "arms_abscised_total": self.arms.arms_abscised_total,
+                "arms_sprouted_total": self.arms.arms_sprouted_total,
+                "mass_salvaged_kg": round(self.arms.mass_salvaged_kg, 1),
+                "mass_lost_kg": round(self.arms.mass_lost_kg, 1),
+                "events_sol": {k: arms_res[k] for k in
+                               ("abscised", "sprouted", "energy_kwh")},
+            },
             "mesh_surfaces": mesh_res,
             "repair_load_h": body_res["repair_load_h"],
             "incident": body_res["incident"],
@@ -763,6 +929,12 @@ class StationUnifiedSimulator:
                         for sub in ("flux", "eds", "esp", "climber", "frac")
                         if getattr(self.dcs, sub, None) is not None},
                 "soil_wash": self._scalar_state(self.soil_wash),
+                "arms": {
+                    **self._scalar_state(self.arms),
+                    "arm_integrity": list(self.arms.arm_integrity),
+                    "compromised_run": list(self.arms.compromised_run),
+                    "abscised": list(self.arms.abscised),
+                },
                 "refinery": ({sub: self._scalar_state(getattr(self.refinery, sub))
                               for sub in ("scheduler", "reactor")
                               if getattr(self.refinery, sub, None) is not None}
@@ -843,6 +1015,15 @@ class StationUnifiedSimulator:
                     self._restore_scalars(getattr(self.dcs, sub), state)
         if ss.get("soil_wash") is not None:
             self._restore_scalars(self.soil_wash, ss["soil_wash"])
+        ars = ss.get("arms")
+        if ars is not None:
+            self._restore_scalars(
+                self.arms,
+                {k: v for k, v in ars.items()
+                 if isinstance(v, (int, float)) and not isinstance(v, bool)})
+            for _k in ("arm_integrity", "compromised_run", "abscised"):
+                if ars.get(_k) is not None:
+                    setattr(self.arms, _k, list(ars[_k]))
         fs2 = ss.get("refinery")
         if fs2 is not None and self.refinery is not None:
             for sub, state in fs2.items():

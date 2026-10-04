@@ -59,6 +59,7 @@ nav:
       - SurfaceOrgan (pele EDS): architecture/surface-organ.md
       - ExcavatorFleet (frota viva): architecture/excavator-fleet.md
       - SoilWashPlant (lixiviação): architecture/soilwash-plant.md
+      - ArmsMesh (abscisão de braços): architecture/arms-mesh.md
   - Cadeias Industriais:
       - Água (gelo → eletrólise → Sabatier): chains/water.md
       - Oxigênio (fotossíntese + eletrólise + perclorato): chains/oxygen.md

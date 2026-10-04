@@ -2243,3 +2243,110 @@ class TestSoilWashPlant:
             sim.step(_env())
         assert sim.stocks["clean_soil_kg"] > 0.0
         assert sim.soil_wash.soil_washed_total_t > 0.0
+
+
+class TestArmsMesh:
+    """PH-8: malha de braços — tecido redundante. Abscisão conserva massa
+    (salvaged + lost = massa do braço), a função é re-alocada aos
+    sobreviventes, histerese impede abscisão por dip de 1 sol, e o broto
+    é construção NOVA (custo), nunca restauração."""
+
+    def test_abscission_conserves_mass(self):
+        from src.agriculture.mars_unified_simulator import ArmsMesh
+        arms = ArmsMesh()
+        arms.arm_integrity[0] = 0.03  # fatal: abscisão imediata
+        r = arms.step_sol("III_tronco", 1e4, 0.0, 1e6, 1e6,
+                          __import__("random").Random(1))
+        assert r["abscised"] == 1
+        salv = r["salvaged_fe_kg"] + r["salvaged_cement_kg"]
+        # conservação: colhido + perdido = massa do braço
+        assert salv + (arms.arm_mass_kg * (1 - arms.salvage_fraction)) \
+            == pytest.approx(arms.arm_mass_kg)
+        assert salv == pytest.approx(arms.arm_mass_kg * arms.salvage_fraction)
+        assert r["energy_kwh"] == pytest.approx(arms.seal_energy_kwh)
+
+    def test_hysteresis_blocks_single_sol_dip(self):
+        from src.agriculture.mars_unified_simulator import ArmsMesh
+        arms = ArmsMesh()
+        arms.arm_integrity[0] = 0.30  # abaixo do limiar, sem histerese ainda
+        r = arms.step_sol("III_tronco", 1e4, 0.0, 1e6, 1e6,
+                          __import__("random").Random(1))
+        assert r["abscised"] == 0 and not arms.abscised[0]
+        # depois de compromised_sols sols seguidos -> abscinde (a 1ª chamada
+        # já contou 1 sol; a abscisão ocorre na última iteração, e o broto
+        # não pode reabrir a malha no mesmo sol — cicatriz precede broto)
+        for _ in range(arms.compromised_sols - 1):
+            r = arms.step_sol("III_tronco", 1e4, 0.0, 1e6, 1e6,
+                              __import__("random").Random(1))
+        assert arms.abscised[0] and arms.arms_abscised_total == 1
+
+    def test_greenhouse_reallocation_floor(self):
+        from src.agriculture.mars_unified_simulator import ArmsMesh
+        arms = ArmsMesh()
+        assert arms.greenhouse_factor() == 1.0
+        for i in range(4):
+            arms.abscised[i] = True
+        assert arms.greenhouse_factor() == pytest.approx(0.75)
+        for i in range(4, 8):
+            arms.abscised[i] = True
+        # perder todos os braços: chão = fração no tronco (imune)
+        assert arms.greenhouse_factor() == pytest.approx(0.5)
+
+    def test_sprout_is_new_construction_not_restore(self):
+        from src.agriculture.mars_unified_simulator import ArmsMesh
+        arms = ArmsMesh()
+        arms.abscised[0] = True
+        r = arms.step_sol("III_tronco", 1e4, 0.0, 1e6, 1e6,
+                          __import__("random").Random(1))
+        assert r["sprouted"] == 1
+        assert r["sprout_fe_cost_kg"] == pytest.approx(arms.sprout_fe_kg)
+        assert not arms.abscised[0] and arms.arm_integrity[0] == 1.0
+        # sem estoque -> sem broto
+        arms2 = ArmsMesh()
+        arms2.abscised[0] = True
+        r2 = arms2.step_sol("III_tronco", 1e4, 0.0, 0.0, 0.0,
+                            __import__("random").Random(1))
+        assert r2["sprouted"] == 0
+
+    def test_era_gating_no_arms_in_anchorage(self):
+        from src.agriculture.mars_unified_simulator import ArmsMesh
+        arms = ArmsMesh()
+        arms.arm_integrity[0] = 0.03
+        r = arms.step_sol("I_ancoragem", 1e4, 5.0, 1e6, 1e6,
+                          __import__("random").Random(1))
+        assert r["abscised"] == 0 and arms.surviving() == 8
+
+    def test_sim_arms_integrated_and_telemetry(self):
+        sim = StationUnifiedSimulator(seed=5)
+        sim.sol = 8000
+        s = sim.step(_env())
+        assert "arms_state" in s
+        assert s["arms_state"]["surviving"] == 8
+        # incidente repetido deve desgastar braços via latent_shock
+        sim2 = StationUnifiedSimulator(seed=5)
+        sim2.sol = 8000
+        for _ in range(30):
+            s2 = sim2.step(_env(seismic=1.0))
+        assert min(sim2.arms.arm_integrity) < 1.0
+
+    def test_arms_snapshot_restore(self):
+        sim = StationUnifiedSimulator(seed=5)
+        sim.sol = 8000
+        sim.step(_env())
+        sim.arms.abscised[2] = True
+        sim.arms.arm_integrity[0] = 0.42
+        snap = sim.snapshot()
+        sim2 = StationUnifiedSimulator(seed=9)
+        sim2.restore_from_snapshot(snap)
+        assert sim2.arms.abscised[2] is True
+        assert sim2.arms.arm_integrity[0] == pytest.approx(0.42)
+
+    def test_sprout_cycle_is_mass_neutral(self):
+        """O exploit pego no longrun: salvage (20t) >> custo do broto
+        (2,3t) minerava a própria estação. O ciclo deve ser neutro:
+        custo do broto >= massa colhida na abscisão."""
+        from src.agriculture.mars_unified_simulator import ArmsMesh
+        arms = ArmsMesh()
+        salvage = arms.arm_mass_kg * arms.salvage_fraction
+        sprout_cost = arms.sprout_fe_kg + arms.sprout_cement_kg
+        assert sprout_cost >= salvage

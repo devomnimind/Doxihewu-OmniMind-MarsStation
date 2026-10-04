@@ -119,3 +119,11 @@ test_coverage_status_2026_09_28:
   status: covered
   tests: 111
   suite_dir: tests/agriculture
+v20_arms_mesh_2026_10_04:
+  organ: "ArmsMesh (mars_unified_simulator.py) — 8 braços radiais como tecido redundante (PH-8)"
+  abscission: "braço comprometido <0.35 por 30 sols (ou fatal <=0.05) -> selagem 40kWh + salvage 50% de 40t -> Fe+cimento; NUNCA restauração"
+  reallocation: "greenhouse_factor = 0.5 (tronco) + 0.5 × arms_vivos/8 — piso 50%; telemetria arms_state"
+  sprout: "Era III+; custo = salvage exato (12t Fe + 8t cimento) + 400kWh + cooldown 120 sols; cicatriz precede broto (nunca mesmo sol)"
+  exploit_fix: "longrun expôs salvage 20t >> custo 2.3t = auto-mineração; neutralizado — custo do broto casa com massa colhida"
+  canonical_v20: "seed42/21060: useful 8131.4t, abscissoes 46 = brotos 46, salvaged 920t = lost 920t, integridade 0.5718; inverno de braços era II (8->1) + re-broto era III"
+  tests: "TestArmsMesh — conservação, histerese, piso de estufa, neutralidade de massa, era-gating, restore"
