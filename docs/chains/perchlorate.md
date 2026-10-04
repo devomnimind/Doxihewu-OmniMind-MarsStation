@@ -2,6 +2,10 @@
 
 O perclorato (ClO₄⁻, ~0,6% do regolito marciano) é o contaminante que trava agricultura direta e tireoide humana. A cadeia v19 transforma veneno em recurso.
 
+![Loop perclorato → estufa](../assets/mars_perchlorate_greenhouse_loop.png)
+
+*Fluxo completo da cadeia: feed de regolito → wash drum contracorrente → loop de lixiviado 98% → concentrador → decomposição térmica → O₂ ao habitat; solo limpo → estufa; lente de gelo subterrânea fecha o balanço hídrico.*
+
 ## Fluxo
 
 ```mermaid

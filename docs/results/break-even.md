@@ -1,5 +1,9 @@
 # Break-even — Sínodo 16–17
 
+![Timeline dos 27 sínodos](../assets/mars_synod_timeline.png)
+
+*Ontogenia da estação em 27 sínodos (21.060 sols): Era I ancoragem → Era II tronco → Era III copa de 12 braços → Era IV ecopoiese com halo de solo desintoxicado. A espinha temporal marca brotos, abscissões e o break-even ISRU no Sínodo 16–17.*
+
 ## Marcos medidos (massa útil acumulada vs 2.400 t importadas)
 
 | Sínodo | Produção | Razão |
