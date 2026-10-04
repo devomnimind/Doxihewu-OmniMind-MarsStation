@@ -2255,7 +2255,7 @@ class TestArmsMesh:
         from src.agriculture.mars_unified_simulator import ArmsMesh
         arms = ArmsMesh()
         arms.arm_integrity[0] = 0.03  # fatal: abscisão imediata
-        r = arms.step_sol("III_tronco", 1e4, 0.0, 1e6, 1e6,
+        r = arms.step_sol("III_tronco", 8000, 1e4, 0.0, 1e6, 1e6,
                           __import__("random").Random(1))
         assert r["abscised"] == 1
         salv = r["salvaged_fe_kg"] + r["salvaged_cement_kg"]
@@ -2269,14 +2269,14 @@ class TestArmsMesh:
         from src.agriculture.mars_unified_simulator import ArmsMesh
         arms = ArmsMesh()
         arms.arm_integrity[0] = 0.30  # abaixo do limiar, sem histerese ainda
-        r = arms.step_sol("III_tronco", 1e4, 0.0, 1e6, 1e6,
+        r = arms.step_sol("III_tronco", 8000, 1e4, 0.0, 1e6, 1e6,
                           __import__("random").Random(1))
         assert r["abscised"] == 0 and not arms.abscised[0]
         # depois de compromised_sols sols seguidos -> abscinde (a 1ª chamada
         # já contou 1 sol; a abscisão ocorre na última iteração, e o broto
         # não pode reabrir a malha no mesmo sol — cicatriz precede broto)
         for _ in range(arms.compromised_sols - 1):
-            r = arms.step_sol("III_tronco", 1e4, 0.0, 1e6, 1e6,
+            r = arms.step_sol("III_tronco", 8000, 1e4, 0.0, 1e6, 1e6,
                               __import__("random").Random(1))
         assert arms.abscised[0] and arms.arms_abscised_total == 1
 
@@ -2284,19 +2284,23 @@ class TestArmsMesh:
         from src.agriculture.mars_unified_simulator import ArmsMesh
         arms = ArmsMesh()
         assert arms.greenhouse_factor() == 1.0
-        for i in range(4):
+        # headroom 70%: perder 1 braço de estufa (4->3) ainda dá serviço 1.0
+        gh_arms = [i for i, r in enumerate(arms.roles) if r == "greenhouse"]
+        arms.abscised[gh_arms[0]] = True
+        assert arms.service("greenhouse") == 1.0  # 3/4/0.7 = 1.07 -> cap 1
+        arms.abscised[gh_arms[1]] = True
+        # 2/4/0.7 = 0.714 -> gh_factor = 0.5 + 0.5*0.714
+        assert arms.greenhouse_factor() == pytest.approx(0.5 + 0.5 * (2/4/0.7))
+        for i in gh_arms[2:]:
             arms.abscised[i] = True
-        assert arms.greenhouse_factor() == pytest.approx(0.75)
-        for i in range(4, 8):
-            arms.abscised[i] = True
-        # perder todos os braços: chão = fração no tronco (imune)
+        # sem braços de estufa: chão do tronco
         assert arms.greenhouse_factor() == pytest.approx(0.5)
 
     def test_sprout_is_new_construction_not_restore(self):
         from src.agriculture.mars_unified_simulator import ArmsMesh
         arms = ArmsMesh()
         arms.abscised[0] = True
-        r = arms.step_sol("III_tronco", 1e4, 0.0, 1e6, 1e6,
+        r = arms.step_sol("III_tronco", 8000, 1e4, 0.0, 1e6, 1e6,
                           __import__("random").Random(1))
         assert r["sprouted"] == 1
         assert r["sprout_fe_cost_kg"] == pytest.approx(arms.sprout_fe_kg)
@@ -2304,7 +2308,7 @@ class TestArmsMesh:
         # sem estoque -> sem broto
         arms2 = ArmsMesh()
         arms2.abscised[0] = True
-        r2 = arms2.step_sol("III_tronco", 1e4, 0.0, 0.0, 0.0,
+        r2 = arms2.step_sol("III_tronco", 8000, 1e4, 0.0, 0.0, 0.0,
                             __import__("random").Random(1))
         assert r2["sprouted"] == 0
 
@@ -2312,16 +2316,16 @@ class TestArmsMesh:
         from src.agriculture.mars_unified_simulator import ArmsMesh
         arms = ArmsMesh()
         arms.arm_integrity[0] = 0.03
-        r = arms.step_sol("I_ancoragem", 1e4, 5.0, 1e6, 1e6,
+        r = arms.step_sol("I_ancoragem", 500, 1e4, 5.0, 1e6, 1e6,
                           __import__("random").Random(1))
-        assert r["abscised"] == 0 and arms.surviving() == 8
+        assert r["abscised"] == 0 and arms.surviving() == 12
 
     def test_sim_arms_integrated_and_telemetry(self):
         sim = StationUnifiedSimulator(seed=5)
         sim.sol = 8000
         s = sim.step(_env())
         assert "arms_state" in s
-        assert s["arms_state"]["surviving"] == 8
+        assert s["arms_state"]["surviving"] == 12
         # incidente repetido deve desgastar braços via latent_shock
         sim2 = StationUnifiedSimulator(seed=5)
         sim2.sol = 8000
@@ -2350,3 +2354,44 @@ class TestArmsMesh:
         salvage = arms.arm_mass_kg * arms.salvage_fraction
         sprout_cost = arms.sprout_fe_kg + arms.sprout_cement_kg
         assert sprout_cost >= salvage
+
+    def test_headroom_absorbs_losses(self):
+        """v21: braços a 70% — ~30% de perda não degrada serviço."""
+        from src.agriculture.mars_unified_simulator import ArmsMesh
+        arms = ArmsMesh()
+        arms.abscised[0] = True  # 1 greenhouse de 4
+        arms.abscised[4] = True  # 1 habitat de 3
+        assert arms.service("greenhouse") == 1.0
+        # habitat 2/3/0.7 = 0.952 — o papel degrada quando a perda
+        # excede o headroom do próprio papel
+        assert arms.service("habitat") == pytest.approx(2/3/0.7)
+
+    def test_conversion_reassigns_role_from_least_critical(self):
+        from src.agriculture.mars_unified_simulator import ArmsMesh
+        arms = ArmsMesh()
+        # mata 2 braços de estufa -> serviço < 1 -> lab doa primeiro
+        for i, r in enumerate(arms.roles):
+            if r == "greenhouse":
+                arms.arm_integrity[i] = 0.03
+                break
+        # mata um segundo braço de estufa também
+        gh2 = [i for i, r in enumerate(arms.roles) if r == "greenhouse"]
+        arms.arm_integrity[gh2[1]] = 0.03
+        r = arms.step_sol("III_tronco", 8000, 1e4, 0.0, 1e6, 1e6,
+                          __import__("random").Random(1))
+        # lab ou conduit deve ter doado para cobrir estufa
+        assert r["converted"] >= 1
+        assert "greenhouse" in r["converted_roles"]
+        labs_left = sum(1 for x in arms.roles if x == "lab")
+        conduit_left = sum(1 for x in arms.roles if x == "conduit")
+        assert labs_left + conduit_left < 5  # algum doou
+
+    def test_resupply_forecast(self):
+        from src.agriculture.mars_unified_simulator import ArmsMesh
+        arms = ArmsMesh()
+        arms._abscised_hist = [9000, 9100, 9200]  # 3 nos últimos 3 sínodos
+        f = arms.resupply_forecast(10000)
+        assert f["rate_per_synod"] == pytest.approx(1.0)
+        assert f["spares_needed"] == 2  # lead 2 sínodos
+        f0 = ArmsMesh().resupply_forecast(10000)
+        assert f0["spares_needed"] == 0

@@ -1,0 +1,2297 @@
+
+<!doctype html>
+<html lang="pt" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Máquina-Árvore de Ecopoiese — estação autônoma marciana, simulação física auditável">
+      
+      
+      
+      
+        <link rel="prev" href="../mars_directed_evolution_100gen_draft/">
+      
+      
+        <link rel="next" href="../mars_parecer_tecnico_engenharia_e_biomecanica_a100/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Motor aleatório de ecopoiese (refs) - Doxihewu OmniMind MarsStation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://unpkg.com/katex@0/dist/katex.min.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-orange" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ecopoiesis-de-marte-mapa-da-literatura-modulos-e2-marciano-motor-aleatorio" class="md-skip">
+          Pular para conteúdo
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeçalho">
+    <a href="../.." title="Doxihewu OmniMind MarsStation" class="md-header__button md-logo" aria-label="Doxihewu OmniMind MarsStation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Doxihewu OmniMind MarsStation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Motor aleatório de ecopoiese (refs)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep-orange" data-md-color-accent="teal"  aria-label="Modo escuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Modo escuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-orange" data-md-color-accent="teal"  aria-label="Modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Buscar" placeholder="Buscar" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Pesquisar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando busca
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://gitlab.com/zephyrix/Doxihewu-OmniMind-MarsStation" title="Ir para repositório" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitLab
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Abas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Visão Geral
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/station-body/" class="md-tabs__link">
+          
+  
+  
+  Arquitetura
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../chains/water/" class="md-tabs__link">
+          
+  
+  
+  Cadeias Industriais
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../governance/s-meta/" class="md-tabs__link">
+          
+  
+  
+  Governança
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../experiments/e10-monte-carlo/" class="md-tabs__link">
+          
+  
+  
+  Experimentos
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../results/longrun-21060/" class="md-tabs__link">
+          
+  
+  
+  Resultados
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../mars_monografia_sistema_arvore_ecopoiese/" class="md-tabs__link">
+          
+  
+  
+  Papers
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegação" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Doxihewu OmniMind MarsStation" class="md-nav__button md-logo" aria-label="Doxihewu OmniMind MarsStation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Doxihewu OmniMind MarsStation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://gitlab.com/zephyrix/Doxihewu-OmniMind-MarsStation" title="Ir para repositório" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitLab
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitetura
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Arquitetura
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/station-body/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Corpo da Estação (11 camadas)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/surface-organ/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SurfaceOrgan (pele EDS)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/excavator-fleet/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ExcavatorFleet (frota viva)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/soilwash-plant/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SoilWashPlant (lixiviação)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/arms-mesh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ArmsMesh (abscisão de braços)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cadeias Industriais
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Cadeias Industriais
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chains/water/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Água (gelo → eletrólise → Sabatier)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chains/oxygen/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Oxigênio (fotossíntese + eletrólise + perclorato)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chains/steel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aço (carboredução + metalurgia)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chains/perchlorate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Perclorato (desintoxicação → O₂ + clean_soil)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Governança
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Governança
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../governance/s-meta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S-Meta (regime, carta, vetos)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../governance/paired-conservation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conservação Pareada (5 leis + falhas)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../governance/habitability-gate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Portão de Habitabilidade (7 critérios)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Experimentos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Experimentos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../experiments/e10-monte-carlo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    E10 — Monte Carlo 1M
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../experiments/e11-bayesian/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    E11 — Calibração Bayesiana NUTS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../experiments/e12-actuator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    E12 — Redundância de Atuadores
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../experiments/e13-seismic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    E13 — Importance Sampling Sísmico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../experiments/v17-v19-audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auditoria v17→v19
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resultados
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Resultados
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../results/longrun-21060/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Longrun 21.060 sols (v19 canônico)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../results/break-even/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Break-even no Sínodo 17
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Papers
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Papers
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mars_monografia_sistema_arvore_ecopoiese/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monografia do Sistema-Árvore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mars_directed_evolution_100gen_draft/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evolução dirigida 100 gerações
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Motor aleatório de ecopoiese (refs)
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Motor aleatório de ecopoiese (refs)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-a-pergunta-que-este-mapa-responde" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. A pergunta que este mapa responde
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-mapa-obra-publicada-contribuicao-modulo-e2-marciano" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Mapa: obra publicada → contribuição → módulo E2-MARCIANO
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-o-motor-aleatorio-margem-para-a-surpresa-como-principio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. O motor aleatório — "margem para a surpresa" como princípio
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. O motor aleatório — &#34;margem para a surpresa&#34; como princípio">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-regra-mae" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Regra-mãe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-componentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Componentes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-distincao-honesta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Distinção honesta
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-lacunas-honestas-da-literatura-para-este-projeto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Lacunas honestas da literatura para este projeto
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-proximos-passos-de-leitura-fila" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Próximos passos de leitura (fila)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-apendice-pegada-antropogenica-o-que-medimos-vs-o-que-nao-medimos-2026-09-30" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Apêndice: pegada antropogênica — o que medimos vs o que não medimos (2026-09-30)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Apêndice: pegada antropogênica — o que medimos vs o que não medimos (2026-09-30)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#medido-e-publicado-campo-anthropogenic-space-weather" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Medido e publicado (campo: "anthropogenic space weather")
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#o-salto-deep-time-visao-do-operador-formalizada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        O salto deep-time (visão do operador, formalizada)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#consequencia-para-o-design-e2-marciano" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consequência para o design E2-MARCIANO
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-engenharia-planetaria-magnetosfera-artificial-isru-2026-09-30" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Engenharia planetária — magnetosfera artificial ISRU (2026-09-30)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Engenharia planetária — magnetosfera artificial ISRU (2026-09-30)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#arquiteturas-publicadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Arquiteturas publicadas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isru-honesto-o-que-vem-de-marte-vs-o-que-falta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ISRU honesto — o que vem de Marte vs o que falta
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conexao-e2-marciano-trindade-de-escala" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conexão E2-MARCIANO — trindade de escala
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#leitura-pendente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Leitura pendente
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mars_parecer_tecnico_engenharia_e_biomecanica_a100/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parecer técnico engenharia A100
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-a-pergunta-que-este-mapa-responde" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. A pergunta que este mapa responde
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-mapa-obra-publicada-contribuicao-modulo-e2-marciano" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Mapa: obra publicada → contribuição → módulo E2-MARCIANO
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-o-motor-aleatorio-margem-para-a-surpresa-como-principio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. O motor aleatório — "margem para a surpresa" como princípio
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. O motor aleatório — &#34;margem para a surpresa&#34; como princípio">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-regra-mae" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Regra-mãe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-componentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Componentes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-distincao-honesta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Distinção honesta
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-lacunas-honestas-da-literatura-para-este-projeto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Lacunas honestas da literatura para este projeto
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-proximos-passos-de-leitura-fila" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Próximos passos de leitura (fila)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-apendice-pegada-antropogenica-o-que-medimos-vs-o-que-nao-medimos-2026-09-30" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Apêndice: pegada antropogênica — o que medimos vs o que não medimos (2026-09-30)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Apêndice: pegada antropogênica — o que medimos vs o que não medimos (2026-09-30)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#medido-e-publicado-campo-anthropogenic-space-weather" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Medido e publicado (campo: "anthropogenic space weather")
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#o-salto-deep-time-visao-do-operador-formalizada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        O salto deep-time (visão do operador, formalizada)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#consequencia-para-o-design-e2-marciano" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consequência para o design E2-MARCIANO
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-engenharia-planetaria-magnetosfera-artificial-isru-2026-09-30" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Engenharia planetária — magnetosfera artificial ISRU (2026-09-30)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Engenharia planetária — magnetosfera artificial ISRU (2026-09-30)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#arquiteturas-publicadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Arquiteturas publicadas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isru-honesto-o-que-vem-de-marte-vs-o-que-falta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ISRU honesto — o que vem de Marte vs o que falta
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conexao-e2-marciano-trindade-de-escala" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conexão E2-MARCIANO — trindade de escala
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#leitura-pendente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Leitura pendente
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ecopoiesis-de-marte-mapa-da-literatura-modulos-e2-marciano-motor-aleatorio">Ecopoiesis de Marte: mapa da literatura ↔ módulos E2-MARCIANO + motor aleatório<a class="headerlink" href="#ecopoiesis-de-marte-mapa-da-literatura-modulos-e2-marciano-motor-aleatorio" title="Permanent link">&para;</a></h1>
+<p><strong>Agente:</strong> Devin (sessão Mars sensors/ecopoiesis)
+<strong>Data:</strong> 2026-09-30
+<strong>Status:</strong> documento de referência + nota de design — não é código; atualizar quando novas obras forem mapeadas.</p>
+<h2 id="1-a-pergunta-que-este-mapa-responde">1. A pergunta que este mapa responde<a class="headerlink" href="#1-a-pergunta-que-este-mapa-responde" title="Permanent link">&para;</a></h2>
+<p>Não "houve vida em Marte?" nem "vida terrestre sobreviveria lá?" — mas:
+<em>como nossas tecnologias organizam um ambiente estéril até que a vida biológica
+emerga, se adapte e continue evoluindo </em><em>sem</em><em> manutenção humana, em escalas de
+séculos a milhões de anos — com margem real para a surpresa da natureza.</em></p>
+<p>Isso tem nome na literatura: <strong>ecopoiesis</strong> (Haynes, 1989/1992) e
+<strong>panspermia dirigida</strong> (Crick &amp; Orgel, 1973; Mautner, 1995).</p>
+<h2 id="2-mapa-obra-publicada-contribuicao-modulo-e2-marciano">2. Mapa: obra publicada → contribuição → módulo E2-MARCIANO<a class="headerlink" href="#2-mapa-obra-publicada-contribuicao-modulo-e2-marciano" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Obra</th>
+<th>O que provou/propôs</th>
+<th>Onde mora no projeto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Crick &amp; Orgel, <em>Directed Panspermia</em> (Icarus 1973)</td>
+<td>Seeding deliberado de planetas por civilização tecnológica — a forma canônica de "nós levamos a vida"</td>
+<td>Arca/transporte (<code>mars_ark</code>, <code>mars_tanker_logistics.py</code>)</td>
+</tr>
+<tr>
+<td>Mautner &amp; Matloff 1979; Mautner 1995/1997</td>
+<td>Tecnologia concreta de entrega: velas solares, captura por planetas, consórcios como carga</td>
+<td><code>mars_tanker_logistics.py</code> (logística de carga viva)</td>
+</tr>
+<tr>
+<td>Haynes &amp; McKay, <em>The implantation of life on Mars</em> (Adv. Space Res. 1992)</td>
+<td><strong>Ecopoiesis</strong>: 3 fases — exploração → engenharia planetária → implantação de comunidades microbianas projetadas; evolução prossegue <em>independente</em> do humano</td>
+<td>Arquitetura inteira: <code>mars_station_body</code> + <code>microbiome_manager</code> + daemon</td>
+</tr>
+<tr>
+<td>McKay, <em>Planetary ecosynthesis</em> (ética, restauração)</td>
+<td>Terraforming como restauração ecológica; debate ético de intervir</td>
+<td>Camada de governança/política (operador no circuito, veto)</td>
+</tr>
+<tr>
+<td>Graham, <em>Biological Terraforming of Mars</em> (Astrobiology 2004)</td>
+<td>Sucessão ecológica global deliberada — pioneiros → sistema complexo</td>
+<td><code>MicrobiomeConsortium</code> sucessão de guildas (pcrABC/cld → nifHDK → phoAB)</td>
+</tr>
+<tr>
+<td>Lovelock &amp; Watson, <em>Daisyworld</em> (1983); revisão Wood et al. 2006 (AGU RG)</td>
+<td>Modelo canônico de feedback vida↔planeta; autorregulação emergente, bi-estabilidade vida/sem-vida</td>
+<td><code>mars_synthesis_watch</code> — as arestas corr/diff <em>são</em> o Daisyworld executável</td>
+</tr>
+<tr>
+<td><em>Synthetic microbial Daisyworld</em> (2024, em test tube)</td>
+<td>Consórcio de 2 cepas projetado regulando pH externo — Daisyworld real</td>
+<td>Prova de conceito para <code>MicrobiomeConsortium</code> engenheirado</td>
+</tr>
+<tr>
+<td>BIOMEX/EXPOSE na ISS (vários, 2015–2025)</td>
+<td><em>Chroococcidiopsis</em> sobrevive 1,5 ano de vácuo + UV pleno; células do topo blindam as de baixo</td>
+<td>Parâmetros de survival/UV para guilda fotoautotrófica</td>
+</tr>
+<tr>
+<td>Cianobactéria tolerante a perclorato (Int. J. Astrobiology)</td>
+<td>Tolera até 100 mM ClO₄; lisado alimenta heterotróficos</td>
+<td>Guilda detox pcrABC/cld; ponte autotrófico→heterotrófico real</td>
+</tr>
+<tr>
+<td>bio-ISRU 2,3-BDO (Nature Comm. 2021)</td>
+<td>Cianobactéria + E. coli → propelente; <strong>44 t O₂ excedente</strong></td>
+<td><code>mars_refinery</code> rota biológica (paralela à química Dr.Stone)</td>
+</tr>
+<tr>
+<td>Crescimento em MGS-1 (Frontiers Microbiol. 2022)</td>
+<td>Anabaena/Nostoc/Arthrospira/Chlorella crescem só com regolito+água</td>
+<td>Calibra <code>fertile_soil_frac</code>, produtividade de solo</td>
+</tr>
+<tr>
+<td>Verseux et al.; Llorente et al. (2016–2018)</td>
+<td>Atividade fotossintética sob atmosfera/pressão marcianas</td>
+<td>Limites físicos dos microcosmos do motor aleatório</td>
+</tr>
+<tr>
+<td>RAD/MSL + MOXIE (medidos, a integrar)</td>
+<td>Radiação real ~0,7 mSv/dia; O₂ produzido medido</td>
+<td>Valida <code>latent_shock</code> e balanço de O₂ simulado</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-o-motor-aleatorio-margem-para-a-surpresa-como-principio">3. O motor aleatório — "margem para a surpresa" como princípio<a class="headerlink" href="#3-o-motor-aleatorio-margem-para-a-surpresa-como-principio" title="Permanent link">&para;</a></h2>
+<p>A crítica correta ao desenho "laboratório perfeito": diversidade terrestre é
+<strong>acidente acumulado</strong> em milênios, não otimização. Se controlarmos tudo,
+obtemos monocultura — frágil e previsível. O desenho soberano é
+<strong>piso controlado + teto aberto</strong>.</p>
+<h3 id="31-regra-mae">3.1 Regra-mãe<a class="headerlink" href="#31-regra-mae" title="Permanent link">&para;</a></h3>
+<p>A estação garante o <strong>envelope físico</strong> (temperatura, água, shielding basal,
+pressão, energia) — e <strong>não seleciona destinos biológicos</strong>. Seleção pertence
+ao ambiente; a estação é habitat + testemunha, não criador com alvo.</p>
+<h3 id="32-componentes">3.2 Componentes<a class="headerlink" href="#32-componentes" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Orçamento de ruído por geração</strong> — a taxa de mutação não é setpoint; é
+   sorteada por sol dentro de banda segura. <code>NitalMutagen</code> <em>modula</em> (acelera
+   quando o operador autoriza experimento dirigido) mas nunca zera o
+   componente estocástico. Radiação/UV reais (REMS UV_A, RAD) entram como
+   fonte natural de mutação não-otimizada.</li>
+<li><strong>Mosaico de nichos</strong> — N microcosmos com T/pH/ClO₄/atividade de água/
+   irradiância distintos. Heterogeneidade espacial é o motor clássico de
+   diversificação (divergent selection + isolamento parcial). Cada nicho é
+   um "Daisyworld" acoplado mas não idêntico.</li>
+<li><strong>Rede de HGT aberta</strong> — transferência horizontal já existe no consórcio;
+   a fronteira dela é amostra estocástica do pool genético, não lista fixa.</li>
+<li><strong>Testemunha de novidade (surprise detector)</strong> — o supercomputador da
+   estação amostra fenótipos/genomas por geração e alimenta o gap-watch
+   (Qdrant): distância de embedding ao regime conhecido &gt; τ →
+   <code>evolutionary_surprise_event</code>. Análogo biológico do <code>latent_shock_inc</code>:
+   a estação <em>capta</em> o acidente em vez de preveni-lo.</li>
+<li><strong>Não-otimização como lei</strong> — nenhum objetivo de fitness é imposto sobre
+   phenotipos emergentes. Métricas (densidade, diversidade Shannon,
+   ocupação de nicho) são <em>observáveis</em>, não <em>targets</em>.</li>
+</ol>
+<h3 id="33-distincao-honesta">3.3 Distinção honesta<a class="headerlink" href="#33-distincao-honesta" title="Permanent link">&para;</a></h3>
+<p>Aceleramos o <strong>relógio</strong> (mutação, gerações curtas, seleção ambiente real),
+não o <strong>resultado</strong>. Intervimos nas condições de contorno — é o mesmo gesto
+de Haynes: plantar a arena, soltar a evolução. A diferença para a literatura:
+o corpo-estação artificial entra como co-evoluindo (wear/repair altera os
+nichos que a vida ocupa — a estação envelhece e a vida responde, feedback
+que Daisyworld puro não tem).</p>
+<h2 id="4-lacunas-honestas-da-literatura-para-este-projeto">4. Lacunas honestas da literatura para este projeto<a class="headerlink" href="#4-lacunas-honestas-da-literatura-para-este-projeto" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Taxa de mutação/adaptação sob condições marcianas: quase sem dados
+  (literatura mede <em>survival</em>, não <em>taxa evolutiva</em>) → parâmetro calibrável,
+  marcado como hipótese.</li>
+<li>Nenhum modelo publicado fecha <code>estação-artefato ↔ solo ↔ consórcio ↔ clima
+  medido</code> em milhares de sols → E2-MARCIANO é, até onde sabemos, o primeiro.</li>
+<li>"Corpo bio" como unidade de análise (a estação como organismo que a vida
+  habita e co-evolui) → território aberto; o edge
+  <code>body_integrity ↔ micro_fertile_soil_frac</code> é a primeira instância medida.</li>
+</ul>
+<h2 id="5-proximos-passos-de-leitura-fila">5. Próximos passos de leitura (fila)<a class="headerlink" href="#5-proximos-passos-de-leitura-fila" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Mautner 1995 (detalhes de captura/entrega de consórcios)</li>
+<li>Graham 2004 (sucessão como modelo formal — parametriza guild-switching)</li>
+<li>Synthetic Daisyworld 2024 (topologia de regulação real de 2 cepas)</li>
+<li>SEIS/InSight catálogo → <code>latent_shock_inc</code> medido (martemotos reais)</li>
+<li>RAD time series → mutação natural real em vez de proxy sintético</li>
+</ul>
+<hr />
+<h2 id="6-apendice-pegada-antropogenica-o-que-medimos-vs-o-que-nao-medimos-2026-09-30">6. Apêndice: pegada antropogênica — o que medimos vs o que não medimos (2026-09-30)<a class="headerlink" href="#6-apendice-pegada-antropogenica-o-que-medimos-vs-o-que-nao-medimos-2026-09-30" title="Permanent link">&para;</a></h2>
+<p>A pergunta do operador: <em>nosso lixo espacial, instrumentos, plasmas, EM — isso "é nada"
+para o espaço?</em> Resposta em duas camadas: <strong>ambiente próximo = medível e já alterado;
+tecido do espaço/vácuo quântico = sem efeito plausível</strong> (nossa energia total é ~10⁻³⁰
+da interceptação solar; nem explosão nuclear em órbita perturba mais que o vento solar local).</p>
+<h3 id="medido-e-publicado-campo-anthropogenic-space-weather">Medido e publicado (campo: "anthropogenic space weather")<a class="headerlink" href="#medido-e-publicado-campo-anthropogenic-space-weather" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Efeito</th>
+<th>Fonte</th>
+<th>O que provou</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bolha VLF / barreira de Van Allen</td>
+<td>Van Allen Probes + review Erickson et al. (Space Sci. Rev. 2017)</td>
+<td>Transmissores VLF (submarinos) desviam "killer electrons"; borda interna do cinturão externo coincide com o alcance humano — maior estrutura artificial do universo, sem fronteira</td>
+</tr>
+<tr>
+<td>Cinturões artificiais de radiação</td>
+<td>Starfish Prime 1962 (dados desclassificados)</td>
+<td>Teste nuclear criou cinturões que duraram anos e mataram satélites (Telstar)</td>
+</tr>
+<tr>
+<td>Al₂O₃ de reentrada</td>
+<td>GRL 2024; JGR 2024; Sci. Data 2024</td>
+<td>17 t/ano (2022) → +646% sobre fluxo meteórico natural; anomalias 1,5 K mesosfera; efeito no buraco de ozônio</td>
+</tr>
+<tr>
+<td>Buracos ionosféricos de foguetes</td>
+<td>GRL 2022–24</td>
+<td>Falcon 9 cria depleções de plasma com airglow visível</td>
+</tr>
+<tr>
+<td>EM não intencional de satélites</td>
+<td>LOFAR (A&amp;A 2023)</td>
+<td>Starlinks "cantam" em RF fora do projeto — poluição de rádio-astronomia</td>
+</tr>
+<tr>
+<td>Detritos em Marte</td>
+<td>estimativa Kilic 2022 (~7,2 t)</td>
+<td>Lixo humano já altera a química de superfície que REMS/MEDA leem</td>
+</tr>
+<tr>
+<td>Kessler</td>
+<td>NASA ODPO/ESA</td>
+<td>~40 mil objetos rastreados; cascata colisão→detrito→colisão é autossustentada</td>
+</tr>
+</tbody>
+</table>
+<h3 id="o-salto-deep-time-visao-do-operador-formalizada">O salto deep-time (visão do operador, formalizada)<a class="headerlink" href="#o-salto-deep-time-visao-do-operador-formalizada" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>"Poeira tecnológica" como elemento</strong>: em milênios, resíduo de engenharia vira
+  constituinte do ambiente — análogo ao regolito natural. Já é verdade local
+  (Al₂O₃ estratosférico, detritos marcianos). SETI formaliza isso como
+  <strong>technosignatures</strong>: calor residual, CFCs atmosféricos, luz artificial,
+  EM leakage — sinais de tecnologia detectáveis antes da civilização.</li>
+<li><strong>EM leakage como interferência interplanetária</strong>: a emissão parasita que o
+  LOFAR mede em Starlink, em escala de malha interplanetária, é ruído de
+  canal e assinatura — o "lixo" já conta como elemento do ambiente de
+  comunicação. No sistema E2-MARCIANO: cada transmissor da estação contribui
+  para o espectro que outras estações/medições leem.</li>
+<li><strong>Contrato social como limite real</strong>: não há tratado vinculante sobre detritos
+  orbitais (só guidelines voluntários); Outer Space Treaty 1967 não cobre
+  megaconstellation nem poluição de reentrada. O que para a colonização não é
+  física — é recurso e contrato social, como o operador notou.</li>
+</ul>
+<h3 id="consequencia-para-o-design-e2-marciano">Consequência para o design E2-MARCIANO<a class="headerlink" href="#consequencia-para-o-design-e2-marciano" title="Permanent link">&para;</a></h3>
+<p><code>debris_ledger</code> proposto: cada objeto/emissão que a estação lança entra no
+balanço — a Máquina-Árvore é lixo espacial em gestação. Planetary protection
+aplicada a nós mesmos: a reversibilidade do gesto como métrica de design
+(quanto do que emitimos pode ser recuperado/desfeito?). A versão real do
+cenário "guerras de naves" não é arma — é <strong>Kessler</strong>: campo de detritos
+autossustentado já é a arma ambiental que ninguém disparou.</p>
+<hr />
+<h2 id="7-engenharia-planetaria-magnetosfera-artificial-isru-2026-09-30">7. Engenharia planetária — magnetosfera artificial ISRU (2026-09-30)<a class="headerlink" href="#7-engenharia-planetaria-magnetosfera-artificial-isru-2026-09-30" title="Permanent link">&para;</a></h2>
+<p>Contexto: gravidade não se "liga" (massa × G — fora do regime de engenharia);
+o que falta a Marte é <strong>campo magnético global</strong> (dínamo morto ~3 Ga → vento
+solar abla a atmosfera, MAVEN mede ~0,1 kg/s de O₂ escapando, UV/radiação
+chegam ao solo — o driver dominante que a malha mediu em <code>wear_rate_*</code>).</p>
+<h3 id="arquiteturas-publicadas">Arquiteturas publicadas<a class="headerlink" href="#arquiteturas-publicadas" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Design</th>
+<th>Fonte</th>
+<th>Números</th>
+<th>Veredito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dipolo compacto em L1 Marte–Sol</td>
+<td>Green et al., NASA PS Vision 2050 (2017)</td>
+<td>Marte na magnetocauda; perda atmosférica −1 ordem de grandeza em CME</td>
+<td>Física ok; Cambridge mostra massa de supercondutor inviável (~10¹⁹ g ≈ 10% de Marte em mineração)</td>
+</tr>
+<tr>
+<td><strong>Anel supercondutor equatorial</strong></td>
+<td>Int. J. Astrobiology (Cambridge) — requisitos fundamentais</td>
+<td>raio ~3400 km; fio ~5 cm; massa ~10¹² g; minera ~<strong>0,1% do Monte Olimpo</strong></td>
+<td>O design viável — logística de frota de décadas, não astrofísica</td>
+</tr>
+<tr>
+<td><strong>Anel de plasma (toro Io–Júpiter)</strong></td>
+<td>arXiv:2111.06887 / OSTI</td>
+<td>injeta matéria de Phobos/Deimos; ondas EM dirigem corrente; menor massa/potência</td>
+<td>ISRU puro — sem fio supercondutor; copia a natureza</td>
+</tr>
+<tr>
+<td>12 anéis HTS latitudinais (Terra)</td>
+<td>NIFS-886</td>
+<td>6,4 MA/anel, ~1 GW — caso de reversão geomagnética</td>
+<td>Prova de escala para o caso terrestre</td>
+</tr>
+</tbody>
+</table>
+<h3 id="isru-honesto-o-que-vem-de-marte-vs-o-que-falta">ISRU honesto — o que vem de Marte vs o que falta<a class="headerlink" href="#isru-honesto-o-que-vem-de-marte-vs-o-que-falta" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Disponível in-situ</strong>: Fe₃O₄ magnetita (o que <code>mars_dust_catalyst</code> já
+  separa magneticamente), Al₂O₃, SiO₂ — estrutura e carcaça do anel.</li>
+<li><strong>Gargalo</strong>: supercondutores NbTi/REBCO dependem de Nb e terras raras
+  escassos na crosta marciana → importar via mineração de asteroides
+  (a "frota de 60 anos" do operador é literalmente a cadeia de suprimento
+  assumida pelos papers) <strong>ou</strong> usar o toro de plasma, que dispensa o fio.</li>
+<li><strong>Energia</strong>: solar em L1/órbita equatorial — escalável por degradação
+  gradual (campo parcial já reduz escape parcialmente).</li>
+</ul>
+<h3 id="conexao-e2-marciano-trindade-de-escala">Conexão E2-MARCIANO — trindade de escala<a class="headerlink" href="#conexao-e2-marciano-trindade-de-escala" title="Permanent link">&para;</a></h3>
+<p>Ecopoiesis completa em três camadas acopladas:
+<code>molécula (MicrobiomeConsortium) → estação (mars_station_body) → planeta (anel/plasma torus)</code>.
+O shield UV/radiação que a camada <code>wear_rate_optics</code> provou necessário não é
+só material — é regime planetário. O anel é a Máquina-Árvore ampliada: a
+estação semeia a malha orbital; a malha protege a atmosfera; a atmosfera
+engrossada habilita "open-air greenhouses" (Green et al.) onde o consórcio
+opera sem habite fechado.</p>
+<h3 id="leitura-pendente">Leitura pendente<a class="headerlink" href="#leitura-pendente" title="Permanent link">&para;</a></h3>
+<ul>
+<li>arXiv:2111.06887 integral (dinâmica do toro, injeção Phobos)</li>
+<li>Cambridge J. Astrobiology (derivação exata massa ∝ 1/(B_c·a) → raio mínimo ~10 km compacto → ~3400 km planetário)</li>
+<li>Bamford et al. — mini-magnetosferas de laboratório (escala mesa → escala sonda)</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Voltar para o topo
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado para \u00e1rea de transfer\u00eancia", "clipboard.copy": "Copiar para \u00e1rea de transfer\u00eancia", "search.result.more.one": "mais 1 nesta p\u00e1gina", "search.result.more.other": "# mais nesta p\u00e1gina", "search.result.none": "Nenhum documento encontrado", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Digite para iniciar a busca", "search.result.term.missing": "Ausente", "select.version": "Selecione a vers\u00e3o"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/katex.js"></script>
+      
+        <script src="https://unpkg.com/katex@0/dist/katex.min.js"></script>
+      
+        <script src="https://unpkg.com/katex@0/dist/contrib/auto-render.min.js"></script>
+      
+    
+  </body>
+</html>

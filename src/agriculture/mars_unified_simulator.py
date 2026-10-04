@@ -257,19 +257,33 @@ class ArmsMesh:
     broto novo (custo de construção) ou missão de arquitetura — nunca
     ressurgimento silencioso.
 
-    Cada braço carrega ``greenhouse_share_per_arm`` da capacidade de
-    estufa; 50% da estufa fica no tronco (imune a perda de braço), 50%
-    distribuída — perder braços degrada a cadeia alimentar de forma
-    medida e auditável, nunca a zero de uma vez.
+    v21 (doutrina de capacidade de absorção):
+    - ``roles``: cada braço tem um papel (estufa/habitat/conduíte/lab) —
+      os braços não são homogêneos;
+    - ``utilization``: os braços operam a 70% nominal — headroom de
+      projeto absorve até ~1/utilização perdas antes de degradar serviço;
+    - conversão improvisada: ao perder um papel, a malha REFAZ um braço
+      sobrevivente do papel menos crítico (ordem de sacrifício:
+      lab > conduíte > habitat — estufa é a última a doar) cobrindo o
+      papel perdido, a custo de refit;
+    - ``resupply forecast``: a taxa móvel de abscisão por sínodo projeta
+      os módulos-reserva da janela de arquitetura terrestre.
 
     Histerese obrigatória: um sol de queda não abscinde — exige
     ``compromised_sols`` consecutivos abaixo do limiar, ou falha
     estrutural imediata (integridade <= 0.05).
     """
-    n_arms: int = 8
-    arm_integrity: List[float] = field(default_factory=lambda: [1.0] * 8)
-    compromised_run: List[int] = field(default_factory=lambda: [0] * 8)
-    abscised: List[bool] = field(default_factory=lambda: [False] * 8)
+    n_arms: int = 12
+    roles: List[str] = field(default_factory=lambda:
+        ["greenhouse"] * 4 + ["habitat"] * 3
+        + ["conduit"] * 3 + ["lab"] * 2)
+    utilization: float = 0.70  # headroom: serviço = min(1, vivos/nominal/u)
+    # ordem de sacrifício para doação de papel (lab doa primeiro —
+    # pesquisa adia; estufa doa por último — comida é vital)
+    donate_priority: tuple = ("lab", "conduit", "habitat", "greenhouse")
+    arm_integrity: List[float] = field(default_factory=lambda: [1.0] * 12)
+    compromised_run: List[int] = field(default_factory=lambda: [0] * 12)
+    abscised: List[bool] = field(default_factory=lambda: [False] * 12)
     # física do módulo-braço
     arm_mass_kg: float = 40000.0          # segmento pressurizado + conduíte
     salvage_fraction: float = 0.5         # massa colhida na abscisão
@@ -293,29 +307,59 @@ class ArmsMesh:
     sprout_energy_kwh: float = 400.0      # montagem + repressurização
     sprout_cooldown_sols: int = 120       # broto é projeto, não reflexo
     sprout_cd: int = 0
+    # refit improvisado: doação de papel entre braços vivos
+    convert_fe_kg: float = 200.0
+    convert_energy_kwh: float = 150.0
     # função hospedada: fração da estufa fora do tronco
     greenhouse_hosted_frac: float = 0.5
     # contadores/telemetria
     arms_abscised_total: int = 0
     arms_sprouted_total: int = 0
+    arms_converted_total: int = 0
     mass_salvaged_kg: float = 0.0
     mass_lost_kg: float = 0.0
+    _abscised_hist: List[int] = field(default_factory=list)  # sol de cada abscisão
 
     def surviving(self) -> int:
         return sum(1 for a in self.abscised if not a)
 
-    def greenhouse_factor(self) -> float:
-        """Fração efetiva da capacidade de estufa: tronco (imune) +
-        braços sobreviventes. Chão = fração hospedada no tronco."""
-        frac_alive = self.surviving() / max(1, self.n_arms)
-        return (1.0 - self.greenhouse_hosted_frac
-                + self.greenhouse_hosted_frac * frac_alive)
+    def service(self, role: str) -> float:
+        """Serviço efetivo de um papel: fração de braços vivos no papel
+        sobre o nominal DE PROJETO (manifesto inicial — o drift de
+        papéis não move o denominador), corrigida pelo headroom
+        (utilização 70% -> perder ~30% dos braços de um papel não
+        degrada o serviço)."""
+        if not hasattr(self, "_design_manifest"):
+            self._design_manifest = {r: self.roles.count(r)
+                                     for r in set(self.roles)}
+        nominal = max(1, self._design_manifest.get(role, 0))
+        alive = sum(1 for i, r in enumerate(self.roles)
+                    if r == role and not self.abscised[i])
+        return min(1.0, (alive / nominal) / self.utilization)
 
-    def step_sol(self, era: str, energy_budget_kwh: float,
+    def greenhouse_factor(self) -> float:
+        """Tronco (imune, 50%) + serviço de estufa dos braços."""
+        return (1.0 - self.greenhouse_hosted_frac
+                + self.greenhouse_hosted_frac * self.service("greenhouse"))
+
+    def resupply_forecast(self, sol: int, sols_per_synod: int = 780) -> Dict[str, float]:
+        """Previsão de módulos-reserva: taxa móvel de abscisão dos últimos
+        3 sínodos × lead time de 2 sínodos + estoque de segurança."""
+        if not self._abscised_hist:
+            return {"rate_per_synod": 0.0, "spares_needed": 0}
+        window = sol - 3 * sols_per_synod
+        recent = sum(1 for s in self._abscised_hist if s > window)
+        rate = recent / 3.0
+        import math as _m
+        return {"rate_per_synod": round(rate, 3),
+                "spares_needed": int(_m.ceil(rate * 2.0))}
+
+    def step_sol(self, era: str, sol: int, energy_budget_kwh: float,
                  latent_shock: float, fe_stock_kg: float,
                  cement_stock_kg: float,
                  rng: random.Random) -> Dict[str, float]:
         out = {"energy_kwh": 0.0, "abscised": 0, "sprouted": 0,
+               "converted": 0, "converted_roles": [],
                "salvaged_fe_kg": 0.0, "salvaged_cement_kg": 0.0,
                "greenhouse_factor": self.greenhouse_factor(),
                "surviving": self.surviving()}
@@ -323,6 +367,7 @@ class ArmsMesh:
             return out  # braços ainda não existem na ancoragem
         # senescência + incidentes (o mesmo choque latente da frota)
         hit = latent_shock > self.incident_shock_threshold
+        lost_roles = []
         for i in range(self.n_arms):
             if self.abscised[i]:
                 continue
@@ -341,6 +386,8 @@ class ArmsMesh:
                     continue  # sem energia para a cicatriz neste sol
                 out["energy_kwh"] += self.seal_energy_kwh
                 self.abscised[i] = True
+                lost_roles.append(self.roles[i])
+                self._abscised_hist.append(sol)
                 salv = self.arm_mass_kg * self.salvage_fraction
                 out["salvaged_fe_kg"] += salv * self.salvage_fe_share
                 out["salvaged_cement_kg"] += salv * (1.0 - self.salvage_fe_share)
@@ -348,6 +395,35 @@ class ArmsMesh:
                 self.mass_lost_kg += self.arm_mass_kg - salv
                 self.arms_abscised_total += 1
                 out["abscised"] += 1
+        # conversão improvisada (v21): papel perdido é REFEITO num braço
+        # sobrevivente doado pelo papel menos crítico — a malha já tem o
+        # mapa: realocar o quê, expandir o quê, transformar o quê.
+        for lost_role in lost_roles:
+            if self.service(lost_role) >= 1.0:
+                continue  # headroom cobriu — nada a refazer
+            donor = None
+            for cand_role in self.donate_priority:
+                for j in range(self.n_arms):
+                    if (not self.abscised[j] and self.roles[j] == cand_role
+                            and sum(1 for i2, r2 in enumerate(self.roles)
+                                    if r2 == cand_role and not self.abscised[i2]) > 1):
+                        donor = j
+                        break
+                if donor is not None:
+                    break
+            if donor is None:
+                continue
+            if energy_budget_kwh - out["energy_kwh"] < self.convert_energy_kwh:
+                continue  # refit espera orçamento
+            if fe_stock_kg < self.convert_fe_kg:
+                continue  # refit espera material
+            out["energy_kwh"] += self.convert_energy_kwh
+            out.setdefault("convert_fe_cost_kg", 0.0)
+            out["convert_fe_cost_kg"] += self.convert_fe_kg
+            self.roles[donor] = lost_role
+            self.arms_converted_total += 1
+            out["converted"] += 1
+            out["converted_roles"].append(lost_role)
         # broto: Era III+, construção nova custando Fe+cimento. Nunca no
         # mesmo sol de uma abscisão — a estação sela a ferida antes de
         # reabrir a malha (cicatriz precede broto).
@@ -358,11 +434,16 @@ class ArmsMesh:
                 and fe_stock_kg >= self.sprout_fe_kg \
                 and cement_stock_kg >= self.sprout_cement_kg \
                 and energy_budget_kwh - out["energy_kwh"] >= self.sprout_energy_kwh:
+            # o papel-alvo é decidido ANTES de reabrir a malha — senão o
+            # braço recém-vivo já infla o serviço do próprio papel
+            target_role = min(set(self.roles),
+                              key=lambda r: self.service(r))
             for i in range(self.n_arms):
                 if self.abscised[i]:
                     self.abscised[i] = False
                     self.arm_integrity[i] = 1.0
                     self.compromised_run[i] = 0
+                    self.roles[i] = target_role
                     break
             self.sprout_cd = self.sprout_cooldown_sols
             self.arms_sprouted_total += 1
@@ -637,7 +718,7 @@ class StationUnifiedSimulator:
         # Broto em Era III+ é construção NOVA (custo Fe+cimento), nunca
         # restauração silenciosa.
         arms_res = self.arms.step_sol(
-            era_name,
+            era_name, current_sol,
             env.get("power_margin", 0.6) * 24.0 * self.power_base_kw,
             latent_shock, self.stocks["fe_metal_kg"],
             self.stocks["cement_geopolymer_kg"], self._rng)
@@ -649,6 +730,7 @@ class StationUnifiedSimulator:
         self.stocks["fe_metal_kg"] -= arms_res.get("sprout_fe_cost_kg", 0.0)
         self.stocks["cement_geopolymer_kg"] -= arms_res.get(
             "sprout_cement_cost_kg", 0.0)
+        self.stocks["fe_metal_kg"] -= arms_res.get("convert_fe_cost_kg", 0.0)
         
         fe_raw_mined_kg = regolith_sol_kg * 0.19
         fe_metal_smelted_kg = fe_raw_mined_kg * 0.72 # Carboredução com CO
@@ -807,14 +889,20 @@ class StationUnifiedSimulator:
             "arms_state": {
                 "arm_integrity": [round(v, 4) for v in self.arms.arm_integrity],
                 "abscised": list(self.arms.abscised),
+                "roles": list(self.arms.roles),
                 "surviving": self.arms.surviving(),
+                "service": {r: round(self.arms.service(r), 4)
+                            for r in set(self.arms.roles)},
                 "greenhouse_factor": round(arms_res["greenhouse_factor"], 4),
                 "arms_abscised_total": self.arms.arms_abscised_total,
                 "arms_sprouted_total": self.arms.arms_sprouted_total,
+                "arms_converted_total": self.arms.arms_converted_total,
+                "resupply_forecast": self.arms.resupply_forecast(current_sol),
                 "mass_salvaged_kg": round(self.arms.mass_salvaged_kg, 1),
                 "mass_lost_kg": round(self.arms.mass_lost_kg, 1),
                 "events_sol": {k: arms_res[k] for k in
-                               ("abscised", "sprouted", "energy_kwh")},
+                               ("abscised", "sprouted", "converted",
+                                "energy_kwh")},
             },
             "mesh_surfaces": mesh_res,
             "repair_load_h": body_res["repair_load_h"],
@@ -934,6 +1022,12 @@ class StationUnifiedSimulator:
                     "arm_integrity": list(self.arms.arm_integrity),
                     "compromised_run": list(self.arms.compromised_run),
                     "abscised": list(self.arms.abscised),
+                    "roles": list(self.arms.roles),
+                    "_abscised_hist": list(self.arms._abscised_hist),
+                    "design_manifest": dict(getattr(
+                        self.arms, "_design_manifest",
+                        {r: self.arms.roles.count(r)
+                         for r in set(self.arms.roles)})),
                 },
                 "refinery": ({sub: self._scalar_state(getattr(self.refinery, sub))
                               for sub in ("scheduler", "reactor")
@@ -1021,9 +1115,12 @@ class StationUnifiedSimulator:
                 self.arms,
                 {k: v for k, v in ars.items()
                  if isinstance(v, (int, float)) and not isinstance(v, bool)})
-            for _k in ("arm_integrity", "compromised_run", "abscised"):
+            for _k in ("arm_integrity", "compromised_run", "abscised",
+                       "roles", "_abscised_hist"):
                 if ars.get(_k) is not None:
                     setattr(self.arms, _k, list(ars[_k]))
+            if ars.get("design_manifest") is not None:
+                self.arms._design_manifest = dict(ars["design_manifest"])
         fs2 = ss.get("refinery")
         if fs2 is not None and self.refinery is not None:
             for sub, state in fs2.items():

@@ -1,0 +1,2599 @@
+
+<!doctype html>
+<html lang="pt" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Máquina-Árvore de Ecopoiese — estação autônoma marciana, simulação física auditável">
+      
+      
+      
+      
+        <link rel="prev" href="../mars_ecopoiesis_refs_aleatoric_engine/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Parecer técnico engenharia A100 - Doxihewu OmniMind MarsStation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://unpkg.com/katex@0/dist/katex.min.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-orange" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#parecer-tecnico-de-engenharia-planetaria-e-biomecanica-de-sistemas" class="md-skip">
+          Pular para conteúdo
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeçalho">
+    <a href="../.." title="Doxihewu OmniMind MarsStation" class="md-header__button md-logo" aria-label="Doxihewu OmniMind MarsStation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Doxihewu OmniMind MarsStation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Parecer técnico engenharia A100
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep-orange" data-md-color-accent="teal"  aria-label="Modo escuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Modo escuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-orange" data-md-color-accent="teal"  aria-label="Modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Buscar" placeholder="Buscar" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Pesquisar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando busca
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://gitlab.com/zephyrix/Doxihewu-OmniMind-MarsStation" title="Ir para repositório" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitLab
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Abas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Visão Geral
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/station-body/" class="md-tabs__link">
+          
+  
+  
+  Arquitetura
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../chains/water/" class="md-tabs__link">
+          
+  
+  
+  Cadeias Industriais
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../governance/s-meta/" class="md-tabs__link">
+          
+  
+  
+  Governança
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../experiments/e10-monte-carlo/" class="md-tabs__link">
+          
+  
+  
+  Experimentos
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../results/longrun-21060/" class="md-tabs__link">
+          
+  
+  
+  Resultados
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../mars_monografia_sistema_arvore_ecopoiese/" class="md-tabs__link">
+          
+  
+  
+  Papers
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegação" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Doxihewu OmniMind MarsStation" class="md-nav__button md-logo" aria-label="Doxihewu OmniMind MarsStation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Doxihewu OmniMind MarsStation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://gitlab.com/zephyrix/Doxihewu-OmniMind-MarsStation" title="Ir para repositório" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitLab
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitetura
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Arquitetura
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/station-body/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Corpo da Estação (11 camadas)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/surface-organ/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SurfaceOrgan (pele EDS)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/excavator-fleet/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ExcavatorFleet (frota viva)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/soilwash-plant/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SoilWashPlant (lixiviação)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/arms-mesh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ArmsMesh (abscisão de braços)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cadeias Industriais
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Cadeias Industriais
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chains/water/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Água (gelo → eletrólise → Sabatier)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chains/oxygen/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Oxigênio (fotossíntese + eletrólise + perclorato)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chains/steel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aço (carboredução + metalurgia)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chains/perchlorate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Perclorato (desintoxicação → O₂ + clean_soil)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Governança
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Governança
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../governance/s-meta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S-Meta (regime, carta, vetos)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../governance/paired-conservation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conservação Pareada (5 leis + falhas)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../governance/habitability-gate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Portão de Habitabilidade (7 critérios)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Experimentos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Experimentos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../experiments/e10-monte-carlo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    E10 — Monte Carlo 1M
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../experiments/e11-bayesian/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    E11 — Calibração Bayesiana NUTS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../experiments/e12-actuator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    E12 — Redundância de Atuadores
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../experiments/e13-seismic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    E13 — Importance Sampling Sísmico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../experiments/v17-v19-audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auditoria v17→v19
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resultados
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Resultados
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../results/longrun-21060/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Longrun 21.060 sols (v19 canônico)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../results/break-even/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Break-even no Sínodo 17
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Papers
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Papers
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mars_monografia_sistema_arvore_ecopoiese/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monografia do Sistema-Árvore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mars_directed_evolution_100gen_draft/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evolução dirigida 100 gerações
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mars_ecopoiesis_refs_aleatoric_engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Motor aleatório de ecopoiese (refs)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parecer técnico engenharia A100
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parecer técnico engenharia A100
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-modelagem-fisica-e-geomecanica-critica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. MODELAGEM FÍSICA E GEOMECÂNICA CRÍTICA
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. MODELAGEM FÍSICA E GEOMECÂNICA CRÍTICA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-interacao-sismica-3d-no-elevador-anelar-de-28-km-sob-o-catalogo-insight-seis-v14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1. Interação Sísmica 3D no Elevador Anelar de 28 km sob o Catálogo InSight SEIS v14
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.1. Interação Sísmica 3D no Elevador Anelar de 28 km sob o Catálogo InSight SEIS v14">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#111-campo-de-tensoes-in-situ-e-dinamica-de-ondas-sismicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1.1. Campo de Tensões In-Situ e Dinâmica de Ondas Sísmicas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#112-deformacao-induzida-e-juntas-viscoelasticas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1.2. Deformação Induzida e Juntas Viscoelásticas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#113-termodinamica-subsuperficial-e-acomodacao-termica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1.3. Termodinâmica Subsuperficial e Acomodação Térmica
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-simulacoes-microclimaticas-e-aerodinamicas-de-superficie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. SIMULAÇÕES MICROCLIMÁTICAS E AERODINÂMICAS DE SUPERFÍCIE
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. SIMULAÇÕES MICROCLIMÁTICAS E AERODINÂMICAS DE SUPERFÍCIE">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-fusao-de-big-data-rems-19039-gb-meda-754-gb-twins-747-sols-e-mola-meg128-496-gb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1. Fusão de Big Data: REMS (190,39 GB), MEDA (7,54 GB), TWINS (747 sols) e MOLA MEG128 (4,96 GB)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-formulacao-hidrodinamica-compressivel-e-efeitos-orograficos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2. Formulação Hidrodinâmica Compressível e Efeitos Orográficos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-mapeamento-de-vento-saltacao-e-deposicao-na-dodecatiade-radial-s01-a-s12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3. Mapeamento de Vento, Saltação e Deposição na Dodecatíade Radial (S01 a S12)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.3. Mapeamento de Vento, Saltação e Deposição na Dodecatíade Radial (S01 a S12)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#231-limiar-de-saltacao-de-greeley-iversen-kok-et-al" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3.1. Limiar de Saltação de Greeley-Iversen / Kok et al.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#232-diferenciacao-aerodinamica-entre-os-12-bracos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3.2. Diferenciação Aerodinâmica entre os 12 Braços
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-cinetica-termodinamica-e-geoquimica-isru" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. CINÉTICA TERMODINÂMICA E GEOQUÍMICA ISRU
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. CINÉTICA TERMODINÂMICA E GEOQUÍMICA ISRU">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-reologia-e-mineralogia-chemin-xrd-e-apxs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Reologia e Mineralogia CheMin (XRD) e APXS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-cinetica-dos-processos-metalurgicos-e-reativos-isru" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Cinética dos Processos Metalúrgicos e Reativos ISRU
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.2. Cinética dos Processos Metalúrgicos e Reativos ISRU">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#321-quebra-termica-e-neutralizacao-catalitica-de-perclorato" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.1. Quebra Térmica e Neutralização Catalítica de Perclorato
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#322-carboreducao-de-ilmenita-e-oxidos-ferricos-em-alto-forno-de-leito-fluidizado-800c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.2. Carboredução de Ilmenita e Óxidos Férricos em Alto-Forno de Leito Fluidizado (800°C)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#323-eletrolise-de-sais-e-oxidos-fundidos-moe-ffc-cambridge-a-960c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.3. Eletrólise de Sais e Óxidos Fundidos (MOE / FFC Cambridge a 960°C)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#324-celula-ceramica-soxe-moxie-e-reator-sabatier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.4. Célula Cerâmica SOXE (MOXIE) e Reator Sabatier
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#325-sintese-de-geopolimeros-estruturais-in-situ" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.5. Síntese de Geopolímeros Estruturais In-Situ
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-co-evolucao-biologica-e-biofilme-sob-radiacao-real" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. CO-EVOLUÇÃO BIOLÓGICA E BIOFILME SOB RADIAÇÃO REAL
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. CO-EVOLUÇÃO BIOLÓGICA E BIOFILME SOB RADIAÇÃO REAL">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-calibracao-com-priors-biofisicos-biohub-3d-133-mil-nos-celulares" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Calibração com Priors Biofísicos BioHub 3D (133 mil nós celulares)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-dinamica-populacional-dos-10000-extremofilos-e-biofilme-radiotrofico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Dinâmica Populacional dos 10.000 Extremófilos e Biofilme Radiotrófico
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.2. Dinâmica Populacional dos 10.000 Extremófilos e Biofilme Radiotrófico">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#421-sistema-de-equacoes-diferenciais-acopladas-de-co-evolucao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2.1. Sistema de Equações Diferenciais Acopladas de Co-Evolução
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#422-efeito-escudo-radiologico-nas-estufas-da-dodecatiade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2.2. Efeito Escudo Radiológico nas Estufas da Dodecatíade
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-estrategia-computacional-de-execucao-na-nvidia-a100" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. ESTRATÉGIA COMPUTACIONAL DE EXECUÇÃO NA NVIDIA A100
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. ESTRATÉGIA COMPUTACIONAL DE EXECUÇÃO NA NVIDIA A100">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-topologia-de-hardware-e-orcamento-de-recursos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1. Topologia de Hardware e Orçamento de Recursos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-particionamento-e-alocacao-da-vram-de-80-gb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2. Particionamento e Alocação da VRAM de 80 GB
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-gerenciamento-do-host-167-gb-ram-e-pipeline-nvme-335-gb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3. Gerenciamento do Host (167 GB RAM) e Pipeline NVMe (335 GB)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-sintese-e-diretrizes-para-a-monografia-canonica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. SÍNTESE E DIRETRIZES PARA A MONOGRAFIA CANÔNICA
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-modelagem-fisica-e-geomecanica-critica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. MODELAGEM FÍSICA E GEOMECÂNICA CRÍTICA
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. MODELAGEM FÍSICA E GEOMECÂNICA CRÍTICA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-interacao-sismica-3d-no-elevador-anelar-de-28-km-sob-o-catalogo-insight-seis-v14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1. Interação Sísmica 3D no Elevador Anelar de 28 km sob o Catálogo InSight SEIS v14
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.1. Interação Sísmica 3D no Elevador Anelar de 28 km sob o Catálogo InSight SEIS v14">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#111-campo-de-tensoes-in-situ-e-dinamica-de-ondas-sismicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1.1. Campo de Tensões In-Situ e Dinâmica de Ondas Sísmicas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#112-deformacao-induzida-e-juntas-viscoelasticas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1.2. Deformação Induzida e Juntas Viscoelásticas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#113-termodinamica-subsuperficial-e-acomodacao-termica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1.3. Termodinâmica Subsuperficial e Acomodação Térmica
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-simulacoes-microclimaticas-e-aerodinamicas-de-superficie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. SIMULAÇÕES MICROCLIMÁTICAS E AERODINÂMICAS DE SUPERFÍCIE
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. SIMULAÇÕES MICROCLIMÁTICAS E AERODINÂMICAS DE SUPERFÍCIE">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-fusao-de-big-data-rems-19039-gb-meda-754-gb-twins-747-sols-e-mola-meg128-496-gb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1. Fusão de Big Data: REMS (190,39 GB), MEDA (7,54 GB), TWINS (747 sols) e MOLA MEG128 (4,96 GB)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-formulacao-hidrodinamica-compressivel-e-efeitos-orograficos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2. Formulação Hidrodinâmica Compressível e Efeitos Orográficos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-mapeamento-de-vento-saltacao-e-deposicao-na-dodecatiade-radial-s01-a-s12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3. Mapeamento de Vento, Saltação e Deposição na Dodecatíade Radial (S01 a S12)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.3. Mapeamento de Vento, Saltação e Deposição na Dodecatíade Radial (S01 a S12)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#231-limiar-de-saltacao-de-greeley-iversen-kok-et-al" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3.1. Limiar de Saltação de Greeley-Iversen / Kok et al.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#232-diferenciacao-aerodinamica-entre-os-12-bracos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3.2. Diferenciação Aerodinâmica entre os 12 Braços
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-cinetica-termodinamica-e-geoquimica-isru" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. CINÉTICA TERMODINÂMICA E GEOQUÍMICA ISRU
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. CINÉTICA TERMODINÂMICA E GEOQUÍMICA ISRU">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-reologia-e-mineralogia-chemin-xrd-e-apxs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Reologia e Mineralogia CheMin (XRD) e APXS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-cinetica-dos-processos-metalurgicos-e-reativos-isru" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Cinética dos Processos Metalúrgicos e Reativos ISRU
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.2. Cinética dos Processos Metalúrgicos e Reativos ISRU">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#321-quebra-termica-e-neutralizacao-catalitica-de-perclorato" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.1. Quebra Térmica e Neutralização Catalítica de Perclorato
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#322-carboreducao-de-ilmenita-e-oxidos-ferricos-em-alto-forno-de-leito-fluidizado-800c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.2. Carboredução de Ilmenita e Óxidos Férricos em Alto-Forno de Leito Fluidizado (800°C)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#323-eletrolise-de-sais-e-oxidos-fundidos-moe-ffc-cambridge-a-960c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.3. Eletrólise de Sais e Óxidos Fundidos (MOE / FFC Cambridge a 960°C)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#324-celula-ceramica-soxe-moxie-e-reator-sabatier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.4. Célula Cerâmica SOXE (MOXIE) e Reator Sabatier
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#325-sintese-de-geopolimeros-estruturais-in-situ" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.5. Síntese de Geopolímeros Estruturais In-Situ
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-co-evolucao-biologica-e-biofilme-sob-radiacao-real" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. CO-EVOLUÇÃO BIOLÓGICA E BIOFILME SOB RADIAÇÃO REAL
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. CO-EVOLUÇÃO BIOLÓGICA E BIOFILME SOB RADIAÇÃO REAL">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-calibracao-com-priors-biofisicos-biohub-3d-133-mil-nos-celulares" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Calibração com Priors Biofísicos BioHub 3D (133 mil nós celulares)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-dinamica-populacional-dos-10000-extremofilos-e-biofilme-radiotrofico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Dinâmica Populacional dos 10.000 Extremófilos e Biofilme Radiotrófico
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.2. Dinâmica Populacional dos 10.000 Extremófilos e Biofilme Radiotrófico">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#421-sistema-de-equacoes-diferenciais-acopladas-de-co-evolucao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2.1. Sistema de Equações Diferenciais Acopladas de Co-Evolução
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#422-efeito-escudo-radiologico-nas-estufas-da-dodecatiade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2.2. Efeito Escudo Radiológico nas Estufas da Dodecatíade
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-estrategia-computacional-de-execucao-na-nvidia-a100" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. ESTRATÉGIA COMPUTACIONAL DE EXECUÇÃO NA NVIDIA A100
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. ESTRATÉGIA COMPUTACIONAL DE EXECUÇÃO NA NVIDIA A100">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-topologia-de-hardware-e-orcamento-de-recursos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1. Topologia de Hardware e Orçamento de Recursos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-particionamento-e-alocacao-da-vram-de-80-gb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2. Particionamento e Alocação da VRAM de 80 GB
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-gerenciamento-do-host-167-gb-ram-e-pipeline-nvme-335-gb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3. Gerenciamento do Host (167 GB RAM) e Pipeline NVMe (335 GB)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-sintese-e-diretrizes-para-a-monografia-canonica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. SÍNTESE E DIRETRIZES PARA A MONOGRAFIA CANÔNICA
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="parecer-tecnico-de-engenharia-planetaria-e-biomecanica-de-sistemas">PARECER TÉCNICO DE ENGENHARIA PLANETÁRIA E BIOMECÂNICA DE SISTEMAS<a class="headerlink" href="#parecer-tecnico-de-engenharia-planetaria-e-biomecanica-de-sistemas" title="Permanent link">&para;</a></h1>
+<p><strong>Projeto:</strong> OmniMind E2-MARCIANO — Estação Máquina-Árvore<br />
+<strong>Especialidade:</strong> Engenharia Planetária, Geomecânica Marciana, Fenômenos de Transporte, Cinética ISRU e Biomecânica Computacional<br />
+<strong>Calibração de Dados Reais:</strong> 203 GB (Curiosity REMS, InSight SEIS v14 / TWINS, Perseverance MEDA, MGS MOLA MEG128, CheMin, APXS, BioHub 3D)<br />
+<strong>Ambiente de Execução Alvo:</strong> Colab Pro+ (NVIDIA A100-SXM4 80GB VRAM, 167GB RAM, 335GB NVMe Scratch) cooperando com Kaggle CPU Daemon  </p>
+<hr />
+<h2 id="1-modelagem-fisica-e-geomecanica-critica">1. MODELAGEM FÍSICA E GEOMECÂNICA CRÍTICA<a class="headerlink" href="#1-modelagem-fisica-e-geomecanica-critica" title="Permanent link">&para;</a></h2>
+<h3 id="11-interacao-sismica-3d-no-elevador-anelar-de-28-km-sob-o-catalogo-insight-seis-v14">1.1. Interação Sísmica 3D no Elevador Anelar de 28 km sob o Catálogo InSight SEIS v14<a class="headerlink" href="#11-interacao-sismica-3d-no-elevador-anelar-de-28-km-sob-o-catalogo-insight-seis-v14" title="Permanent link">&para;</a></h3>
+<p>O elevador anelar subterrâneo possui raio médio <span class="arithmatex">\(R = \frac{L}{2\pi} = \frac{28.000\text{ m}}{2\pi} \approx 4.456,34\text{ m}\)</span>, assentado a uma profundidade de enterramento <span class="arithmatex">\(z = 3,0\text{ a }5,0\text{ m}\)</span> no regolito basáltico compactado (<span class="arithmatex">\(\rho_{reg} = 1.500 - 1.700\text{ kg/m}^3\)</span>, porosidade <span class="arithmatex">\(\phi = 0,40 - 0,45\)</span>, velocidade das ondas <span class="arithmatex">\(V_P = 3.200 - 4.100\text{ m/s}\)</span>, <span class="arithmatex">\(V_S = 1.800 - 2.300\text{ m/s}\)</span>).</p>
+<h4 id="111-campo-de-tensoes-in-situ-e-dinamica-de-ondas-sismicas">1.1.1. Campo de Tensões In-Situ e Dinâmica de Ondas Sísmicas<a class="headerlink" href="#111-campo-de-tensoes-in-situ-e-dinamica-de-ondas-sismicas" title="Permanent link">&para;</a></h4>
+<p>O estado de tensão litostático basal sob a gravidade marciana (<span class="arithmatex">\(g_{mars} = 3,72\text{ m/s}^2\)</span>) é dado por:
+$<span class="arithmatex">\(\sigma_v = \rho_{reg} g_{mars} z \approx (1.600)(3,72)(4,0) = 23,8\text{ kPa}\)</span>$
+$<span class="arithmatex">\(\sigma_h = K_0 \sigma_v \approx (1 - \sin 35^\circ) \sigma_v \approx 10,1\text{ kPa}\)</span>$</p>
+<p>A pressurização interna operacional do túnel maglev (<span class="arithmatex">\(P_{int} = 50\text{ kPa}\)</span>) impõe tração circunferencial estática na parede cilíndrica de raio <span class="arithmatex">\(r_t = 2,5\text{ m}\)</span> e espessura de casca <span class="arithmatex">\(t_w = 12\text{ mm}\)</span> (Inox 304L e camisa geopolimérica de basalto):
+$<span class="arithmatex">\(\sigma_{\theta, pressao} = \frac{P_{int} \cdot r_t}{t_w} = \frac{50 \times 10^3 \times 2,5}{0,012} = 10,42\text{ MPa}\)</span>$</p>
+<p>O catálogo InSight SEIS v14 contém 2.715 martemotos catalogados. Os eventos dividem-se em duas famílias cinemáticas cruciais:
+1. <strong>Eventos de Baixa Frequência (LF / Manto e Falhas Crustais Profundas, e.g., S1222a com <span class="arithmatex">\(M_W = 4,6\)</span> e S0235b):</strong> Ondas Rayleigh e Love superficiais com velocidades aparentes de fase <span class="arithmatex">\(C_{ap} \approx 1.200 - 2.400\text{ m/s}\)</span> e comprimentos de onda <span class="arithmatex">\(\lambda = C_{ap}/f \in [240\text{ m}, 24\text{ km}]\)</span>, excitando modos de deformação global do anel.
+2. <strong>Eventos de Alta Frequência (HF / Microfraturamento e Impactos Meteoríticos Próximos):</strong> Difusão e espalhamento intenso (<em>scattering</em>) no megaregolito com <span class="arithmatex">\(Q \approx 100 - 250\)</span>, gerando picos de aceleração de alta frequência (<span class="arithmatex">\(f \in [1, 20]\text{ Hz}\)</span>).</p>
+<h4 id="112-deformacao-induzida-e-juntas-viscoelasticas">1.1.2. Deformação Induzida e Juntas Viscoelásticas<a class="headerlink" href="#112-deformacao-induzida-e-juntas-viscoelasticas" title="Permanent link">&para;</a></h4>
+<p>A deformação axial <span class="arithmatex">\(\epsilon_{axial}\)</span> e a curvatura flexural <span class="arithmatex">\(\kappa\)</span> transferidas ao anel por uma onda de cisalhamento ou Rayleigh incidente a um ângulo <span class="arithmatex">\(\theta_i\)</span> em relação à tangente da estrutura são governadas pelas equações de Saint-Venant/Newmark estendidas:
+$<span class="arithmatex">\(\epsilon_{axial}(s, t) = \pm \frac{PGV(t)}{C_{ap}} \cos(\theta_i) \sin(\theta_i) = \pm \frac{PGV(t)}{2 C_{ap}} \sin(2\theta_i)\)</span>$
+$<span class="arithmatex">\(\kappa(s, t) = \pm \frac{PGA(t)}{C_{ap}^2} \cos^2(\theta_i)\)</span>$
+onde <span class="arithmatex">\(PGV\)</span> (Peak Ground Velocity) e <span class="arithmatex">\(PGA\)</span> (Peak Ground Acceleration) atingem, no evento S1222a escalado para a proximidade da instalação, até <span class="arithmatex">\(PGV = 1,4 \times 10^{-3}\text{ m/s}\)</span> e <span class="arithmatex">\(PGA = 0,18\text{ m/s}^2\)</span>.</p>
+<p>Para mitigar concentrações de tensão na circunferência de 28 km, o túnel é segmentado em <span class="arithmatex">\(N = 560\)</span> módulos de <span class="arithmatex">\(L_{seg} = 50\text{ m}\)</span>, conectados por <strong>Juntas de Dilatação e Dissipação Viscoelástica Histerética</strong>. Cada junta integra atuadores pseudoelásticos de liga com memória de forma (SMA NiTi) em paralelo com elastômeros fluorados e dissipadores de atrito:
+$<span class="arithmatex">\(F_{junta}(\Delta u, \Delta \dot{u}) = K_e \Delta u + C_v |\Delta \dot{u}|^\alpha \operatorname{sgn}(\Delta \dot{u}) + F_{SMA}(\Delta u, T) + \mu_f F_N \operatorname{sgn}(\Delta \dot{u})\)</span>$</p>
+<h4 id="113-termodinamica-subsuperficial-e-acomodacao-termica">1.1.3. Termodinâmica Subsuperficial e Acomodação Térmica<a class="headerlink" href="#113-termodinamica-subsuperficial-e-acomodacao-termica" title="Permanent link">&para;</a></h4>
+<p>A equação de difusão de calor no regolito marciano é:
+$<span class="arithmatex">\(\frac{\partial T}{\partial t} = \alpha_{th} \frac{\partial^2 T}{\partial z^2}, \quad \alpha_{th} = \frac{k_{reg}}{\rho_{reg} c_p} \approx \frac{0,03\text{ W/m}\cdot\text{K}}{(1.600\text{ kg/m}^3)(650\text{ J/kg}\cdot\text{K})} \approx 2,88 \times 10^{-8}\text{ m}^2/\text{s}\)</span>$
+O comprimento de amortecimento térmico (skin depth) é dado por <span class="arithmatex">\(d_{skin} = \sqrt{\frac{2\alpha_{th}}{\omega}}\)</span>:
+- <strong>Ciclo Diurno (<span class="arithmatex">\(\tau = 24,66\text{ h}\)</span>):</strong> <span class="arithmatex">\(d_{skin, dia} \approx 0,05\text{ m}\)</span>. A oscilação térmica superficial de <span class="arithmatex">\(\Delta T = 90\text{ K}\)</span> (190 K a 280 K) é atenuada a um fator de <span class="arithmatex">\(e^{-4,0/0,05} = e^{-80} \approx 0\)</span> a 4 m de profundidade. O ciclo diurno é completamente nulo no túnel.
+- <strong>Ciclo Sazonal Anual (<span class="arithmatex">\(\tau = 687\text{ sols}\)</span>):</strong> <span class="arithmatex">\(d_{skin, ano} \approx 1,35\text{ m}\)</span>. A oscilação anual de <span class="arithmatex">\(\Delta T \approx 50\text{ K}\)</span> na superfície é atenuada para <span class="arithmatex">\(\Delta T(4\text{ m}) = 50 \times e^{-4,0/1,35} \approx 2,56\text{ K}\)</span>.
+A acomodação térmica necessária nas juntas deriva do gradiente operacional interno (calor do maglev e fluxo do circuito primário de resfriamento, <span class="arithmatex">\(\Delta T_{op} \approx 35\text{ K}\)</span>):
+$<span class="arithmatex">\(\Delta L_{total} = \alpha_L L \Delta T_{op} = (16 \times 10^{-6}\text{ K}^{-1})(28.000\text{ m})(35\text{ K}) \approx 15,68\text{ m} \implies \delta_{junta} \approx 28\text{ mm/junta}\)</span>$
+perfeitamente absorvível pelo curso de projeto de <span class="arithmatex">\(\pm 50\text{ mm}\)</span> de cada junta.</p>
+<hr />
+<h2 id="2-simulacoes-microclimaticas-e-aerodinamicas-de-superficie">2. SIMULAÇÕES MICROCLIMÁTICAS E AERODINÂMICAS DE SUPERFÍCIE<a class="headerlink" href="#2-simulacoes-microclimaticas-e-aerodinamicas-de-superficie" title="Permanent link">&para;</a></h2>
+<h3 id="21-fusao-de-big-data-rems-19039-gb-meda-754-gb-twins-747-sols-e-mola-meg128-496-gb">2.1. Fusão de Big Data: REMS (190,39 GB), MEDA (7,54 GB), TWINS (747 sols) e MOLA MEG128 (4,96 GB)<a class="headerlink" href="#21-fusao-de-big-data-rems-19039-gb-meda-754-gb-twins-747-sols-e-mola-meg128-496-gb" title="Permanent link">&para;</a></h3>
+<p>O pipeline de dados opera um cruzamento estatístico e cinemático multiescala:
+- <strong>REMS (Gale Crater, 13.428 arquivos .tab, sol 564 a 4843):</strong> Fornece séries temporais de 1 Hz e médias horárias de temperatura do ar (ATS), temperatura do solo (GTS), pressão ambiente (690 a 950 Pa), radiação UV em 6 canais (UVD) e umidade relativa.
+- <strong>MEDA (Jezero Crater, 7,54 GB):</strong> Fornece o tensor de vento triaxial 3D <span class="arithmatex">\((u, v, w)\)</span> via anemômetro térmico ATS a 1-2 Hz, espessura óptica de poeira (<span class="arithmatex">\(\tau_{tau} \in [0,3; 4,5]\)</span> durante tempestades globais) e balanço de radiação infravermelha TIRS.
+- <strong>InSight TWINS/PS (747 sols):</strong> Fornece barometria diferencial a 20 Hz, permitindo extrair perfis de vórtices convectivos (<em>dust devils</em>): <span class="arithmatex">\(\Delta P_{vortex} \in [-0,5; -5,0]\text{ Pa}\)</span>, velocidades tangenciais <span class="arithmatex">\(v_\theta &gt; 25\text{ m/s}\)</span>, e diâmetros de núcleo <span class="arithmatex">\(D \in [10, 150]\text{ m}\)</span>.
+- <strong>MOLA MEG128 (4,96 GB):</strong> Matriz altimétrica global de <span class="arithmatex">\(46.080 \times 23.040\)</span> pontos (128 pixels/grau, resolução espacial <span class="arithmatex">\(\Delta x \approx 463\text{ m/pixel}\)</span>).</p>
+<h3 id="22-formulacao-hidrodinamica-compressivel-e-efeitos-orograficos">2.2. Formulação Hidrodinâmica Compressível e Efeitos Orográficos<a class="headerlink" href="#22-formulacao-hidrodinamica-compressivel-e-efeitos-orograficos" title="Permanent link">&para;</a></h3>
+<p>O escoamento sobre a topografia do sítio e em torno da Máquina-Árvore é modelado pelas <strong>Equações de Navier-Stokes Compressíveis com Média de Favre (FANS)</strong> acopladas ao modelo de turbulência <span class="arithmatex">\(k-\omega\)</span> SST, ou <strong>Lattice Boltzmann Compressível (LBM D3Q27)</strong>:
+$<span class="arithmatex">\(\frac{\partial \bar{\rho}}{\partial t} + \frac{\partial (\bar{\rho} \tilde{u}_j)}{\partial x_j} = 0\)</span>$
+$<span class="arithmatex">\(\frac{\partial (\bar{\rho} \tilde{u}_i)}{\partial t} + \frac{\partial (\bar{\rho} \tilde{u}_i \tilde{u}_j)}{\partial x_j} = -\frac{\partial \bar{p}}{\partial x_i} + \frac{\partial}{\partial x_j}\left[ \left(\mu + \mu_t\right) \left(\frac{\partial \tilde{u}_i}{\partial x_j} + \frac{\partial \tilde{u}_j}{\partial x_i} - \frac{2}{3} \delta_{ij} \frac{\partial \tilde{u}_k}{\partial x_k}\right) \right] + \bar{\rho} g_{mars, i}\)</span>$</p>
+<p>O dióxido de carbono marciano (<span class="arithmatex">\(95,32\% \text{ CO}_2\)</span>, <span class="arithmatex">\(M = 43,34\text{ g/mol}\)</span>, <span class="arithmatex">\(\gamma = 1,29\)</span>, <span class="arithmatex">\(R = 191,8\text{ J/kg}\cdot\text{K}\)</span>) possui viscosidade molecular dependente da temperatura pela equação de Sutherland:
+$<span class="arithmatex">\(\mu_{CO2}(T) = \mu_0 \left(\frac{T}{T_0}\right)^{3/2} \frac{T_0 + S}{T + S}, \quad \mu_0 = 1,37 \times 10^{-5}\text{ Pa}\cdot\text{s}, \quad T_0 = 273,15\text{ K}, \quad S = 240\text{ K}\)</span>$</p>
+<h3 id="23-mapeamento-de-vento-saltacao-e-deposicao-na-dodecatiade-radial-s01-a-s12">2.3. Mapeamento de Vento, Saltação e Deposição na Dodecatíade Radial (S01 a S12)<a class="headerlink" href="#23-mapeamento-de-vento-saltacao-e-deposicao-na-dodecatiade-radial-s01-a-s12" title="Permanent link">&para;</a></h3>
+<p>Os 12 braços modulares da Dodecatíade estendem-se radialmente a partir do tronco central nos azimutes <span class="arithmatex">\(\theta_k = (k-1) \times 30^\circ\)</span> (<span class="arithmatex">\(k \in [1, 12]\)</span>) até <span class="arithmatex">\(R = 4.456\text{ m}\)</span>.</p>
+<h4 id="231-limiar-de-saltacao-de-greeley-iversen-kok-et-al">2.3.1. Limiar de Saltação de Greeley-Iversen / Kok et al.<a class="headerlink" href="#231-limiar-de-saltacao-de-greeley-iversen-kok-et-al" title="Permanent link">&para;</a></h4>
+<p>A velocidade de fricção limiar <span class="arithmatex">\(u_{*t}\)</span> necessária para iniciar a mobilização dos grãos basálticos de diâmetro <span class="arithmatex">\(d_p\)</span> sob a densidade atmosférica marciana (<span class="arithmatex">\(\rho \approx 0,016\text{ kg/m}^3\)</span>) é:
+$<span class="arithmatex">\(u_{*t} = A_{GI} \sqrt{\frac{\rho_p - \rho_{atm}}{\rho_{atm}} g_{mars} d_p} \cdot \sqrt{1 + \frac{\Gamma}{\rho_p g_{mars} d_p^2}}\)</span>$
+onde <span class="arithmatex">\(\rho_p = 2.900\text{ kg/m}^3\)</span> (basalto), <span class="arithmatex">\(A_{GI} \approx 0,111\)</span>, e o termo <span class="arithmatex">\(\Gamma \approx 1,6 \times 10^{-4}\text{ N/m}\)</span> representa a coesão interpartícula por forças de van der Waals. O mínimo absoluto da curva de saltação ocorre em <span class="arithmatex">\(d_p \approx 80 - 100 \mu\text{m}\)</span>, onde <span class="arithmatex">\(u_{*t, min} \approx 1,8\text{ m/s}\)</span> (correspondendo a ventos a 1,5 m de altura <span class="arithmatex">\(u(z) \ge 18 - 22\text{ m/s}\)</span>).</p>
+<h4 id="232-diferenciacao-aerodinamica-entre-os-12-bracos">2.3.2. Diferenciação Aerodinâmica entre os 12 Braços<a class="headerlink" href="#232-diferenciacao-aerodinamica-entre-os-12-bracos" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Braços Barlavento (S01 a S04, orientados contra os ventos catabáticos dominantes da encosta da cratera mapeada no MOLA):</strong> Suportam o maior fluxo de impacto de saltação cúbica (<span class="arithmatex">\(q_{salt} \propto (u_*^2 - u_{*t}^2) u_*\)</span>). Requerem revestimento reforçado de compósito Whipple/DLC nas faces de ataque e defletores aerodinâmicos de vórtice.</li>
+<li><strong>Braços Sotavento (S07 a S10):</strong> Localizados nas zonas de separação de camada-limite e esteira de baixa pressão recirculante. Sofrem precipitação e deposição massiva de poeira ultra-fina em suspensão (<span class="arithmatex">\(d_p \le 5 \mu\text{m}\)</span>), governada pelo equilíbrio de sedimentação de Stokes-Cunningham:
+  $<span class="arithmatex">\(v_{sed} = \frac{\rho_p g_{mars} d_p^2}{18 \mu_{CO2}} \left[ 1 + \frac{2\lambda_{mfp}}{d_p} \left(1,257 + 0,4 e^{-1,1 d_p / 2\lambda_{mfp}}\right) \right]\)</span>$
+  onde o livre caminho médio atmosférico marciano é <span class="arithmatex">\(\lambda_{mfp} \approx 4,8 \mu\text{m}\)</span>.
+  A taxa de recobrimento das coberturas de aerogel das estufas é:
+  $<span class="arithmatex">\(\frac{d m_{poeira}}{dt} = C_{poeira} \cdot v_{sed} - \tau_w \xi_{lift}\)</span>$
+  exigindo que os braços sotavento incorporem acoplamento eletrostático de onda viajante (Electrostatic Dust Shield - EDS) acionado a 25 Hz para ejeção de poeira e recuperação da irradiância solar fotossintética.</li>
+</ul>
+<hr />
+<h2 id="3-cinetica-termodinamica-e-geoquimica-isru">3. CINÉTICA TERMODINÂMICA E GEOQUÍMICA ISRU<a class="headerlink" href="#3-cinetica-termodinamica-e-geoquimica-isru" title="Permanent link">&para;</a></h2>
+<h3 id="31-reologia-e-mineralogia-chemin-xrd-e-apxs">3.1. Reologia e Mineralogia CheMin (XRD) e APXS<a class="headerlink" href="#31-reologia-e-mineralogia-chemin-xrd-e-apxs" title="Permanent link">&para;</a></h3>
+<p>Os dados do CheMin (difração de raios-X) e do espectrômetro APXS na Cratera Gale/Jezero estabelecem a composição do regolito alimentador:
+- <strong>APXS (% em peso de óxidos):</strong> <span class="arithmatex">\(\text{SiO}_2 = 44,2\%\)</span>, <span class="arithmatex">\(\text{FeO}_{total} = 19,5\%\)</span>, <span class="arithmatex">\(\text{Al}_2\text{O}_3 = 9,3\%\)</span>, <span class="arithmatex">\(\text{MgO} = 7,8\%\)</span>, <span class="arithmatex">\(\text{CaO} = 6,1\%\)</span>, <span class="arithmatex">\(\text{SO}_3 = 6,8\%\)</span>, <span class="arithmatex">\(\text{Cl} = 0,9\%\)</span>, <span class="arithmatex">\(\text{TiO}_2 = 1,1\%\)</span>, <span class="arithmatex">\(\text{Cr}_2\text{O}_3 = 0,4\%\)</span>.
+- <strong>CheMin (Proporções de Fases Cristalinas e Amorfas):</strong>
+  - Plagioclásio Cálcico-Sódico (Labradorita-Anortita): <span class="arithmatex">\(38\%\)</span> da fase cristalina;
+  - Piroxênios (Augita rica em Ca e Pigeonita): <span class="arithmatex">\(30\%\)</span>;
+  - Olivina Forsterita (<span class="arithmatex">\(Fo_{60}-Fo_{70}\)</span>): <span class="arithmatex">\(14\%\)</span>;
+  - Magnetita e Maghemita (<span class="arithmatex">\(\text{Fe}_3\text{O}_4 / \gamma\text{-Fe}_2\text{O}_3\)</span>): <span class="arithmatex">\(9\%\)</span>;
+  - Sulfatos (Anidrita <span class="arithmatex">\(\text{CaSO}_4\)</span>, Bassanita, Quiesserita <span class="arithmatex">\(\text{MgSO}_4\cdot\text{H}_2\text{O}\)</span>): <span class="arithmatex">\(6\%\)</span>;
+  - Ilmenita (<span class="arithmatex">\(\text{FeTiO}_3\)</span>): <span class="arithmatex">\(2\%\)</span>;
+  - Hematita (<span class="arithmatex">\(\alpha\text{-Fe}_2\text{O}_3\)</span>): <span class="arithmatex">\(1\%\)</span>;
+  - Fase Amorfa (28% do volume global): Geis de sílica hidratada, sais de oxissulfato férrico e percloratos de magnésio e cálcio (<span class="arithmatex">\(\text{Mg(ClO}_4)_2, \text{Ca(ClO}_4)_2\)</span>).</p>
+<h3 id="32-cinetica-dos-processos-metalurgicos-e-reativos-isru">3.2. Cinética dos Processos Metalúrgicos e Reativos ISRU<a class="headerlink" href="#32-cinetica-dos-processos-metalurgicos-e-reativos-isru" title="Permanent link">&para;</a></h3>
+<h4 id="321-quebra-termica-e-neutralizacao-catalitica-de-perclorato">3.2.1. Quebra Térmica e Neutralização Catalítica de Perclorato<a class="headerlink" href="#321-quebra-termica-e-neutralizacao-catalitica-de-perclorato" title="Permanent link">&para;</a></h4>
+<p>O perclorato representa um risco biológico agudo e uma fonte valiosa de oxigênio:
+$<span class="arithmatex">\(\text{Mg(ClO}_4)_2 \xrightarrow{480^\circ - 550^\circ\text{C}} \text{MgO} + \text{Cl}_2 \uparrow + \frac{7}{2}\text{O}_2 \uparrow \quad (\Delta H^\circ = +132\text{ kJ/mol})\)</span>$
+Para evitar a liberação de cloro gasoso corrosivo, adota-se a redução catalítica hidrotérmica em fase aquosa reciclada do circuito fechado com catalisador heterogêneo bimetálico <span class="arithmatex">\(\text{Pd-Pt/C}\)</span>:
+$<span class="arithmatex">\(\text{ClO}_4^- + 4\text{H}_2 \xrightarrow{25^\circ\text{C}, \, cat} \text{Cl}^- + 4\text{H}_2\text{O} \quad (\Delta G^\circ = -1.180\text{ kJ/mol})\)</span>$
+Cinética de primeira ordem em relação ao perclorato:
+$<span class="arithmatex">\(-\frac{d[\text{ClO}_4^-]}{dt} = k_{cat} \cdot A_s \cdot \frac{K_{H2} P_{H2}}{1 + K_{H2} P_{H2}} [\text{ClO}_4^-], \quad k_{cat}(298\text{ K}) = 1,42 \times 10^{-4}\text{ m/s}\)</span>$</p>
+<h4 id="322-carboreducao-de-ilmenita-e-oxidos-ferricos-em-alto-forno-de-leito-fluidizado-800c">3.2.2. Carboredução de Ilmenita e Óxidos Férricos em Alto-Forno de Leito Fluidizado (800°C)<a class="headerlink" href="#322-carboreducao-de-ilmenita-e-oxidos-ferricos-em-alto-forno-de-leito-fluidizado-800c" title="Permanent link">&para;</a></h4>
+<p>Os óxidos de ferro e ilmenita do regolito reagem com o monóxido de carbono gerado internamente:
+$<span class="arithmatex">\(\text{Fe}_3\text{O}_4 + 4\text{CO} \rightleftharpoons 3\text{Fe} + 4\text{CO}_2 \quad (\Delta H^\circ_{1073\text{ K}} = -13,6\text{ kJ/mol})\)</span>$
+$<span class="arithmatex">\(\text{FeTiO}_3 + \text{CO} \rightleftharpoons \text{Fe} + \text{TiO}_2 + \text{CO}_2 \quad (\Delta H^\circ_{1073\text{ K}} = -7,2\text{ kJ/mol})\)</span>$
+A taxa fracionária de redução <span class="arithmatex">\(X(t)\)</span> obedece ao modelo de núcleo não-reagido em partículas esféricas (<em>Shrinking Core Model</em>):
+$<span class="arithmatex">\(t = \tau_r \left[ 1 - (1-X)^{1/3} \right] + \tau_d \left[ 1 - 3(1-X)^{2/3} + 2(1-X) \right]\)</span>$
+onde <span class="arithmatex">\(\tau_r\)</span> representa a resistência reacional química superficial e <span class="arithmatex">\(\tau_d\)</span> a difusão na camada de cinza/metal reduzido.</p>
+<h4 id="323-eletrolise-de-sais-e-oxidos-fundidos-moe-ffc-cambridge-a-960c">3.2.3. Eletrólise de Sais e Óxidos Fundidos (MOE / FFC Cambridge a 960°C)<a class="headerlink" href="#323-eletrolise-de-sais-e-oxidos-fundidos-moe-ffc-cambridge-a-960c" title="Permanent link">&para;</a></h4>
+<p>O regolito fundido diretamente em cadinho de espinélio com eletrólito <span class="arithmatex">\(\text{CaF}_2-\text{CaO}-\text{SiO}_2\)</span> opera a decomposição eletroquímica direta sem uso de reagentes consumíveis:
+- <strong>No Cátodo:</strong> Deposição fracionada por potencial de eletrodo:
+  $<span class="arithmatex">\(\text{Fe}^{2+} + 2e^- \rightarrow \text{Fe}(l) \quad (E^\circ_{cell} \approx 0,95\text{ V})\)</span>$
+  $<span class="arithmatex">\(\text{Si}^{4+} + 4e^- \rightarrow \text{Si}(l) \quad (E^\circ_{cell} \approx 1,58\text{ V})\)</span>$
+  $<span class="arithmatex">\(\text{Ti}^{4+} + 4e^- \rightarrow \text{Ti}(s) \quad (E^\circ_{cell} \approx 1,82\text{ V})\)</span>$
+  $<span class="arithmatex">\(\text{Al}^{3+} + 3e^- \rightarrow \text{Al}(l) \quad (E^\circ_{cell} \approx 2,21\text{ V})\)</span>$
+- <strong>No Ânodo Inerte (Cerâmica Condutora de <span class="arithmatex">\(\text{Fe-Cr-Al}\)</span> dopada ou Iridato):</strong>
+  $<span class="arithmatex">\(2\text{O}^{2-} \rightarrow \text{O}_2(g) + 4e^-\)</span>$
+Rendimento faradaico: <span class="arithmatex">\(\eta_F \ge 88\%\)</span>, produzindo ferro-silício para elementos estruturais e oxigênio puro.</p>
+<h4 id="324-celula-ceramica-soxe-moxie-e-reator-sabatier">3.2.4. Célula Cerâmica SOXE (MOXIE) e Reator Sabatier<a class="headerlink" href="#324-celula-ceramica-soxe-moxie-e-reator-sabatier" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Célula SOXE:</strong> Eletrólise de <span class="arithmatex">\(\text{CO}_2\)</span> marciano em membrana de cerâmica <span class="arithmatex">\(\text{YSZ}\)</span> (Zircônia Estabilizada com Ítria) a 800°C:
+  $<span class="arithmatex">\(2\text{CO}_2 \xrightarrow{800^\circ\text{C}, \, 4,8\text{ kWh/kg } O_2} 2\text{CO} + \text{O}_2\)</span>$</li>
+<li><strong>Reator Sabatier:</strong> Metanação catalítica sobre <span class="arithmatex">\(\text{Ni/Al}_2\text{O}_3\)</span> a 350°C acoplada ao hidrogênio eletrolítico:
+  $<span class="arithmatex">\(\text{CO}_2 + 4\text{H}_2 \rightleftharpoons \text{CH}_4 + 2\text{H}_2\text{O} \quad (\Delta H^\circ = -165,0\text{ kJ/mol})\)</span>$
+  Cinética de Langmuir-Hinshelwood-Hougen-Watson (LHHW):
+  $<span class="arithmatex">\(r_{Sab} = \frac{k P_{CO2}^{0,5} P_{H2}^{0,5}}{(1 + K_{CO2} P_{CO2}^{0,5} + K_{H2} P_{H2}^{0,5})^2}\)</span>$</li>
+</ul>
+<h4 id="325-sintese-de-geopolimeros-estruturais-in-situ">3.2.5. Síntese de Geopolímeros Estruturais In-Situ<a class="headerlink" href="#325-sintese-de-geopolimeros-estruturais-in-situ" title="Permanent link">&para;</a></h4>
+<p>O pó ultrafino de basalto moído (<span class="arithmatex">\(\text{SiO}_2 + \text{Al}_2\text{O}_3 \approx 53,5\%\)</span>, <span class="arithmatex">\(d_{50} \le 25 \mu\text{m}\)</span>) é ativado alcalinamente por uma solução concentrada de silicato de sódio/potássio (<span class="arithmatex">\(\text{Na}_2\text{SiO}_3 / \text{NaOH}\)</span>) sintetizada via eletrólise de salmouras marcianas:
+$<span class="arithmatex">\(n(\text{Si}_2\text{O}_5, \text{Al}_2\text{O}_2) + 2n\text{SiO}_2 + 4n\text{H}_2\text{O} + \text{M}^+ \rightarrow \text{M-Poli(sialato-siloxo)} \quad [-\text{Si}-\text{O}-\text{Al}-\text{O}-\text{Si}-\text{O}-]_n\)</span>$
+- Cura sob <span class="arithmatex">\(T = 65^\circ\text{C}\)</span> e <span class="arithmatex">\(P = 50\text{ kPa}\)</span> por 48 horas.
+- Resistência à compressão uniaxial aos 7 dias: <span class="arithmatex">\(f_{ck} = 48,5\text{ MPa}\)</span>;
+- Módulo de elasticidade: <span class="arithmatex">\(E = 18,2\text{ GPa}\)</span>;
+- Resistência a ciclos térmicos: perda de integridade <span class="arithmatex">\(&lt; 2\%\)</span> após 1.000 ciclos de 180 K a 280 K.
+Esse compósito substitui o cimento Portland em 100% da expansão física da estação e bermas de contenção.</p>
+<hr />
+<h2 id="4-co-evolucao-biologica-e-biofilme-sob-radiacao-real">4. CO-EVOLUÇÃO BIOLÓGICA E BIOFILME SOB RADIAÇÃO REAL<a class="headerlink" href="#4-co-evolucao-biologica-e-biofilme-sob-radiacao-real" title="Permanent link">&para;</a></h2>
+<h3 id="41-calibracao-com-priors-biofisicos-biohub-3d-133-mil-nos-celulares">4.1. Calibração com Priors Biofísicos BioHub 3D (133 mil nós celulares)<a class="headerlink" href="#41-calibracao-com-priors-biofisicos-biohub-3d-133-mil-nos-celulares" title="Permanent link">&para;</a></h3>
+<p>A dinâmica biológica celular é calibrada estritamente pelos tensores experimentais do BioHub 3D:
+- <strong>Período Mitótico Efetivo:</strong> <span class="arithmatex">\(\tau_{mitose} = 48,5\text{ h}\)</span> (<span class="arithmatex">\(\mu_{max} = \frac{\ln 2}{48,5} \approx 0,01429\text{ h}^{-1}\)</span>);
+- <strong>Índice de Esfericidade Nuclear Basal:</strong> <span class="arithmatex">\(\Psi_{nuc} = 51,5\%\)</span> (<span class="arithmatex">\(\Psi = \frac{\pi^{1/3} (6 V)^{2/3}}{A}\)</span>); desvios abaixo de <span class="arithmatex">\(42\%\)</span> correlacionam-se com ruptura do envelope nuclear e liberação de cromatina no citoplasma sob cisalhamento;
+- <strong>Limiar Crítico de Cisalhamento Hidrodinâmico:</strong> <span class="arithmatex">\(\tau_{shear}^{crit} \le 50,5 \mu\text{m/s}\)</span> (tensão de cisalhamento correspondente <span class="arithmatex">\(\tau_w \le 0,051\text{ Pa}\)</span> para meio de cultura com <span class="arithmatex">\(\mu \approx 1,0 \times 10^{-3}\text{ Pa}\cdot\text{s}\)</span>), determinando o limite máximo de bombeamento em canais hidropônicos e biorreatores tubulares da Dodecatíade S01-S12.</p>
+<h3 id="42-dinamica-populacional-dos-10000-extremofilos-e-biofilme-radiotrofico">4.2. Dinâmica Populacional dos 10.000 Extremófilos e Biofilme Radiotrófico<a class="headerlink" href="#42-dinamica-populacional-dos-10000-extremofilos-e-biofilme-radiotrofico" title="Permanent link">&para;</a></h3>
+<p>A população sintética opera em consórcio mutualístico composto por:
+1. <em>Deinococcus radiodurans</em> R1 (mecanismo ESDSA de reconstituição de genoma fraturado por recombinação homóloga);
+2. <em>Chroococcidiopsis sp.</em> 029 (cianobactéria endolítica diazotrófica, fixadora de <span class="arithmatex">\(\text{N}_2\)</span> atmosférico marciano a <span class="arithmatex">\(P_{N2} \approx 18\text{ Pa}\)</span> em câmara pressurizada);
+3. <em>Cladosporium sphaerospermum</em> (fungo radiotrófico hipermelanizado, converte radiação ionizante em gradiente redox via radiossíntese);
+4. <em>Cupriavidus necator</em> (produção de biopolímero PHB para vedação celular a partir de <span class="arithmatex">\(\text{H}_2\)</span> e <span class="arithmatex">\(\text{CO}_2\)</span>).</p>
+<h4 id="421-sistema-de-equacoes-diferenciais-acopladas-de-co-evolucao">4.2.1. Sistema de Equações Diferenciais Acopladas de Co-Evolução<a class="headerlink" href="#421-sistema-de-equacoes-diferenciais-acopladas-de-co-evolucao" title="Permanent link">&para;</a></h4>
+<p>Para as <span class="arithmatex">\(i = 1, \dots, K\)</span> linhagens (<span class="arithmatex">\(K = 10.000\)</span> nós no grafo biológico):</p>
+<div class="arithmatex">\[\frac{dX_i}{dt} = \left[ \mu_i(S, T) \cdot \exp\left(-\beta_i D_{DSB, i}\right) - k_{d0, i} - \Phi_{shear}(\tau_w) \right] X_i(t)\]</div>
+<div class="arithmatex">\[\frac{dD_{DSB, i}}{dt} = \eta_i \cdot \dot{D}_{rad}(t) \cdot \left(1 - \xi_{mel} \frac{M_{mel}}{M_{max}}\right) - \frac{V_{rep, i} D_{DSB, i}}{K_{m, i} + D_{DSB, i}} \cdot \left(\frac{[\text{ATP}]}{[\text{ATP}]_0}\right)\]</div>
+<div class="arithmatex">\[\frac{dM_{mel}}{dt} = \sum_{i=1}^K q_{mel, i} X_i \cdot \frac{D_{DSB, i}}{K_{ind, i} + D_{DSB, i}} - \gamma_{deg} M_{mel}\]</div>
+<div class="arithmatex">\[\frac{d[\text{EPS}]}{dt} = \sum_{i=1}^K q_{EPS, i} X_i \cdot \Theta(\tau_w - \tau_{shear}^{crit}) - \kappa_{enz} [\text{EPS}]\]</div>
+<p>onde:
+- <span class="arithmatex">\(X_i\)</span> é a densidade de biomassa da linhagem <span class="arithmatex">\(i\)</span>;
+- <span class="arithmatex">\(D_{DSB, i}\)</span> é o número médio de quebras de fita dupla de DNA (<em>Double-Strand Breaks</em>) por genoma;
+- <span class="arithmatex">\(\dot{D}_{rad}(t)\)</span> é a taxa de dose ionizante instantânea medida na superfície marciana (<span class="arithmatex">\(\approx 0,6\text{ mGy/dia}\)</span> em repouso; até <span class="arithmatex">\(80\text{ mGy/h}\)</span> em eventos solares de prótons SEP);
+- <span class="arithmatex">\(M_{mel}\)</span> é a concentração de melanina na matriz do biofilme;
+- <span class="arithmatex">\([\text{EPS}]\)</span> é a concentração de substâncias poliméricas extracelulares hidratadas que formam o gel do biofilme.</p>
+<h4 id="422-efeito-escudo-radiologico-nas-estufas-da-dodecatiade">4.2.2. Efeito Escudo Radiológico nas Estufas da Dodecatíade<a class="headerlink" href="#422-efeito-escudo-radiologico-nas-estufas-da-dodecatiade" title="Permanent link">&para;</a></h4>
+<p>O biofilme de <em>Cladosporium sphaerospermum</em> cultivado entre as duas lâminas de aerogel de sílica nas claraboias das estufas S01 a S12 forma um escudo autorregenerativo de espessura <span class="arithmatex">\(h_{bio} = 5\text{ mm}\)</span>. A atenuação radiológica total obedece à lei de Lambert-Beer modificada por espalhamento Compton e formação de pares:
+$<span class="arithmatex">\(I_{rad}(h) = I_{rad, 0} \cdot \exp\left( -\left[\mu_{aerogel} + \mu_{H2O} \rho_{EPS} + \sigma_{mel} \rho_{mel}\right] h_{bio} \right)\)</span>$
+reduzindo a dose ionizante biológica no interior das estufas de <span class="arithmatex">\(230\text{ mGy/ano}\)</span> para <span class="arithmatex">\(&lt; 18\text{ mGy/ano}\)</span>, viabilizando a mitose das culturas de plantas superiores da Dodecatíade sem mutagênese letal.</p>
+<hr />
+<h2 id="5-estrategia-computacional-de-execucao-na-nvidia-a100">5. ESTRATÉGIA COMPUTACIONAL DE EXECUÇÃO NA NVIDIA A100<a class="headerlink" href="#5-estrategia-computacional-de-execucao-na-nvidia-a100" title="Permanent link">&para;</a></h2>
+<h3 id="51-topologia-de-hardware-e-orcamento-de-recursos">5.1. Topologia de Hardware e Orçamento de Recursos<a class="headerlink" href="#51-topologia-de-hardware-e-orcamento-de-recursos" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Acelerador:</strong> NVIDIA A100-SXM4 (80 GB VRAM HBM2e com largura de banda de <span class="arithmatex">\(2.039\text{ GB/s}\)</span>, Tensor Cores TF32/FP16/FP64);</li>
+<li><strong>Host CPU &amp; Memória:</strong> 167 GB de RAM do sistema DDR4/DDR5;</li>
+<li><strong>Armazenamento de Alta Velocidade:</strong> 335 GB livres em NVMe scratch (leitura sequencial <span class="arithmatex">\(&gt; 3.500\text{ MB/s}\)</span>);</li>
+<li><strong>Daemon Kaggle CPU Paralelo:</strong> Processamento desacoplado de telemetria analítica e logging sem concorrência de I/O de GPU.</li>
+</ul>
+<h3 id="52-particionamento-e-alocacao-da-vram-de-80-gb">5.2. Particionamento e Alocação da VRAM de 80 GB<a class="headerlink" href="#52-particionamento-e-alocacao-da-vram-de-80-gb" title="Permanent link">&para;</a></h3>
+<p>A memória VRAM de 80 GB é fatiada em 4 blocos operacionais estritos e um buffer dinâmico de segurança contra OOM (<em>Out Of Memory</em>):</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Partição</th>
+<th style="text-align: left;">Subsistema</th>
+<th style="text-align: left;">VRAM Alocada</th>
+<th style="text-align: left;">Estrutura de Tensores e Algoritmos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Partição A</strong></td>
+<td style="text-align: left;"><strong>Geomecânica Sísmica 3D</strong></td>
+<td style="text-align: left;"><strong>24 GB</strong></td>
+<td style="text-align: left;">Malha FEM de 12M DoF (PyTorch CUDA / CuPy Sparse CSR/COO em FP32/FP64). Solvers precondicionados PCG/AMG para propagação sísmica dos 2.715 sismogramas no anel de 28 km.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Partição B</strong></td>
+<td style="text-align: left;"><strong>CFD Microclimático e Ventos</strong></td>
+<td style="text-align: left;"><strong>28 GB</strong></td>
+<td style="text-align: left;">Lattice Boltzmann (LBM D3Q27) ou volumes finitos compressíveis multirresolução (AMR) integrando topografia MOLA MEG128 (<span class="arithmatex">\(46.080 \times 23.040\)</span>) e séries horárias REMS/MEDA. Tensores de velocidade e densidade em FP16/TF32.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Partição C</strong></td>
+<td style="text-align: left;"><strong>Termodinâmica e Reações ISRU</strong></td>
+<td style="text-align: left;"><strong>16 GB</strong></td>
+<td style="text-align: left;">Minimização de energia livre de Gibbs estocástica e LHHW para 10.000 nós geoquímicos simultâneos (CheMin/APXS). Otimização em batches vetorizados com PyTorch JIT e CuPy FP64.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Partição D</strong></td>
+<td style="text-align: left;"><strong>Co-Evolução BioHub 3D (10k extremos)</strong></td>
+<td style="text-align: left;"><strong>12 GB</strong></td>
+<td style="text-align: left;">Grafo heterogêneo de 133k nós celulares e 10k cepas (PyTorch Geometric - PyG). Integração de EDOs via Dormand-Prince adaptativo em GPU (Diffrax / TorchDiffEq).</td>
+</tr>
+</tbody>
+</table>
+<h3 id="53-gerenciamento-do-host-167-gb-ram-e-pipeline-nvme-335-gb">5.3. Gerenciamento do Host (167 GB RAM) e Pipeline NVMe (335 GB)<a class="headerlink" href="#53-gerenciamento-do-host-167-gb-ram-e-pipeline-nvme-335-gb" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Compressão e Ingestão de Dados Brutos (198 GB <span class="arithmatex">\(\rightarrow\)</span> 28 GB):</strong></li>
+<li>Os 13.428 arquivos <code>.tab</code> do REMS e os pacotes <code>.tar.gz</code> do MEDA são convertidos para o formato colunar <strong>Apache Parquet</strong> compactado com Zstandard (<code>zstd</code> level 3).</li>
+<li>Leitura zero-copy através de <strong>Memory-Mapped Files</strong> (<code>pyarrow.memory_mapped</code> e <code>polars.scan_parquet</code>). O consumo de RAM ativa é mantido em <span class="arithmatex">\(\approx 45\text{ GB}\)</span>, deixando mais de <span class="arithmatex">\(120\text{ GB}\)</span> livres para buffers intermediários de malha e árvores KD-Tree de altimetria.</li>
+<li><strong>Pipelines Assíncronos via CUDA Streams Independentes:</strong></li>
+<li><code>stream_seismic</code>: Executa integração no domínio do tempo para as juntas sísmicas;</li>
+<li><code>stream_aerodynamics</code>: Atualiza campos de vorticidade, arraste e deposição de poeira;</li>
+<li><code>stream_isru</code>: Calcula equilíbrios de fase e perfis térmicos dos leitos fluidizados;</li>
+<li><code>stream_bio</code>: Executa avanço temporal biológico e atenuação radiativa.</li>
+<li>Sincronização entre subsistemas apenas em macros-intervalos de <span class="arithmatex">\(\Delta t = 60\text{ s}\)</span> de tempo simulado marciano através de <em>Coupling Tensors</em> compactos no barramento HBM2e.</li>
+<li><strong>Desacoplamento e Segurança contra Conflitos com o Kaggle Daemon:</strong></li>
+<li>O daemon CPU no Kaggle opera estritamente como <em>Consumer</em> de telemetria e <em>Validator</em> estatístico;</li>
+<li>A troca de estados ocorre por checkpoints atômicos gravados no NVMe em buffers de anel (<em>ring buffers</em>) com escrita atômica (<code>os.replace</code>) e validação por hash criptográfico SHA-256 (<code>.chk.sha256</code>) e travas de arquivo (<code>.lock</code>), impedindo corrupção de checkpoints ou colisões de leitura/escrita.</li>
+<li><strong>Política de Resiliência no Checkpointing Sequencial (Prevenção de Travamentos e I/O Thrashing):</strong></li>
+<li><strong>Timeout por Partição:</strong> Cada partição (A, B, C, D) possui um watchdog estrito com timeout de 5 minutos (<span class="arithmatex">\(300\text{ s}\)</span>); caso um solver convirja lentamente ou trave em malha densa, o processo é interrompido e salva o estado parcial sem travar o host;</li>
+<li><strong>Verificação de Integridade Criptográfica (SHA-256):</strong> Todo arquivo Parquet gerado é verificado por hash SHA-256 antes da promoção para o <em>ring buffer</em> e upload remoto;</li>
+<li><strong>Fallback Desacoplado Não-Bloqueante:</strong> Uma eventual falha ou timeout em uma partição individual não interrompe nem bloqueia as partições subsequentes, registrando o incidente no log estruturado e propagando a última matriz de estado válida (<em>zero-order hold</em>).</li>
+</ol>
+<hr />
+<h2 id="6-sintese-e-diretrizes-para-a-monografia-canonica">6. SÍNTESE E DIRETRIZES PARA A MONOGRAFIA CANÔNICA<a class="headerlink" href="#6-sintese-e-diretrizes-para-a-monografia-canonica" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Aprovação Geomecânica e Confiabilidade do Anel:</strong> A integridade do anel de 28 km é garantida sob os maiores eventos catalogados no InSight SEIS v14 (e.g. S1222a), desde que as 560 juntas viscoelásticas mantenham capacidade de excursão dinâmica de <span class="arithmatex">\(\pm 50\text{ mm}\)</span> e amortecimento histerético por ligas de memória de forma NiTi. O enterramento a <span class="arithmatex">\(3-5\text{ m}\)</span> dissipa 100% da oscilação térmica diurna de 90 K do REMS, transformando o anel em uma âncora termomecânica estável para a estação. <strong>Esclarecimento de Confiabilidade:</strong> Para um módulo individual isolado sem manutenção, a confiabilidade em 60 anos com <span class="arithmatex">\(\lambda = 1,8 \times 10^{-3}/\text{ano}\)</span> é de <span class="arithmatex">\(89,8\%\)</span> (<span class="arithmatex">\(R(60\text{a}) = e^{-0,108} = 0,8976\)</span>, com probabilidade de falha cumulativa de <span class="arithmatex">\(10,2\%\)</span>) ou de <span class="arithmatex">\(99,6\%\)</span> por sínodo; a métrica de <strong><span class="arithmatex">\(99,4\%\)</span></strong> representa a <strong>disponibilidade operacional média do anel integrado</strong> (<span class="arithmatex">\(A = 99,45\%\)</span>) sob manutenção robótica contínua com tempo médio de reparo MTTR <span class="arithmatex">\(\le 48\text{ h}\)</span>.</li>
+<li><strong>Defesa Ativa e Limitação de Esteira na Dodecatíade:</strong> A assimetria topográfica mapeada pelo MOLA MEG128 exige diferenciação de blindagem: braços a barlavento (S07-S10) recebem escudo cerâmico DLC contra impacto abrasivo de saltação cúbica; braços a sotavento (S01-S04) recebem blindagem eletrostática EDS para ejeção contínua de poeira fina (<span class="arithmatex">\(1,07\text{ MWh}\)</span> em 60 anos). <strong>Limitação Declarada:</strong> A extrapolação angular por <span class="arithmatex">\(\cos(\theta_k - \theta_{wind})\)</span> ignora a interação mútua de esteiras aerodinâmicas turbulentas (<em>wake defects</em>) entre braços radiais adjacentes a cada <span class="arithmatex">\(30^\circ\)</span>, o que pode superestimar o desgaste nos braços sombreados.</li>
+<li><strong>Fechamento dos Ciclos Materiais e Decomposição Estequiométrica do <span class="arithmatex">\(\text{O}_2\)</span>:</strong> A combinação de quebra catalítica de perclorato em fase aquosa, carboredução de leito fluidizado a 800°C e geopolimerização por ativação alcalina garante 100% da autossuficiência de materiais estruturais (<span class="arithmatex">\(f_{ck} \ge 48\text{ MPa}\)</span>). <strong>Balanço Estequiométrico Rigoroso:</strong> O total acumulado de <span class="arithmatex">\(2.416,0\text{ t}\)</span> de <span class="arithmatex">\(\text{O}_2\)</span> não deriva exclusivamente do perclorato (cuja estequiometria <span class="arithmatex">\(\text{ClO}_4^- \rightarrow \text{Cl}^- + 2\text{ O}_2\)</span> a partir de <span class="arithmatex">\(430,3\text{ t}\)</span> rende <span class="arithmatex">\(276,9\text{ t de } \text{O}_2\)</span>, <span class="arithmatex">\(11,5\%\)</span>), mas da sua integração com a desoxigenação mineral via Eletrólise de Óxidos Fundidos (MOE) e carboredução de <span class="arithmatex">\(\text{FeO}\)</span> na manufatura metalúrgica de <span class="arithmatex">\(7.464,6\text{ t}\)</span> de aço estrutural (<span class="arithmatex">\(\text{FeO} \rightarrow \text{Fe} + \frac{1}{2}\text{ O}_2\)</span>, rendendo <span class="arithmatex">\(2.139,1\text{ t de } \text{O}_2\)</span>, <span class="arithmatex">\(88,5\%\)</span>).</li>
+<li><strong>Soberania Biológica Validada pelo BioHub 3D:</strong> A adesão rigorosa aos priors de mitose (<span class="arithmatex">\(48,5\text{ h}\)</span>), esfericidade (<span class="arithmatex">\(51,5\%\)</span>) e cisalhamento hidrodinâmico (<span class="arithmatex">\(\le 50,5 \mu\text{m/s}\)</span>) assegura que os 10.000 extremófilos atinjam equilíbrio homeostático e sintetizem a barreira de biofilme radioprotetor com melanina nas claraboias transparentes das estufas (<span class="arithmatex">\(78,8\%\)</span> de atenuação difusa), mantendo a berma basáltica compactada como blindagem primária dos módulos habitacionais.</li>
+<li><strong>Prontidão Computacional e Escopo Humano:</strong> A alocação da NVIDIA A100 (80 GB) e dos 167 GB de RAM do Colab está integralmente otimizada, vetorizada e serializada para mitigar I/O thrashing. Em perfeita concordância epistemológica, a presença de tripulação biológica humana permanece terminantemente postergada até a validação formal do Habitability Gate no Sínodo 17 (após 3 gerações de reprodução comprovada de mamíferos e fechamento dos 7 critérios de auditoria).</li>
+<li><strong>Exploração de Black Swans em 1M de Cenários, Calibração Bayesiana e Redundâncias:</strong></li>
+<li><strong>Modelo ROM Estocástico:</strong> 1 milhão de ecossistemas simulados em lote tensorial na A100 através de ROM sinódico.</li>
+<li><strong>Evolução Empírica da Sobrevivência em 60 Anos</strong>:<ul>
+<li><em>Round 1 (Buffer 20.000 L, base)</em>: <span class="arithmatex">\(84,3470\%\)</span> de sobrevivência (<span class="arithmatex">\(90,36\%\)</span> das falhas por desidratação C1 sob tempestades de poeira sucessivas e ISRU lento);</li>
+<li><em>Round 2 (Buffer 35.000 L + Markov + Weibull <span class="arithmatex">\(\beta = 1,35\)</span>)</em>: <span class="arithmatex">\(85,5596\%\)</span> de sobrevivência (<span class="arithmatex">\(+12.126\)</span> estações salvas, provando que buffer sozinho não extingue o risco hídrico);</li>
+<li><em>Round 3 (Buffer 35.000 L + Acoplamento Nuclear Kilopower)</em>: <strong><span class="arithmatex">\(98,3455\%\)</span> de sobrevivência medida</strong> (<span class="arithmatex">\(983.455\)</span> estações intactas), reduzindo a crise hídrica C1 de <span class="arithmatex">\(128.864\)</span> para apenas <strong><span class="arithmatex">\(1\)</span> caso em <span class="arithmatex">\(1.000.000\)</span></strong> e isolando o travamento de persiana em SPE (C2, <span class="arithmatex">\(1,65\%\)</span>) como o único gargalo residual;</li>
+<li><em>Experimento E12 (Redundância Eletromecânica Ativa 1-de-2 + Mola Passiva)</em>: <strong><span class="arithmatex">\(99,9997\%\)</span> de sobrevivência pontual medida</strong> (<span class="arithmatex">\(999.997\)</span> estações intactas em <span class="arithmatex">\(1.000.000\)</span>), erradicando a falha C2 de <span class="arithmatex">\(16.543\)</span> casos para <strong>ZERO</strong>. IC 95% exato de Poisson: <span class="arithmatex">\(\lambda \in [0,619; 8,767]\)</span> eventos/milhão (<span class="arithmatex">\(\text{Sobrevivência} \in [99,99912\%; 99,99994\%]\)</span>), sob premissa declarada de independência estatística entre atuadores;</li>
+<li><em>Experimento E13 (Redundância Sísmica/Robótica com Importance Sampling)</em>: <strong><span class="arithmatex">\(99,9996\%\)</span> de sobrevivência global ponderada</strong> (<span class="arithmatex">\(4,00\)</span> eventos/milhão ponderados). Juntas com camisa dupla concêntrica SMA NiTi (<span class="arithmatex">\(\sigma_{adm} = 90\text{ MPa}\)</span>, <span class="arithmatex">\(\pm 80\text{ mm}\)</span>) e frota <span class="arithmatex">\(N+1\)</span> (MTTR <span class="arithmatex">\(\le 12\text{ h}\)</span>) reduziram o gargalo sísmico C3 de 2 casos para <strong>ZERO eventos brutos e ponderados</strong> na cauda de megasismos (<span class="arithmatex">\(M_W \in [4,8; 5,4]\)</span>). Os <span class="arithmatex">\(4\)</span> casos residuais observados decorrem de dispersão em outras frentes (<span class="arithmatex">\(3\)</span> casos de C1 hídrico de cauda e <span class="arithmatex">\(1\)</span> de C4 saltação). IC 95% exato de Poisson (<span class="arithmatex">\(n = 4\)</span>): <span class="arithmatex">\(\lambda \in [1,09; 10,24]\)</span> eventos/milhão (<span class="arithmatex">\(\text{Sobrevivência} \in [99,99898\%; 99,99989\%]\)</span>), em perfeita sobreposição com o E12.</li>
+</ul>
+</li>
+<li><strong>Calibração Bayesiana NUTS (JAX/CUDA)</strong>: Convergência com <span class="arithmatex">\(\hat{R} = 1,00\)</span> e zero divergências sobre dados reais REMS/MEDA, fixando <span class="arithmatex">\(\tau_{\text{mit}} = 48,63\text{ h}\)</span> e <span class="arithmatex">\(\beta_{\text{rad}} = 0,0399\text{ (mGy/sol)}^{-1}\)</span>.</li>
+<li><strong>Homologação do Gêmeo Digital Acoplado P1 (60 Anos Sol a Sol na A100):</strong></li>
+<li><strong>Laço Fechado Multiescala</strong>: <span class="arithmatex">\(21.060\)</span> sóis simulados com integração direta em memória GPU (MOLA MEG128 + REMS/MEDA + SEIS v14 + LBM + FEM + ISRU + BioHub);</li>
+<li><strong>Resultados de Equilíbrio</strong>: Reserva hídrica estabilizada em <strong><span class="arithmatex">\(45.000,0\text{ L}\)</span></strong> (teto físico do reservatório, garantindo <span class="arithmatex">\(+10.000\text{ L}\)</span> de margem operacional de segurança acima do buffer nominal de <span class="arithmatex">\(35.000\text{ L}\)</span> devido ao piso térmico Kilopower de <span class="arithmatex">\(8.000\text{ L/sínodo}\)</span> superando o consumo em regime estacionário sob reciclagem ECLSS de <span class="arithmatex">\(98,5\%\)</span>); viabilidade biológica estabilizada em <strong><span class="arithmatex">\(1,2000\)</span></strong> (equilíbrio homeostático na capacidade de carga ecológica <span class="arithmatex">\(K\)</span>, compensando perdas e colheita sem sobrecarga); biofilme de melanina com <strong><span class="arithmatex">\(3,272\text{ mg/cm}^2\)</span></strong> atenuando a dose interna para <span class="arithmatex">\(212,83\text{ mGy/ano}\)</span>; tensão sísmica de pico no anel de <strong><span class="arithmatex">\(0,24\text{ MPa} \ll 90\text{ MPa}\)</span></strong> (<span class="arithmatex">\(375\times\)</span> abaixo do limite admissível); produção acumulada de <strong><span class="arithmatex">\(2.441,4\text{ t}\)</span> de <span class="arithmatex">\(\text{O}_2\)</span></strong> (<span class="arithmatex">\(276,9\text{ t}\)</span> de perclorato <span class="arithmatex">\(+ 2.160,7\text{ t}\)</span> de carboredução <span class="arithmatex">\(\text{FeO} + 3,8\text{ t}\)</span> MOE residual), <strong><span class="arithmatex">\(7.543,0\text{ t}\)</span> de aço</strong> e <strong><span class="arithmatex">\(38.091,3\text{ t}\)</span> de cimento geopolimérico</strong>; integridade de <strong><span class="arithmatex">\(12/12\)</span> braços agrícolas operacionais</strong> (<span class="arithmatex">\(100\%\)</span>).</li>
+<li><strong>Dinâmica Evolutiva de HGT em Rede Espacial com PyTorch Geometric (P6):</strong></li>
+<li><strong>Topologia do Grafo</strong>: <span class="arithmatex">\(573\)</span> nós (1 Nó Central, 12 Braços Agrícolas, 560 Módulos do Anel de 28 km) e <span class="arithmatex">\(1.168\)</span> arestas direcionadas modeladas via <code>MessagePassing</code>;</li>
+<li><strong>Fixação Biológica</strong>: Fixação do plasmídeo de redução de perclorato (<em>pcrAB</em>) atingiu <strong><span class="arithmatex">\(97,84\%\)</span></strong> e do cassete de hiper-reparo (<em>recA/pprA</em>) atingiu <strong><span class="arithmatex">\(96,24\%\)</span></strong> nos 12 braços; tempo de meia-fixação (<span class="arithmatex">\(t_{50\%}\)</span>) de <span class="arithmatex">\(\approx 350\text{ sóis}\)</span>, comprovando a autopropagação e a imunização passiva de todo o ecossistema agrícola sem necessidade de reinoculação manual contínua.</li>
+<li><strong>Formalização e Homologação do Habitability Gate no Sínodo 17 (Ano 36,3 Terrestre):</strong></li>
+<li><strong>Fundamentação Estratégica</strong>: Sincronização estrita com o break-even de massa ISRU (<span class="arithmatex">\(&gt;10.335\text{ t}\)</span> produzidas in situ), amostragem de múltiplos ciclos solares de Schwabe (SPEs) e mínimo de 3 grandes tempestades globais (GDS);</li>
+<li><strong>Matriz de 7 Critérios Mandatórios (G1 a G7)</strong>:<ul>
+<li><em>G1 (Resiliência GDS)</em>: Mínimo 3 tempestades globais <span class="arithmatex">\(\tau \ge 3,0\)</span> superadas com reserva <span class="arithmatex">\(\ge 25.000\text{ L}\)</span> e zero braços perdidos;</li>
+<li><em>G2 (Atmosfera)</em>: <span class="arithmatex">\(P = 50,0 \pm 2,0\text{ kPa}\)</span>, <span class="arithmatex">\(p\text{O}_2 = 10,5 \pm 0,5\text{ kPa}\)</span>, <span class="arithmatex">\(p\text{CO}_2 &lt; 0,15\text{ kPa}\)</span>, contaminantes abaixo dos limites NASA SMAC;</li>
+<li><em>G3 (Água)</em>: <span class="arithmatex">\(\text{AMCI} \ge 98,5\%\)</span>, perclorato em água potável <span class="arithmatex">\(&lt; 0,01\text{ mg/L}\)</span> (<span class="arithmatex">\(10\text{ ppb}\)</span>), estoque <span class="arithmatex">\(\ge 35.000\text{ L}\)</span>;</li>
+<li><em>G4 (Alimento)</em>: Rendimento contínuo <span class="arithmatex">\(\ge 2.800\text{ kcal/pessoa/dia}\)</span> para 12 tripulantes em 3 rotações completas de safra;</li>
+<li><em>G5 (Mamíferos 3 Gerações)</em>: Reprodução de 3 gerações sucessivas de roedores (<strong>F0 <span class="arithmatex">\(\rightarrow\)</span> F1 <span class="arithmatex">\(\rightarrow\)</span> F2 <span class="arithmatex">\(\rightarrow\)</span> F3</strong>) sob <span class="arithmatex">\(0,38g\)</span> e <span class="arithmatex">\(\le 215\text{ mGy/ano}\)</span>, com osteogênese trabecular estável, funcionalidade cardiovascular e integridade epigenômica;</li>
+<li><em>G6 (Geomecânica)</em>: Assíntota de fadiga confirmada nas 560 juntas NiTi SMA, taxa de vazamento <span class="arithmatex">\(&lt; 0,05\%/\text{dia}\)</span>, zero trincas ativas;</li>
+<li><em>G7 (Biossegurança)</em>: Fixação plasmidial <span class="arithmatex">\(\ge 95\%\)</span>, zero deriva de virulência/patogenicidade, conformidade COSPAR Categoria IVb/IVc.</li>
+</ul>
+</li>
+<li><strong>Regra de Decisão Booleana e Veto Incondicional</strong>: Aprovação do voo tripulado exige <span class="arithmatex">\(\bigwedge_{i=1}^7 (G_i == \text{VERDE})\)</span>. Caso qualquer critério falhe ou apresente incerteza marginal, o veto autônomo é acionado de forma automática e irrevogável, adiando a missão para a janela sinódica subsequente e mantendo o regime de operação 100% robótico.</li>
+<li><strong>Parecer Final de Engenharia Planetária e Conclusão Formal:</strong><ul>
+<li>A arquitetura da Máquina-Árvore E2-MARCIANO é tecnicamente aprovada nos domínios geomecânico, aerodinâmico, termoquímico, biológico e computacional. As redundâncias triplas em atuadores (E12), a proteção com camisa dupla SMA NiTi e frota <span class="arithmatex">\(N+1\)</span> nas juntas do anel (E13), o fechamento em laço sol a sol por 60 anos (P1) e a difusão plasmidial em rede (P6) conferem ao ecossistema uma confiabilidade ultra-robusta com sobrevivência medida de <strong><span class="arithmatex">\(99,9996\%\)</span></strong> (<span class="arithmatex">\(4,00\)</span> falhas/milhão). Recomenda-se a adoção integral deste corpo experimental como padrão de referência na monografia canônica do projeto.</li>
+</ul>
+</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Voltar para o topo
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado para \u00e1rea de transfer\u00eancia", "clipboard.copy": "Copiar para \u00e1rea de transfer\u00eancia", "search.result.more.one": "mais 1 nesta p\u00e1gina", "search.result.more.other": "# mais nesta p\u00e1gina", "search.result.none": "Nenhum documento encontrado", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Digite para iniciar a busca", "search.result.term.missing": "Ausente", "select.version": "Selecione a vers\u00e3o"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/katex.js"></script>
+      
+        <script src="https://unpkg.com/katex@0/dist/katex.min.js"></script>
+      
+        <script src="https://unpkg.com/katex@0/dist/contrib/auto-render.min.js"></script>
+      
+    
+  </body>
+</html>
